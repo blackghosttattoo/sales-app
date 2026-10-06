@@ -39,7 +39,8 @@ const doSignup=()=>auth.createUserWithEmailAndPassword($('#em').value,$('#pw').v
 const doReset=()=>auth.sendPasswordResetEmail($('#em').value).then(()=>toast('재설정 메일을 보냈어요')).catch(err);
 const out=()=>auth.signOut();
 const gate=(t,body)=>view(`<div class="card"><h2>${t}</h2>${body}<div class="row" style="margin-top:12px"><button onclick="location.reload()">새로고침</button><button onclick="out()">로그아웃</button></div></div>`);
-auth.onAuthStateChanged(async u=>{if(!u)return login();await u.reload();
+auth.onAuthStateChanged(async u=>{if(!u)return login();try{await boot(u)}catch(e){gate('오류가 났어요','<p>'+(e.message||e)+'</p><p class="mu">보안 규칙이 게시됐는지 확인하세요.</p>')}});
+async function boot(u){await u.reload();await u.getIdToken(true);
 if(!u.emailVerified)return gate('이메일 인증이 필요해요','<p>'+u.email+'로 보낸 인증 메일의 링크를 누른 뒤 새로고침하세요. 메일이 안 오면 스팸함을 확인하세요.</p>');
 const s=await db.doc('users/'+u.uid).get();
 if(!s.exists)return gate('가입 정보 입력',`<label>이름</label><input id="nn"><label>가게 가입코드</label><input id="cd"><button class="p" style="margin-top:12px" onclick="mkProfile('${u.uid}','${u.email}')">신청</button>`);
@@ -47,7 +48,7 @@ me={id:u.uid,...s.data()};if(me.status=='disabled')return gate('비활성 계정
 if(me.status!='active')return gate('승인 대기 중','<p>대장님이 승인하면 사용할 수 있어요.</p>');
 const c=await db.doc('config/main').get();if(c.exists)cfg=c.data();
 if(adm()){const us=await db.collection('users').get();us.forEach(d=>users[d.id]={id:d.id,...d.data()})}
-await loadSales();tab=adm()?'home':'in';draw()});
+await loadSales();tab=adm()?'home':'in';draw()}
 function mkProfile(id,email){db.doc('users/'+id).set({name:$('#nn').value.trim(),email,role:'artist',status:'pending',code:$('#cd').value.trim()}).then(()=>location.reload()).catch(()=>toast('가입코드가 맞지 않아요'))}
 async function loadSales(){let q=db.collection('sales');q=adm()?q.where('d','>=',month+'-01').where('d','<=',month+'-31'):q.where('uid','==',me.id);
 const s=await q.get();sales=[];s.forEach(d=>sales.push({id:d.id,...d.data()}));if(!adm())sales=sales.filter(x=>x.d.startsWith(month));sales.sort((a,b)=>b.d<a.d?-1:1)}
