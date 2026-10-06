@@ -20,7 +20,7 @@ th,td{padding:7px 6px;border-bottom:1px solid var(--ln);text-align:left;white-sp
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
-firebase.initializeApp({apiKey:"AIzaSyBTqRIfhUzls02YOfaEBlMHWGlLW-R44Z4",authDomain:"tattoo-cream-ecacc.firebaseapp.com",projectId:"tattoo-cream-ecacc",storageBucket:"tattoo-cream-ecacc.firebasestorage.app",messagingSenderId:"692684499045",appId:"1:692684499045:web:c3a10ae76dd8ff418cfe8c"});
+firebase.initializeApp({apiKey:"AIzaSyBTqRIfhUzlsO2YOfaEBlMHWGlLW-R44Z4",authDomain:"tattoo-cream-ecacc.firebaseapp.com",projectId:"tattoo-cream-ecacc",storageBucket:"tattoo-cream-ecacc.firebasestorage.app",messagingSenderId:"692684499045",appId:"1:692684499045:web:c3a10ae76dd8ff418cfe8c"});
 const auth=firebase.auth(),db=firebase.firestore(),$=s=>document.querySelector(s);
 const T={normal:'정상판매',review:'리뷰이벤트',bundled:'작업비 포함(무료)',service:'서비스',svcreview:'서비스+리뷰'},PM={cash:'현금',card:'카드',transfer:'이체'};
 const today=()=>new Date().toLocaleDateString('sv'),won=n=>(n||0).toLocaleString()+'원';
