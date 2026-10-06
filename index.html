@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>판매관리</title>
+<style>
+:root{--bg:#f6f5f2;--card:#fff;--tx:#1d1d1b;--mu:#77756f;--ac:#1f6f5c;--ln:#e4e1da;--wa:#b4531a}
+@media (prefers-color-scheme:dark){:root{--bg:#171716;--card:#232321;--tx:#eeece6;--mu:#9c9a93;--ac:#4fb59b;--ln:#363633;--wa:#e08a50}}
+*{box-sizing:border-box}body{margin:0;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);background:var(--bg);color:var(--tx);font:15px/1.5 -apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif}
+main{max-width:720px;margin:0 auto;padding:12px}.card{background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:14px;margin-bottom:12px}
+h2{font-size:16px;margin:0 0 10px}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+button{border:1px solid var(--ln);background:var(--card);color:var(--tx);border-radius:8px;padding:9px 12px;font:inherit;cursor:pointer}
+button.on,button.p{background:var(--ac);border-color:var(--ac);color:#fff}
+input,select{font:inherit;padding:9px;border:1px solid var(--ln);border-radius:8px;background:var(--bg);color:var(--tx);width:100%}
+label{font-size:13px;color:var(--mu);display:block;margin:10px 0 4px}.tbl{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{padding:7px 6px;border-bottom:1px solid var(--ln);text-align:left;white-space:nowrap}th,.mu{color:var(--mu);font-size:13px}.big{font-size:22px;font-weight:700}.wa{color:var(--wa)}
+.kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}.kpi div{background:var(--bg);border-radius:10px;padding:10px}
+#modal{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center;padding:12px}#modal>div{max-height:90vh;overflow:auto;width:100%;max-width:420px}
+</style></head><body><main id="app">불러오는 중…</main><div id="modal"><div class="card" id="mb"></div></div>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+firebase.initializeApp({apiKey:"AIzaSyBTqRIfhUzls02YOfaEBlMHWGlLW-R44Z4",authDomain:"tattoo-cream-ecacc.firebaseapp.com",projectId:"tattoo-cream-ecacc",storageBucket:"tattoo-cream-ecacc.firebasestorage.app",messagingSenderId:"692684499045",appId:"1:692684499045:web:c3a10ae76dd8ff418cfe8c"});
+const auth=firebase.auth(),db=firebase.firestore(),$=s=>document.querySelector(s);
+const T={normal:'정상판매',review:'리뷰이벤트',bundled:'작업비 포함(무료)',service:'서비스',svcreview:'서비스+리뷰'},PM={cash:'현금',card:'카드',transfer:'이체'};
+const today=()=>new Date().toLocaleDateString('sv'),won=n=>(n||0).toLocaleString()+'원';
+const DEF={rates:{cash:20,card:0,transfer:20},paid:{},closed:{},products:[{id:'p1',name:'허니구',on:1,pr:{normal:{S:5000,L:10000},review:{S:1000,L:5000}},base:{S:0,L:0}}]};
+let me,cfg=DEF,users={},sales=[],tab='in',month=today().slice(0,7),setMonth='',f={pid:'p1',size:'L',qty:1,type:'normal',pay:'card',ch:'naver',rid:'',buyer:'',amt:null,img:''};
+const adm=()=>me&&me.role=='admin',P=id=>cfg.products.find(p=>p.id==id)||{name:'?',pr:{normal:{},review:{}},base:{}};
+const nm=id=>users[id]?users[id].name+(users[id].status=='disabled'?'(비활성)':''):(me&&id==me.id?me.name:'?');
+const toast=m=>{alert(m)},err=e=>toast('오류: '+(e.message||e));
+const price=(p,t,s,ch)=>t=='normal'?p.pr.normal[s]:t=='review'?p.pr.review[s]:t=='svcreview'&&ch=='naver'?100:0;
+const payOf=(t,ch)=>t=='normal'||t=='review'?f.pay:t=='svcreview'&&ch=='naver'?'card':'-';
+function view(h){$('#app').innerHTML=h}
+function login(){view(`<div class="card"><h2>🌿 판매관리 로그인</h2><label>이메일</label><input id="em" type="email"><label>비밀번호 (6자 이상)</label><input id="pw" type="password">
+<div class="row" style="margin-top:12px"><button class="p" onclick="doLogin()">로그인</button><button onclick="doSignup()">가입하기</button><button onclick="doReset()">비밀번호 재설정</button></div></div>`)}
+const doLogin=()=>auth.signInWithEmailAndPassword($('#em').value,$('#pw').value).catch(err);
+const doSignup=()=>auth.createUserWithEmailAndPassword($('#em').value,$('#pw').value).then(c=>c.user.sendEmailVerification()).catch(err);
+const doReset=()=>auth.sendPasswordResetEmail($('#em').value).then(()=>toast('재설정 메일을 보냈어요')).catch(err);
+const out=()=>auth.signOut();
+const gate=(t,body)=>view(`<div class="card"><h2>${t}</h2>${body}<div class="row" style="margin-top:12px"><button onclick="location.reload()">새로고침</button><button onclick="out()">로그아웃</button></div></div>`);
+auth.onAuthStateChanged(async u=>{if(!u)return login();await u.reload();
+if(!u.emailVerified)return gate('이메일 인증이 필요해요','<p>'+u.email+'로 보낸 인증 메일의 링크를 누른 뒤 새로고침하세요. 메일이 안 오면 스팸함을 확인하세요.</p>');
+const s=await db.doc('users/'+u.uid).get();
+if(!s.exists)return gate('가입 정보 입력',`<label>이름</label><input id="nn"><label>가게 가입코드</label><input id="cd"><button class="p" style="margin-top:12px" onclick="mkProfile('${u.uid}','${u.email}')">신청</button>`);
+me={id:u.uid,...s.data()};if(me.status=='disabled')return gate('비활성 계정','<p>대장님께 문의하세요.</p>');
+if(me.status!='active')return gate('승인 대기 중','<p>대장님이 승인하면 사용할 수 있어요.</p>');
+const c=await db.doc('config/main').get();if(c.exists)cfg=c.data();
+if(adm()){const us=await db.collection('users').get();us.forEach(d=>users[d.id]={id:d.id,...d.data()})}
+await loadSales();tab=adm()?'home':'in';draw()});
+function mkProfile(id,email){db.doc('users/'+id).set({name:$('#nn').value.trim(),email,role:'artist',status:'pending',code:$('#cd').value.trim()}).then(()=>location.reload()).catch(()=>toast('가입코드가 맞지 않아요'))}
+async function loadSales(){let q=db.collection('sales');q=adm()?q.where('d','>=',month+'-01').where('d','<=',month+'-31'):q.where('uid','==',me.id);
+const s=await q.get();sales=[];s.forEach(d=>sales.push({id:d.id,...d.data()}));if(!adm())sales=sales.filter(x=>x.d.startsWith(month));sales.sort((a,b)=>b.d<a.d?-1:1)}
+const live=()=>sales.filter(x=>!x.void);
+async function save(){const p=P(f.pid),t=f.type,pay=payOf(t,f.ch),d=today();if(cfg.closed[d.slice(0,7)])return toast('마감된 달입니다');
+const auto=price(p,t,f.size,f.ch)*f.qty,a=f.amt==null?auto:+f.amt,rate=t=='normal'?cfg.rates[pay]:0;
+await db.collection('sales').add({d,uid:me.id,pid:f.pid,s:f.size,qty:f.qty,t,ch:t=='svcreview'||t=='review'?f.ch:'',pay,buyer:f.buyer,a,lp:p.pr.normal[f.size]*f.qty,rate,c:Math.round(a*rate/100),img:f.img,rid:f.rid,void:false,hist:[]}).catch(err);
+Object.assign(f,{amt:null,buyer:'',rid:'',img:''});await loadSales();toast('저장했어요');draw()}
+function pic(i){const fl=i.files[0];if(!fl)return;const im=new Image;im.onload=()=>{const c=document.createElement('canvas'),r=Math.min(1,800/im.width);c.width=im.width*r;c.height=im.height*r;c.getContext('2d').drawImage(im,0,0,c.width,c.height);f.img=c.toDataURL('image/jpeg',.6);draw()};im.src=URL.createObjectURL(fl)}
+function setF(k,v){f[k]=v;if(['type','size','pid','ch','qty'].includes(k))f.amt=null;draw()}
+const seg=(k,o)=>'<div class="row">'+o.map(([v,l])=>`<button class="${f[k]==v?'on':''}" onclick="setF('${k}','${v}')">${l}</button>`).join('')+'</div>';
+function form(){const p=P(f.pid),t=f.type,auto=price(p,t,f.size,f.ch)*f.qty,g=(t=='svcreview'||t=='review')&&f.ch=='google';
+return `<div class="card"><h2>판매 입력</h2><label>제품</label><select onchange="setF('pid',this.value)">${cfg.products.filter(x=>x.on).map(x=>`<option value="${x.id}" ${x.id==f.pid?'selected':''}>${x.name}</option>`).join('')}</select>
+<label>용량</label>${seg('size',[['L','대'],['S','소']])}<label>유형</label>${seg('type',Object.entries(T))}
+${t=='svcreview'||t=='review'?'<label>리뷰 채널</label>'+seg('ch',[['naver','네이버'],['google','구글']]):''}
+${t=='normal'||t=='review'?'<label>결제방법</label>'+seg('pay',Object.entries(PM)):''}
+${g?`<label>구글 리뷰어 아이디 (선택)</label><input value="${f.rid}" oninput="f.rid=this.value"><label>리뷰 캡처 (선택)</label><input type="file" accept="image/*" onchange="pic(this)">${f.img?'<div class="mu">✔ 캡처 첨부됨</div>':''}`:''}
+<label>수량 / 금액 (예외 시 직접 수정)</label><div class="row"><input type="number" min="1" style="width:30%" value="${f.qty}" onchange="setF('qty',Math.max(1,+this.value))"><input type="number" style="flex:1" value="${f.amt==null?auto:f.amt}" oninput="f.amt=this.value"></div>
+<label>구매자 이름 (선택)</label><input value="${f.buyer}" oninput="f.buyer=this.value"><p class="mu">결제: ${PM[payOf(t,f.ch)]||'해당없음'} · 수수료율 ${t=='normal'?cfg.rates[f.pay]:0}%</p>
+<button class="p" style="width:100%" onclick="save()">저장</button></div>`}
+function list(){return `<div class="tbl"><table><tr><th>날짜</th><th>판매자</th><th>제품</th><th>유형</th><th>금액</th><th>결제</th><th>수수료</th><th></th></tr>${sales.map(x=>`<tr style="${x.void?'opacity:.4;text-decoration:line-through':''}"><td>${x.d.slice(5)}</td><td>${nm(x.uid)}</td><td>${P(x.pid).name} ${x.s=='L'?'대':'소'}×${x.qty}</td><td>${T[x.t]}${x.ch?'·'+(x.ch=='naver'?'N':'G'):''}${x.img?' 📷':''}</td><td>${won(x.a)}</td><td>${PM[x.pay]||'-'}</td><td>${won(x.c)}</td><td>${adm()?`<button onclick="edit('${x.id}')">수정</button>`:''}</td></tr>`).join('')}</table></div>`}
+function edit(id){const x=sales.find(s=>s.id==id);$('#mb').innerHTML=`<h2>판매 수정</h2>
+<label>날짜</label><input id="e_d" value="${x.d}"><label>유형</label><select id="e_t">${Object.entries(T).map(([k,v])=>`<option value="${k}" ${k==x.t?'selected':''}>${v}</option>`).join('')}</select>
+<label>용량</label><select id="e_s"><option value="L" ${x.s=='L'?'selected':''}>대</option><option value="S" ${x.s=='S'?'selected':''}>소</option></select>
+<label>수량</label><input id="e_q" type="number" value="${x.qty}"><label>금액</label><input id="e_a" type="number" value="${x.a}">
+<label>결제방법</label><select id="e_p">${['cash','card','transfer','-'].map(k=>`<option value="${k}" ${k==x.pay?'selected':''}>${PM[k]||'해당없음'}</option>`).join('')}</select>
+<label>구매자</label><input id="e_b" value="${x.buyer||''}"><div class="row" style="margin-top:12px"><button class="p" onclick="saveEdit('${id}')">저장</button><button onclick="saveEdit('${id}',1)">${x.void?'취소 해제':'취소 처리'}</button><button onclick="$('#modal').style.display='none'">닫기</button></div>`;$('#modal').style.display='flex'}
+async function saveEdit(id,tog){const x=sales.find(s=>s.id==id);if(cfg.closed[x.d.slice(0,7)])return toast('마감된 달입니다. 마감을 풀고 수정하세요');
+const n={d:$('#e_d').value,t:$('#e_t').value,s:$('#e_s').value,qty:+$('#e_q').value,a:+$('#e_a').value,pay:$('#e_p').value,buyer:$('#e_b').value};
+n.rate=n.t=='normal'?(cfg.rates[n.pay]||0):0;n.c=Math.round(n.a*n.rate/100);n.void=tog?!x.void:!!x.void;
+const before={};Object.keys(n).forEach(k=>{if(n[k]!==x[k])before[k]=x[k]});
+await db.doc('sales/'+id).update({...n,hist:firebase.firestore.FieldValue.arrayUnion({by:me.name,at:new Date().toISOString(),before:JSON.stringify(before)})}).catch(err);
+$('#modal').style.display='none';await loadSales();draw()}
+function home(){const l=live(),sum=k=>l.reduce((a,x)=>a+x[k],0),g=sales.filter(x=>x.ch=='google'&&!x.img&&!x.rid&&!x.void).length;
+return `<div class="card"><div class="row"><h2 style="margin:0">${adm()?'전체':'내'} 현황</h2><input type="month" style="width:auto" value="${month}" onchange="month=this.value;loadSales().then(draw)"></div>
+<div class="kpi" style="margin-top:10px"><div class="mu">매출<div class="big">${won(sum('a'))}</div></div><div class="mu">${adm()?'지급할':'예상'} 수수료<div class="big">${won(sum('c'))}</div></div><div class="mu">무료 제공<div class="big">${l.filter(x=>x.a==0).length}건</div></div></div>${adm()?`<p class="mu">증빙 없는 구글 리뷰 건: ${g}건</p>`:''}</div><div class="card"><h2>내역</h2>${list()}</div>`}
+function settle(){const m=setMonth||month,cl=cfg.closed[m];const l=live(),ids=[...new Set(l.map(x=>x.uid))];
+return `<div class="card"><h2>월 정산</h2><div class="row"><input type="month" style="width:auto" value="${m}" onchange="setMonth=this.value;month=this.value;loadSales().then(draw)"><button class="${cl?'p':''}" onclick="setCfg('closed.${m}',${!cl})">${cl?'🔒 마감됨 (풀기)':'월 마감하기'}</button></div>
+<div class="tbl"><table><tr><th>작업자</th><th>건수</th><th>현금·이체</th><th>카드</th><th>수수료</th><th>상태</th></tr>${ids.map(u=>{const a=l.filter(x=>x.uid==u),by=(...k)=>a.filter(x=>k.includes(x.pay)).reduce((s,x)=>s+x.a,0),k=m+u;
+return `<tr><td>${nm(u)}</td><td>${a.length}</td><td>${won(by('cash','transfer'))}</td><td>${won(by('card'))}</td><td><b>${won(a.reduce((s,x)=>s+x.c,0))}</b></td><td><button class="${cfg.paid[k]?'p':''}" onclick="setCfg('paid.${k}',${!cfg.paid[k]})">${cfg.paid[k]?'지급완료':'미지급'}</button></td></tr>`}).join('')}</table></div></div>`}
+async function setCfg(path,v){const ks=path.split('.');let o=cfg;ks.slice(0,-1).forEach(k=>o=o[k]=o[k]||{});o[ks.at(-1)]=v;await db.doc('config/main').set(cfg).catch(err);draw()}
+const stock=(p,s)=>(p.base[s]||0)-live().filter(x=>x.pid==p.id&&x.s==s).reduce((a,x)=>a+x.qty,0);
+async function setUser(id,st){await db.doc('users/'+id).update({status:st}).catch(err);users[id].status=st;draw()}
+function conf(){const us=Object.values(users).filter(u=>u.role!='admin');
+return `<div class="card"><h2>작업자 관리</h2>${us.map(u=>`<div class="row" style="margin-bottom:6px"><b>${u.name}</b><span class="mu">${u.email}</span><span class="${u.status=='pending'?'wa':'mu'}">${{pending:'승인 대기',active:'활성',disabled:'비활성'}[u.status]}</span>
+<button class="${u.status=='active'?'':'p'}" onclick="setUser('${u.id}','${u.status=='active'?'disabled':'active'}')">${u.status=='active'?'비활성화':u.status=='pending'?'승인':'재활성화'}</button></div>`).join('')||'<p class="mu">없음</p>'}
+<label>가게 가입코드 (작업자에게 알려주는 코드)</label><div class="row"><input id="sc" style="flex:1"><button onclick="db.doc('settings/app').set({signupCode:$('#sc').value.trim()}).then(()=>toast('변경됨')).catch(err)">저장</button></div></div>
+<div class="card"><h2>수수료율 (%)</h2><div class="row">${Object.entries(PM).map(([k,l])=>`<div style="flex:1">${l}<input type="number" value="${cfg.rates[k]}" onchange="setCfg('rates.${k}',+this.value)"></div>`).join('')}</div><p class="mu">이후 입력부터 적용돼요. 저장된 건은 입력 당시 비율을 유지해요.</p></div>
+<div class="card"><h2>제품 · 가격 · 재고</h2>${cfg.products.map((p,i)=>`<div style="margin-bottom:12px"><div class="row"><b>${p.name}</b><button class="${p.on?'p':''}" onclick="setCfg('products.${i}.on',${p.on?0:1})">${p.on?'판매중':'판매중지'}</button><span class="mu">재고 대 ${stock(p,'L')} / 소 ${stock(p,'S')}</span>
+<button onclick="setCfg('products.${i}.base.L',(P('${p.id}').base.L||0)+10)">대 +10</button><button onclick="setCfg('products.${i}.base.S',(P('${p.id}').base.S||0)+10)">소 +10</button></div>
+<div class="row mu">${[['normal','S','정상 소'],['normal','L','정상 대'],['review','S','리뷰 소'],['review','L','리뷰 대']].map(([a,b,l])=>`<span style="flex:1">${l}<input type="number" value="${p.pr[a][b]}" onchange="setCfg('products.${i}.pr.${a}.${b}',+this.value)"></span>`).join('')}</div></div>`).join('')}
+<div class="row"><input id="np" placeholder="새 제품명" style="flex:1"><button onclick="const n=$('#np').value.trim();if(n)setCfg('products.'+cfg.products.length,{id:'p'+(cfg.products.length+1),name:n,on:1,pr:{normal:{S:5000,L:10000},review:{S:1000,L:5000}},base:{S:0,L:0}})">추가</button></div></div>`}
+function draw(){const ad=adm(),tabs=ad?[['home','총괄'],['in','판매입력'],['set','정산'],['conf','설정']]:[['home','내 현황'],['in','판매입력']];
+view(`<div class="card row"><b>🌿 판매관리</b><span class="mu">${me.name}${ad?' (총괄)':''}</span><button style="margin-left:auto" onclick="out()">로그아웃</button></div><div class="row" style="margin-bottom:12px">${tabs.map(([k,l])=>`<button class="${tab==k?'on':''}" onclick="tab='${k}';draw()">${l}</button>`).join('')}</div>`+
+(tab=='in'?form():tab=='set'&&ad?settle():tab=='conf'&&ad?conf():home()))}
+</script></body></html>
