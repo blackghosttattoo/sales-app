@@ -31,7 +31,7 @@ const nm=id=>users[id]?users[id].name+(users[id].status=='disabled'?'(비활성)
 const toast=m=>{alert(m)},err=e=>toast('오류: '+(e.message||e));
 const price=(p,t,s,ch)=>t=='normal'?p.pr.normal[s]:t=='review'?p.pr.review[s]:t=='svcreview'&&ch=='naver'?100:0;
 const payOf=(t,ch)=>t=='normal'||t=='review'?f.pay:t=='svcreview'&&ch=='naver'?'card':'-';
-let allSales=[],buys=[];
+let allSales=[],buys=[],cnts=[],cashs=[];
 function view(h){$('#app').innerHTML=h}
 function login(){view(`<div class="card"><h2>🌿 판매관리 로그인</h2><label>이메일</label><input id="em" type="email"><label>비밀번호 (6자 이상)</label><input id="pw" type="password">
 <div class="row" style="margin-top:12px"><button class="p" onclick="doLogin()">로그인</button><button onclick="doSignup()">가입하기</button><button onclick="doReset()">비밀번호 재설정</button></div></div>`)}
@@ -52,7 +52,7 @@ if(adm()){const us=await db.collection('users').get();us.forEach(d=>users[d.id]=
 await loadSales();tab=adm()?'home':'in';draw()}
 function mkProfile(id,email){db.doc('users/'+id).set({name:$('#nn').value.trim(),email,role:'artist',status:'pending',code:$('#cd').value.trim()}).then(()=>location.reload()).catch(()=>toast('가입코드가 맞지 않아요'))}
 async function loadSales(){const s=await(adm()?db.collection('sales'):db.collection('sales').where('uid','==',me.id)).get();const a=[];s.forEach(d=>a.push({id:d.id,...d.data()}));allSales=a;sales=a.filter(x=>x.d.startsWith(month));sales.sort((x,y)=>y.d<x.d?-1:1)}
-async function loadBuys(){const s=await db.collection('purchases').get();buys=[];s.forEach(d=>buys.push({id:d.id,...d.data()}));buys.sort((a,b)=>b.d<a.d?-1:1)}
+async function loadBuys(){const s=await db.collection('purchases').get();buys=[];s.forEach(d=>buys.push({id:d.id,...d.data()}));buys.sort((a,b)=>b.d<a.d?-1:1);const A=async(n,t)=>{const q=await db.collection(n).get(),r=[];q.forEach(d=>r.push({id:d.id,...d.data()}));return r.sort((a,b)=>b.d<a.d?-1:1)};cnts=await A('counts');cashs=await A('cash')}
 const live=()=>sales.filter(x=>!x.void);
 async function save(){const p=P(f.pid),t=f.type,pay=payOf(t,f.ch),d=(adm()&&f.d)||today(),u=(adm()&&f.uid)||me.id;if(cfg.closed[d.slice(0,7)])return toast('마감된 달입니다');
 const auto=price(p,t,f.size,f.ch)*f.qty,a=f.amt==null?auto:+f.amt,rate=t=='normal'?cfg.rates[pay]:0;
@@ -101,26 +101,43 @@ return `<div class="card"><h2>작업자 관리</h2>${us.map(u=>`<div class="row"
 <div class="row mu">${[['normal','S','정상 소'],['normal','L','정상 대'],['review','S','리뷰 소'],['review','L','리뷰 대']].map(([a,b,l])=>`<span style="flex:1">${l}<input type="number" value="${p.pr[a][b]}" onchange="setCfg('products.${i}.pr.${a}.${b}',+this.value)"></span>`).join('')}</div></div>`).join('')}
 <div class="row"><input id="np" placeholder="새 제품명" style="flex:1"><button onclick="const n=$('#np').value.trim();if(n)setCfg('products.'+cfg.products.length,{id:'p'+(cfg.products.length+1),name:n,on:1,pr:{normal:{S:5000,L:10000},review:{S:1000,L:5000}},base:{S:0,L:0}})">추가</button></div></div>`}
 const bl=()=>buys.filter(b=>!b.void);
-function calc(){const ev=[];bl().forEach(b=>ev.push({k:b.pid+b.s,d:b.d,o:0,b}));allSales.filter(x=>!x.void).forEach(x=>ev.push({k:x.pid+x.s,d:x.d,o:1,x}));
-ev.sort((a,b)=>a.d<b.d?-1:a.d>b.d?1:a.o-b.o);const st={},cost={},noc={};
-ev.forEach(e=>{const t=st[e.k]=st[e.k]||{q:0,a:0};if(e.b){t.a=t.q>0?(t.q*t.a+e.b.total)/(t.q+e.b.qty):e.b.total/e.b.qty;t.q+=e.b.qty}else{cost[e.x.id]=e.x.qty*t.a;if(!t.a)noc[e.x.id]=1;t.q-=e.x.qty}});return{st,cost,noc}}
+function calc(){const ev=[];bl().forEach(b=>ev.push({k:b.pid+b.s,d:b.d,o:0,b}));allSales.filter(x=>!x.void).forEach(x=>ev.push({k:x.pid+x.s,d:x.d,o:1,x}));cnts.filter(x=>!x.void).forEach(x=>ev.push({k:x.pid+x.s,d:x.d,o:2,n:x}));
+ev.sort((a,b)=>a.d<b.d?-1:a.d>b.d?1:a.o-b.o);const st={},cost={},noc={},cnt={};
+ev.forEach(e=>{const t=st[e.k]=st[e.k]||{q:0,a:0};if(e.b){t.a=t.q>0?(t.q*t.a+e.b.total)/(t.q+e.b.qty):e.b.total/e.b.qty;t.q+=e.b.qty}else if(e.n){const bk=t.q;cnt[e.n.id]={book:bk,diff:bk-e.n.qty,loss:(bk-e.n.qty)*t.a};t.q=e.n.qty}else{cost[e.x.id]=e.x.qty*t.a;if(!t.a)noc[e.x.id]=1;t.q-=e.x.qty}});return{st,cost,noc,cnt}}
 function mar(m){const c=calc(),l=allSales.filter(x=>!x.void&&x.d.startsWith(m)),sm=k=>l.reduce((a,x)=>a+x[k],0);
-return{rev:sm('a'),com:sm('c'),cs:Math.round(l.reduce((a,x)=>a+(c.cost[x.id]||0),0)),noc:l.filter(x=>c.noc[x.id]).reduce((a,x)=>a+x.qty,0),buy:bl().filter(b=>b.d.startsWith(m)).reduce((a,b)=>a+b.total,0)}}
+return{loss:Math.round(cnts.filter(x=>!x.void&&x.d.startsWith(m)).reduce((a,x)=>a+((c.cnt[x.id]||{}).loss||0),0)),rev:sm('a'),com:sm('c'),cs:Math.round(l.reduce((a,x)=>a+(c.cost[x.id]||0),0)),noc:l.filter(x=>c.noc[x.id]).reduce((a,x)=>a+x.qty,0),buy:bl().filter(b=>b.d.startsWith(m)).reduce((a,b)=>a+b.total,0)}}
 async function closeMonth(m,v){cfg.closed=cfg.closed||{};cfg.snap=cfg.snap||{};if(v)cfg.snap[m]=mar(m);else delete cfg.snap[m];cfg.closed[m]=v;await db.doc('config/main').set(cfg).catch(err);draw()}
 async function addBuy(){const q=+$('#b_q').value,t=+$('#b_t').value;if(!(q>0)||!(t>=0)||!$('#b_d').value)return toast('날짜, 수량, 금액을 확인하세요');
 await db.collection('purchases').add({d:$('#b_d').value,vendor:$('#b_v').value.trim(),pid:$('#b_p').value,s:$('#b_s').value,qty:q,total:t,memo:$('#b_m').value,void:false}).catch(err);await loadBuys();draw()}
 async function voidBuy(id,v){await db.doc('purchases/'+id).update({void:v}).catch(err);await loadBuys();draw()}
-function inv(){const c=calc(),sn=cfg.closed[month]&&(cfg.snap||{})[month],r=sn||mar(month),mg=r.rev-r.cs-r.com;
+function inv(){const c=calc(),sn=cfg.closed[month]&&(cfg.snap||{})[month],r=sn||mar(month),mg=r.rev-r.cs-r.com-(r.loss||0);
 const rows=cfg.products.flatMap(p=>['L','S'].map(x=>({p,s:x,...(c.st[p.id+x]||{q:0,a:0})}))).filter(r=>r.q||r.a);
 return `<div class="card"><div class="row"><h2 style="margin:0">월 마진</h2><input type="month" style="width:auto" value="${month}" onchange="month=this.value;loadSales().then(draw)"></div>
-<div class="tbl" style="margin-top:8px"><table><tr><td>매출</td><td>${won(r.rev)}</td></tr><tr><td>− 원가 (판매·무료 제공 × 당시 평균 원가)</td><td>${won(r.cs)}</td></tr><tr><td>− 작업자 수수료</td><td>${won(r.com)}</td></tr><tr><td><b>내 마진</b></td><td><b class="big">${won(mg)}</b></td></tr><tr><td class="mu">이달 입고에 쓴 돈</td><td class="mu">${won(r.buy)}</td></tr></table></div>${sn?'<p class="mu">🔒 마감 시점 값으로 고정되어 있어요.</p>':''}${r.noc?`<p class="wa">구매가가 없는 판매 ${r.noc}개가 있어요. 입고 기록을 확인하세요. (원가 0원으로 계산됨)</p>`:''}</div>
+<div class="tbl" style="margin-top:8px"><table><tr><td>매출</td><td>${won(r.rev)}</td></tr><tr><td>− 원가 (판매·무료 제공 × 당시 평균 원가)</td><td>${won(r.cs)}</td></tr><tr><td>− 작업자 수수료</td><td>${won(r.com)}</td></tr><tr><td>− 재고 실사 차이 손실</td><td>${won(r.loss||0)}</td></tr><tr><td><b>내 마진</b></td><td><b class="big">${won(mg)}</b></td></tr><tr><td class="mu">이달 입고에 쓴 돈</td><td class="mu">${won(r.buy)}</td></tr></table></div>${sn?'<p class="mu">🔒 마감 시점 값으로 고정되어 있어요.</p>':''}${r.noc?`<p class="wa">구매가가 없는 판매 ${r.noc}개가 있어요. 입고 기록을 확인하세요. (원가 0원으로 계산됨)</p>`:''}</div>
 <div class="card"><h2>현재 재고</h2><div class="tbl"><table><tr><th>제품</th><th>수량</th><th>평균 원가</th><th>재고 금액</th></tr>${rows.map(r=>`<tr><td>${r.p.name} ${r.s=='L'?'대':'소'}</td><td class="${r.q<0?'wa':''}">${r.q}개</td><td>${won(Math.round(r.a))}</td><td>${won(Math.round(r.q*r.a))}</td></tr>`).join('')||'<tr><td>입고 기록이 없어요</td></tr>'}</table></div></div>
 <div class="card"><h2>입고 기록</h2><div class="row"><div style="flex:1"><label>날짜</label><input id="b_d" type="date" value="${today()}"></div><div style="flex:1"><label>납품처</label><input id="b_v"></div></div>
 <div class="row"><div style="flex:1"><label>제품</label><select id="b_p">${cfg.products.map(p=>`<option value="${p.id}">${p.name}</option>`).join('')}</select></div><div style="flex:1"><label>용량</label><select id="b_s"><option value="L">대</option><option value="S">소</option></select></div></div>
 <div class="row"><div style="flex:1"><label>수량</label><input id="b_q" type="number"></div><div style="flex:1"><label>총 구매금액(원)</label><input id="b_t" type="number"></div></div><label>메모</label><input id="b_m">
 <button class="p" style="width:100%;margin-top:12px" onclick="addBuy()">입고 저장</button>
-<div class="tbl" style="margin-top:12px"><table><tr><th>날짜</th><th>납품처</th><th>제품</th><th>수량</th><th>총액</th><th>개당</th><th></th></tr>${buys.slice(0,30).map(b=>`<tr style="${b.void?'opacity:.4;text-decoration:line-through':''}"><td>${b.d.slice(2)}</td><td>${b.vendor||''}</td><td>${P(b.pid).name} ${b.s=='L'?'대':'소'}</td><td>${b.qty}</td><td>${won(b.total)}</td><td>${won(Math.round(b.total/b.qty))}</td><td><button onclick="voidBuy('${b.id}',${!b.void})">${b.void?'복구':'취소'}</button></td></tr>`).join('')}</table></div></div>`}
+<div class="tbl" style="margin-top:12px"><table><tr><th>날짜</th><th>납품처</th><th>제품</th><th>수량</th><th>총액</th><th>개당</th><th></th></tr>${buys.slice(0,30).map(b=>`<tr style="${b.void?'opacity:.4;text-decoration:line-through':''}"><td>${b.d.slice(2)}</td><td>${b.vendor||''}</td><td>${P(b.pid).name} ${b.s=='L'?'대':'소'}</td><td>${b.qty}</td><td>${won(b.total)}</td><td>${won(Math.round(b.total/b.qty))}</td><td><button onclick="voidBuy('${b.id}',${!b.void})">${b.void?'복구':'취소'}</button></td></tr>`).join('')}</table></div></div>`+cntCard()+cashCard()}
+async function addCnt(){const q=$('#c_q').value;if(q===''||+q<0||!$('#c_d').value)return toast('날짜와 실제 수량을 확인하세요');
+const ok=await db.collection('counts').add({d:$('#c_d').value,pid:$('#c_p').value,s:$('#c_s').value,qty:+q,void:false}).then(()=>1).catch(err);if(!ok)return;await loadBuys();draw()}
+async function voidCnt(id,v){await db.doc('counts/'+id).update({void:v}).catch(err);await loadBuys();draw()}
+function cntCard(){const c=calc();return `<div class="card"><h2>재고 실사</h2><p class="mu">실제로 센 수량을 넣으면 장부와의 차이가 기록돼요. 부족분은 이후 재고에 반영되고, 마진에서 손실로 빠져요.</p>
+<div class="row"><div style="flex:1"><label>날짜</label><input id="c_d" type="date" value="${today()}"></div><div style="flex:1"><label>제품</label><select id="c_p">${cfg.products.map(p=>`<option value="${p.id}">${p.name}</option>`).join('')}</select></div></div>
+<div class="row"><div style="flex:1"><label>용량</label><select id="c_s"><option value="L">대</option><option value="S">소</option></select></div><div style="flex:1"><label>실제 수량</label><input id="c_q" type="number" min="0"></div></div>
+<button class="p" style="width:100%;margin-top:12px" onclick="addCnt()">실사 저장</button>
+<div class="tbl" style="margin-top:12px"><table><tr><th>날짜</th><th>제품</th><th>장부</th><th>실제</th><th>차이</th><th></th></tr>${cnts.slice(0,20).map(x=>{const k=c.cnt[x.id];return `<tr style="${x.void?'opacity:.4;text-decoration:line-through':''}"><td>${x.d.slice(2)}</td><td>${P(x.pid).name} ${x.s=='L'?'대':'소'}</td><td>${k?k.book:'-'}</td><td>${x.qty}</td><td class="${k&&k.diff?'wa':''}">${k?(k.diff>0?'부족 '+k.diff:k.diff<0?'초과 '+(-k.diff):'일치'):'-'}</td><td><button onclick="voidCnt('${x.id}',${!x.void})">${x.void?'복구':'취소'}</button></td></tr>`}).join('')}</table></div></div>`}
+const cashNet=u=>allSales.filter(x=>!x.void&&x.pay=='cash'&&(!u||x.d<=u)).reduce((a,x)=>a+x.a,0)+cashs.filter(x=>!x.void&&x.type!='count'&&(!u||x.d<=u)).reduce((a,x)=>a+(x.type=='in'?x.amount:-x.amount),0);
+async function addCash(t){const v=$('#k_a').value;if(v===''||+v<0||!$('#k_d').value)return toast('날짜와 금액을 확인하세요');
+const ok=await db.collection('cash').add({d:$('#k_d').value,type:t,amount:+v,memo:$('#k_m').value,void:false}).then(()=>1).catch(err);if(!ok)return;await loadBuys();draw()}
+async function voidCash(id,v){await db.doc('cash/'+id).update({void:v}).catch(err);await loadBuys();draw()}
+function cashCard(){const sale=allSales.filter(x=>!x.void&&x.pay=='cash').reduce((a,x)=>a+x.a,0),f2=t=>cashs.filter(x=>!x.void&&x.type==t).reduce((a,x)=>a+x.amount,0);
+return `<div class="card"><h2>시제 (금고 현금)</h2><div class="big">${won(cashNet())}</div><p class="mu">현금 판매 ${won(sale)} + 입금 ${won(f2('in'))} − 출금 ${won(f2('out'))} · 이체와 카드는 포함되지 않아요.</p>
+<div class="row"><div style="flex:1"><label>날짜</label><input id="k_d" type="date" value="${today()}"></div><div style="flex:1"><label>금액(원)</label><input id="k_a" type="number" min="0"></div></div><label>메모</label><input id="k_m" placeholder="예: 기초 시제, 4월 수수료 지급">
+<div class="row" style="margin-top:12px"><button onclick="addCash('in')">입금 기록</button><button onclick="addCash('out')">출금 기록</button><button class="p" onclick="addCash('count')">실제 금고 금액 (실사)</button></div>
+<div class="tbl" style="margin-top:12px"><table><tr><th>날짜</th><th>구분</th><th>금액</th><th>메모</th><th>장부 대비</th><th></th></tr>${cashs.slice(0,20).map(x=>{const df=x.type=='count'?x.amount-cashNet(x.d):0;return `<tr style="${x.void?'opacity:.4;text-decoration:line-through':''}"><td>${x.d.slice(2)}</td><td>${{in:'입금',out:'출금',count:'실사'}[x.type]}</td><td>${won(x.amount)}</td><td>${x.memo||''}</td><td class="${df?'wa':''}">${x.type=='count'?(df?(df<0?'부족 ':'초과 ')+won(Math.abs(df)):'일치'):''}</td><td><button onclick="voidCash('${x.id}',${!x.void})">${x.void?'복구':'취소'}</button></td></tr>`}).join('')}</table></div></div>`}
 function draw(){const ad=adm(),tabs=ad?[['home','총괄'],['in','판매입력'],['set','정산'],['inv','재고·마진'],['conf','설정']]:[['home','내 현황'],['in','판매입력']];
-view(`<div class="card row"><b>🌿 판매관리</b><span class="mu">${me.name}${ad?' (총괄)':''} · v6</span><button style="margin-left:auto" onclick="out()">로그아웃</button></div><div class="row" style="margin-bottom:12px">${tabs.map(([k,l])=>`<button class="${tab==k?'on':''}" onclick="tab='${k}';draw()">${l}</button>`).join('')}</div>`+
+view(`<div class="card row"><b>🌿 판매관리</b><span class="mu">${me.name}${ad?' (총괄)':''} · v7</span><button style="margin-left:auto" onclick="out()">로그아웃</button></div><div class="row" style="margin-bottom:12px">${tabs.map(([k,l])=>`<button class="${tab==k?'on':''}" onclick="tab='${k}';draw()">${l}</button>`).join('')}</div>`+
 (tab=='in'?form():tab=='set'&&ad?settle():tab=='conf'&&ad?conf():tab=='inv'&&ad?inv():home()))}
 </script></body></html>
