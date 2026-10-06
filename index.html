@@ -54,15 +54,15 @@ function mkProfile(id,email){db.doc('users/'+id).set({name:$('#nn').value.trim()
 async function loadSales(){const s=await(adm()?db.collection('sales'):db.collection('sales').where('uid','==',me.id)).get();const a=[];s.forEach(d=>a.push({id:d.id,...d.data()}));allSales=a;sales=a.filter(x=>x.d.startsWith(month));sales.sort((x,y)=>y.d<x.d?-1:1)}
 async function loadBuys(){const s=await db.collection('purchases').get();buys=[];s.forEach(d=>buys.push({id:d.id,...d.data()}));buys.sort((a,b)=>b.d<a.d?-1:1)}
 const live=()=>sales.filter(x=>!x.void);
-async function save(){const p=P(f.pid),t=f.type,pay=payOf(t,f.ch),d=today();if(cfg.closed[d.slice(0,7)])return toast('마감된 달입니다');
+async function save(){const p=P(f.pid),t=f.type,pay=payOf(t,f.ch),d=(adm()&&f.d)||today(),u=(adm()&&f.uid)||me.id;if(cfg.closed[d.slice(0,7)])return toast('마감된 달입니다');
 const auto=price(p,t,f.size,f.ch)*f.qty,a=f.amt==null?auto:+f.amt,rate=t=='normal'?cfg.rates[pay]:0;
-await db.collection('sales').add({d,uid:me.id,pid:f.pid,s:f.size,qty:f.qty,t,ch:t=='svcreview'||t=='review'?f.ch:'',pay,buyer:f.buyer,a,lp:p.pr.normal[f.size]*f.qty,rate,c:Math.round(a*rate/100),img:f.img,rid:f.rid,void:false,hist:[]}).catch(err);
-Object.assign(f,{amt:null,buyer:'',rid:'',img:''});await loadSales();toast('저장했어요');draw()}
+const ok=await db.collection('sales').add({d,uid:u,pid:f.pid,s:f.size,qty:f.qty,t,ch:t=='svcreview'||t=='review'?f.ch:'',pay,buyer:f.buyer,a,lp:p.pr.normal[f.size]*f.qty,rate,c:Math.round(a*rate/100),img:f.img,rid:f.rid,void:false,hist:[]}).then(()=>1).catch(err);if(!ok)return;
+Object.assign(f,{amt:null,buyer:'',rid:'',img:'',d:'',uid:''});month=d.slice(0,7);tab='home';await loadSales();draw()}
 function pic(i){const fl=i.files[0];if(!fl)return;const im=new Image;im.onload=()=>{const c=document.createElement('canvas'),r=Math.min(1,800/im.width);c.width=im.width*r;c.height=im.height*r;c.getContext('2d').drawImage(im,0,0,c.width,c.height);f.img=c.toDataURL('image/jpeg',.6);draw()};im.src=URL.createObjectURL(fl)}
 function setF(k,v){f[k]=v;if(['type','size','pid','ch','qty'].includes(k))f.amt=null;draw()}
 const seg=(k,o)=>'<div class="row">'+o.map(([v,l])=>`<button class="${f[k]==v?'on':''}" onclick="setF('${k}','${v}')">${l}</button>`).join('')+'</div>';
 function form(){const p=P(f.pid),t=f.type,auto=price(p,t,f.size,f.ch)*f.qty,g=(t=='svcreview'||t=='review')&&f.ch=='google';
-return `<div class="card"><h2>판매 입력</h2><label>제품</label><select onchange="setF('pid',this.value)">${cfg.products.filter(x=>x.on).map(x=>`<option value="${x.id}" ${x.id==f.pid?'selected':''}>${x.name}</option>`).join('')}</select>
+return `<div class="card"><h2>판매 입력</h2>${adm()?`<label>판매자 (대신 입력)</label><select onchange="f.uid=this.value">${Object.values(users).filter(u=>u.status=='active').map(u=>`<option value="${u.id}" ${(f.uid||me.id)==u.id?'selected':''}>${nm(u.id)}</option>`).join('')}</select><label>판매 날짜</label><input type="date" value="${f.d||today()}" onchange="f.d=this.value">`:''}<label>제품</label><select onchange="setF('pid',this.value)">${cfg.products.filter(x=>x.on).map(x=>`<option value="${x.id}" ${x.id==f.pid?'selected':''}>${x.name}</option>`).join('')}</select>
 <label>용량</label>${seg('size',[['L','대'],['S','소']])}<label>유형</label>${seg('type',Object.entries(T))}
 ${t=='svcreview'||t=='review'?'<label>리뷰 채널</label>'+seg('ch',[['naver','네이버'],['google','구글']]):''}
 ${t=='normal'||t=='review'?'<label>결제방법</label>'+seg('pay',Object.entries(PM)):''}
@@ -71,14 +71,14 @@ ${g?`<label>구글 리뷰어 아이디 (선택)</label><input value="${f.rid}" o
 <label>구매자 이름 (선택)</label><input value="${f.buyer}" oninput="f.buyer=this.value"><p class="mu">결제: ${PM[payOf(t,f.ch)]||'해당없음'} · 수수료율 ${t=='normal'?cfg.rates[f.pay]:0}%</p>
 <button class="p" style="width:100%" onclick="save()">저장</button></div>`}
 function list(){return `<div class="tbl"><table><tr><th>날짜</th><th>판매자</th><th>제품</th><th>유형</th><th>금액</th><th>결제</th><th>수수료</th><th></th></tr>${sales.map(x=>`<tr style="${x.void?'opacity:.4;text-decoration:line-through':''}"><td>${x.d.slice(5)}</td><td>${nm(x.uid)}</td><td>${P(x.pid).name} ${x.s=='L'?'대':'소'}×${x.qty}</td><td>${T[x.t]}${x.ch?'·'+(x.ch=='naver'?'N':'G'):''}${x.img?' 📷':''}</td><td>${won(x.a)}</td><td>${PM[x.pay]||'-'}</td><td>${won(x.c)}</td><td>${adm()?`<button onclick="edit('${x.id}')">수정</button>`:''}</td></tr>`).join('')}</table></div>`}
-function edit(id){const x=sales.find(s=>s.id==id);$('#mb').innerHTML=`<h2>판매 수정</h2>
+function edit(id){const x=sales.find(s=>s.id==id);$('#mb').innerHTML=`<h2>판매 수정</h2><label>판매자</label><select id="e_u">${Object.values(users).filter(u=>u.status=='active'||u.id==x.uid).map(u=>`<option value="${u.id}" ${u.id==x.uid?'selected':''}>${nm(u.id)}</option>`).join('')}</select>
 <label>날짜</label><input id="e_d" value="${x.d}"><label>유형</label><select id="e_t">${Object.entries(T).map(([k,v])=>`<option value="${k}" ${k==x.t?'selected':''}>${v}</option>`).join('')}</select>
 <label>용량</label><select id="e_s"><option value="L" ${x.s=='L'?'selected':''}>대</option><option value="S" ${x.s=='S'?'selected':''}>소</option></select>
 <label>수량</label><input id="e_q" type="number" value="${x.qty}"><label>금액</label><input id="e_a" type="number" value="${x.a}">
 <label>결제방법</label><select id="e_p">${['cash','card','transfer','-'].map(k=>`<option value="${k}" ${k==x.pay?'selected':''}>${PM[k]||'해당없음'}</option>`).join('')}</select>
 <label>구매자</label><input id="e_b" value="${x.buyer||''}"><div class="row" style="margin-top:12px"><button class="p" onclick="saveEdit('${id}')">저장</button><button onclick="saveEdit('${id}',1)">${x.void?'취소 해제':'취소 처리'}</button><button onclick="$('#modal').style.display='none'">닫기</button></div>`;$('#modal').style.display='flex'}
 async function saveEdit(id,tog){const x=sales.find(s=>s.id==id);if(cfg.closed[x.d.slice(0,7)])return toast('마감된 달입니다. 마감을 풀고 수정하세요');
-const n={d:$('#e_d').value,t:$('#e_t').value,s:$('#e_s').value,qty:+$('#e_q').value,a:+$('#e_a').value,pay:$('#e_p').value,buyer:$('#e_b').value};
+const n={uid:$('#e_u').value,d:$('#e_d').value,t:$('#e_t').value,s:$('#e_s').value,qty:+$('#e_q').value,a:+$('#e_a').value,pay:$('#e_p').value,buyer:$('#e_b').value};
 n.rate=n.t=='normal'?(cfg.rates[n.pay]||0):0;n.c=Math.round(n.a*n.rate/100);n.void=tog?!x.void:!!x.void;
 const before={};Object.keys(n).forEach(k=>{if(n[k]!==x[k])before[k]=x[k]});
 await db.doc('sales/'+id).update({...n,hist:firebase.firestore.FieldValue.arrayUnion({by:me.name,at:new Date().toISOString(),before:JSON.stringify(before)})}).catch(err);
@@ -121,6 +121,6 @@ return `<div class="card"><div class="row"><h2 style="margin:0">월 마진</h2><
 <button class="p" style="width:100%;margin-top:12px" onclick="addBuy()">입고 저장</button>
 <div class="tbl" style="margin-top:12px"><table><tr><th>날짜</th><th>납품처</th><th>제품</th><th>수량</th><th>총액</th><th>개당</th><th></th></tr>${buys.slice(0,30).map(b=>`<tr style="${b.void?'opacity:.4;text-decoration:line-through':''}"><td>${b.d.slice(2)}</td><td>${b.vendor||''}</td><td>${P(b.pid).name} ${b.s=='L'?'대':'소'}</td><td>${b.qty}</td><td>${won(b.total)}</td><td>${won(Math.round(b.total/b.qty))}</td><td><button onclick="voidBuy('${b.id}',${!b.void})">${b.void?'복구':'취소'}</button></td></tr>`).join('')}</table></div></div>`}
 function draw(){const ad=adm(),tabs=ad?[['home','총괄'],['in','판매입력'],['set','정산'],['inv','재고·마진'],['conf','설정']]:[['home','내 현황'],['in','판매입력']];
-view(`<div class="card row"><b>🌿 판매관리</b><span class="mu">${me.name}${ad?' (총괄)':''}</span><button style="margin-left:auto" onclick="out()">로그아웃</button></div><div class="row" style="margin-bottom:12px">${tabs.map(([k,l])=>`<button class="${tab==k?'on':''}" onclick="tab='${k}';draw()">${l}</button>`).join('')}</div>`+
+view(`<div class="card row"><b>🌿 판매관리</b><span class="mu">${me.name}${ad?' (총괄)':''} · v6</span><button style="margin-left:auto" onclick="out()">로그아웃</button></div><div class="row" style="margin-bottom:12px">${tabs.map(([k,l])=>`<button class="${tab==k?'on':''}" onclick="tab='${k}';draw()">${l}</button>`).join('')}</div>`+
 (tab=='in'?form():tab=='set'&&ad?settle():tab=='conf'&&ad?conf():tab=='inv'&&ad?inv():home()))}
 </script></body></html>
