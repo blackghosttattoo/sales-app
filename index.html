@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>판매관리</title>
+<title>BLACKGHOST TATTOO STUDIO</title>
 <style>
 :root{--bg:#f6f5f2;--card:#fff;--tx:#1d1d1b;--mu:#77756f;--ac:#1f6f5c;--ln:#e4e1da;--wa:#b4531a}
 @media (prefers-color-scheme:dark){:root{--bg:#171716;--card:#232321;--tx:#eeece6;--mu:#9c9a93;--ac:#4fb59b;--ln:#363633;--wa:#e08a50}}
@@ -10,7 +10,7 @@ main{max-width:720px;margin:0 auto;padding:12px}.card{background:var(--card);bor
 h2{font-size:16px;margin:0 0 10px}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 button{border:1px solid var(--ln);background:var(--card);color:var(--tx);border-radius:8px;padding:9px 12px;font:inherit;cursor:pointer}
 button.on,button.p{background:var(--ac);border-color:var(--ac);color:#fff}
-input,select{font:inherit;padding:9px;border:1px solid var(--ln);border-radius:8px;background:var(--bg);color:var(--tx);width:100%}
+input,select,textarea{font:inherit;padding:9px;border:1px solid var(--ln);border-radius:8px;background:var(--bg);color:var(--tx);width:100%}
 label{font-size:13px;color:var(--mu);display:block;margin:10px 0 4px}.tbl{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:13px}
 th,td{padding:7px 6px;border-bottom:1px solid var(--ln);text-align:left;white-space:nowrap}th,.mu{color:var(--mu);font-size:13px}.big{font-size:22px;font-weight:700}.wa{color:var(--wa)}
 .kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}.kpi div{background:var(--bg);border-radius:10px;padding:10px}
@@ -22,18 +22,18 @@ th,td{padding:7px 6px;border-bottom:1px solid var(--ln);text-align:left;white-sp
 <script>
 firebase.initializeApp({apiKey:"AIzaSyBTqRIfhUzlsO2YOfaEBlMHWGlLW-R44Z4",authDomain:"tattoo-cream-ecacc.firebaseapp.com",projectId:"tattoo-cream-ecacc",storageBucket:"tattoo-cream-ecacc.firebasestorage.app",messagingSenderId:"692684499045",appId:"1:692684499045:web:c3a10ae76dd8ff418cfe8c"});
 const auth=firebase.auth(),db=firebase.firestore(),$=s=>document.querySelector(s);
-const T={normal:'정상판매',review:'리뷰이벤트',bundled:'작업비 포함(무료)',service:'서비스',svcreview:'서비스+리뷰'},PM={cash:'현금',card:'카드',transfer:'이체'};
+const T={normal:'정상판매',review:'리뷰이벤트',bundled:'작업비 포함(무료)',service:'서비스',svcreview:'서비스+리뷰(구)',sample:'샘플',etc:'기타'},PM={cash:'현금',card:'카드',transfer:'이체'};
 const today=()=>new Date().toLocaleDateString('sv'),won=n=>(n||0).toLocaleString()+'원';
 const DEF={rates:{cash:20,card:0,transfer:20},paid:{},closed:{},products:[{id:'p1',name:'허니구',on:1,pr:{normal:{S:5000,L:10000},review:{S:1000,L:5000}},base:{S:0,L:0}}]};
-let me,cfg=DEF,users={},sales=[],tab='in',month=today().slice(0,7),setMonth='',f={pid:'p1',size:'L',qty:1,type:'normal',pay:'card',ch:'naver',rid:'',buyer:'',amt:null,img:''};
+let me,cfg=DEF,users={},sales=[],tab='in',month=today().slice(0,7),setMonth='',f={pid:'p1',size:'L',qty:1,type:'normal',pay:'card',ch:'naver',sub:'cream',rp:'',rid:'',buyer:'',amt:null,img:''};
 const adm=()=>me&&me.role=='admin',P=id=>cfg.products.find(p=>p.id==id)||{name:'?',pr:{normal:{},review:{}},base:{}};
-const nm=id=>users[id]?users[id].name+(users[id].status=='disabled'?'(비활성)':''):(me&&id==me.id?me.name:'?');
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const nm=id=>users[id]?esc(users[id].nick||users[id].name)+(users[id].status=='disabled'?'(비활성)':''):(me&&id==me.id?esc(me.nick||me.name):'?');
 const toast=m=>{alert(m)},err=e=>toast('오류: '+(e.message||e));
 const price=(p,t,s,ch)=>t=='normal'?p.pr.normal[s]:t=='review'?p.pr.review[s]:t=='svcreview'&&ch=='naver'?100:0;
-const payOf=(t,ch)=>t=='normal'||t=='review'?f.pay:t=='svcreview'&&ch=='naver'?'card':'-';
-let allSales=[],buys=[],cnts=[],cashs=[],sp=[];
+let allSales=[],buys=[],cnts=[],cashs=[],sp=[],tosses=[],notices=[],tf={mode:'all',m:today().slice(0,7),a:'',b:'',q:''};
 function view(h){$('#app').innerHTML=h}
-function login(){view(`<div class="card"><h2>🌿 판매관리 로그인</h2><label>이메일</label><input id="em" type="email"><label>비밀번호 (6자 이상)</label><input id="pw" type="password">
+function login(){view(`<div class="card"><h2>BLACKGHOST TATTOO STUDIO</h2><label>이메일</label><input id="em" type="email"><label>비밀번호 (6자 이상)</label><input id="pw" type="password">
 <div class="row" style="margin-top:12px"><button class="p" onclick="doLogin()">로그인</button><button onclick="doSignup()">가입하기</button><button onclick="doReset()">비밀번호 재설정</button></div></div>`)}
 const doLogin=()=>auth.signInWithEmailAndPassword($('#em').value,$('#pw').value).catch(err);
 const doSignup=()=>auth.createUserWithEmailAndPassword($('#em').value,$('#pw').value).then(c=>c.user.sendEmailVerification()).catch(err);
@@ -44,33 +44,41 @@ auth.onAuthStateChanged(async u=>{if(!u)return login();try{await boot(u)}catch(e
 async function boot(u){await u.reload();await u.getIdToken(true);
 if(!u.emailVerified)return gate('이메일 인증이 필요해요','<p>'+u.email+'로 보낸 인증 메일의 링크를 누른 뒤 새로고침하세요. 메일이 안 오면 스팸함을 확인하세요.</p>');
 const s=await db.doc('users/'+u.uid).get();
-if(!s.exists)return gate('가입 정보 입력',`<label>이름</label><input id="nn"><label>가게 가입코드</label><input id="cd"><button class="p" style="margin-top:12px" onclick="mkProfile('${u.uid}','${u.email}')">신청</button>`);
+if(!s.exists)return gate('가입 정보 입력',`<label>이름</label><input id="nn"><label>닉네임 (앱에 표시돼요)</label><input id="nk"><label>가게 가입코드</label><input id="cd"><button class="p" style="margin-top:12px" onclick="mkProfile('${u.uid}','${u.email}')">신청</button>`);
 me={id:u.uid,...s.data()};if(me.status=='disabled')return gate('비활성 계정','<p>대장님께 문의하세요.</p>');
 if(me.status!='active')return gate('승인 대기 중','<p>대장님이 승인하면 사용할 수 있어요.</p>');
 const c=await db.doc('config/main').get();if(c.exists)cfg=c.data();
 if(adm()){const us=await db.collection('users').get();us.forEach(d=>users[d.id]={id:d.id,...d.data()});await loadBuys()}
-await loadSales();tab=adm()?'home':'in';draw()}
-function mkProfile(id,email){db.doc('users/'+id).set({name:$('#nn').value.trim(),email,role:'artist',status:'pending',code:$('#cd').value.trim()}).then(()=>location.reload()).catch(()=>toast('가입코드가 맞지 않아요'))}
+await loadSales();await loadToss();await loadNotices();if(!adm())await loadMySP();tab='home';draw();showNotice()}
+function mkProfile(id,email){db.doc('users/'+id).set({name:$('#nn').value.trim(),nick:$('#nk').value.trim(),email,role:'artist',status:'pending',code:$('#cd').value.trim()}).then(()=>location.reload()).catch(()=>toast('가입코드가 맞지 않아요'))}
 async function loadSales(){const s=await(adm()?db.collection('sales'):db.collection('sales').where('uid','==',me.id)).get();const a=[];s.forEach(d=>a.push({id:d.id,...d.data()}));allSales=a;sales=a.filter(x=>x.d.startsWith(month));sales.sort((x,y)=>y.d<x.d?-1:1)}
 async function loadBuys(){const s=await db.collection('purchases').get();buys=[];s.forEach(d=>buys.push({id:d.id,...d.data()}));buys.sort((a,b)=>b.d<a.d?-1:1);const A=async(n,t)=>{const q=await db.collection(n).get(),r=[];q.forEach(d=>r.push({id:d.id,...d.data()}));return r.sort((a,b)=>b.d<a.d?-1:1)};cnts=await A('counts');cashs=await A('cash');sp=await A('sharepay')}
-const live=()=>sales.filter(x=>!x.void);
-async function save(){const p=P(f.pid),t=f.type,pay=payOf(t,f.ch),d=(adm()&&f.d)||today(),u=(adm()&&f.uid)||me.id;if(cfg.closed[d.slice(0,7)])return toast('마감된 달입니다');if(t=='svcreview'&&!f.rid.trim()&&!f.img)return toast('리뷰 작성자 아이디 또는 리뷰 캡처 중 하나는 꼭 입력하세요');if(t=='service'&&!adm())return toast('서비스는 대장님만 입력할 수 있어요');
-const auto=price(p,t,f.size,f.ch)*f.qty,a=t=='svcreview'||f.amt==null?auto:+f.amt,rate=t=='normal'?cfg.rates[pay]:0;
-const ok=await db.collection('sales').add({d,uid:u,pid:f.pid,s:f.size,qty:f.qty,t,ch:t=='svcreview'||t=='review'?f.ch:'',pay,buyer:f.buyer,a,lp:p.pr.normal[f.size]*f.qty,rate,c:Math.round(a*rate/100),img:f.img,rid:f.rid.trim(),void:false,hist:[]}).then(()=>1).catch(err);if(!ok)return;
-Object.assign(f,{amt:null,buyer:'',rid:'',img:'',d:'',uid:''});month=d.slice(0,7);tab='home';await loadSales();draw()}
+const ok=x=>!x.void&&x.ap!='pending'&&x.ap!='no';const live=()=>sales.filter(ok);
+const aut=()=>{const p=P(f.pid),t=f.type;return t=='normal'?p.pr.normal[f.size]*f.qty:t=='review'?(f.sub=='sep'?100:p.pr.review[f.size]*f.qty):0};
+const payOf=()=>{const t=f.type;return t=='normal'||t=='etc'?f.pay:t=='review'?(f.sub=='sep'||f.ch=='google'?f.rp:'card'):'-'};
+async function save(){const p=P(f.pid),t=f.type,pay=payOf(),d=(adm()&&f.d)||today(),u=(adm()&&f.uid)||me.id,et=t=='etc';if(cfg.closed[d.slice(0,7)])return toast('마감된 달입니다');
+if(et&&!adm())return toast('기타는 대장님만 입력할 수 있어요');
+const a=(t=='normal'||et)&&f.amt!=null&&f.amt!==''?+f.amt:aut();
+if(t=='review'){if(!f.rid.trim()&&!f.img)return toast('리뷰 작성자 아이디 또는 리뷰 캡처 중 하나는 꼭 입력하세요');if(!pay)return toast('결제방법을 선택하세요')}
+if(t=='service'&&!f.buyer.trim())return toast('받은 사람 이름을 입력하세요');
+if(et&&(!f.buyer.trim()||f.amt==null||f.amt===''))return toast('항목과 금액을 입력하세요');
+const rate=t=='normal'?cfg.rates[pay]:0;
+const done=await db.collection('sales').add({d,uid:u,pid:et?'':f.pid,s:et?'':f.size,qty:et?1:f.qty,t,ch:t=='review'?f.ch:'',sub:t=='review'?f.sub:'',ap:t=='service'?(adm()?'ok':'pending'):'',pay:pay||'-',buyer:f.buyer,a,lp:et?0:p.pr.normal[f.size]*f.qty,rate,c:Math.round(a*rate/100),img:f.img,rid:f.rid.trim(),void:false,hist:[]}).then(()=>1).catch(err);
+if(!done)return;Object.assign(f,{amt:null,buyer:'',rid:'',img:'',d:'',uid:'',rp:''});month=d.slice(0,7);tab='home';await loadSales();draw()}
 function pic(i){const fl=i.files[0];if(!fl)return;const im=new Image;im.onload=()=>{const c=document.createElement('canvas'),r=Math.min(1,800/im.width);c.width=im.width*r;c.height=im.height*r;c.getContext('2d').drawImage(im,0,0,c.width,c.height);f.img=c.toDataURL('image/jpeg',.6);draw()};im.src=URL.createObjectURL(fl)}
-function setF(k,v){f[k]=v;if(['type','size','pid','ch','qty'].includes(k))f.amt=null;draw()}
+function setF(k,v){f[k]=v;if(['type','size','pid','ch','qty','sub'].includes(k))f.amt=null;if(['type','ch','sub'].includes(k))f.rp='';draw()}
 const seg=(k,o)=>'<div class="row">'+o.map(([v,l])=>`<button class="${f[k]==v?'on':''}" onclick="setF('${k}','${v}')">${l}</button>`).join('')+'</div>';
-function form(){const p=P(f.pid),t=f.type,auto=price(p,t,f.size,f.ch)*f.qty,g=t=='svcreview'||(t=='review'&&f.ch=='google'),rq=t=='svcreview';
-return `<div class="card"><h2>판매 입력</h2>${adm()?`<label>판매자 (대신 입력)</label><select onchange="f.uid=this.value">${Object.values(users).filter(u=>u.status=='active').map(u=>`<option value="${u.id}" ${(f.uid||me.id)==u.id?'selected':''}>${nm(u.id)}</option>`).join('')}</select><label>판매 날짜</label><input type="date" value="${f.d||today()}" onchange="f.d=this.value">`:''}<label>제품</label><select onchange="setF('pid',this.value)">${cfg.products.filter(x=>x.on).map(x=>`<option value="${x.id}" ${x.id==f.pid?'selected':''}>${x.name}</option>`).join('')}</select>
-<label>용량</label>${seg('size',[['L','대'],['S','소']])}<label>유형</label>${seg('type',Object.entries(T).filter(([k])=>k!='service'||adm()))}
-${t=='svcreview'||t=='review'?'<label>리뷰 채널</label>'+seg('ch',[['naver','네이버'],['google','구글']]):''}
-${t=='normal'||t=='review'?'<label>결제방법</label>'+seg('pay',Object.entries(PM)):''}
-${g?`<label>리뷰 작성자 아이디${rq?' (아이디 또는 캡처 중 하나는 필수)':' (선택)'}</label><input value="${f.rid}" oninput="f.rid=this.value"><label>리뷰 캡처${rq?' (아이디 또는 캡처 중 하나는 필수)':' (선택)'}</label><input type="file" accept="image/*" onchange="pic(this)">${f.img?'<div class="mu">✔ 캡처 첨부됨</div>':''}`:''}
-<label>수량 / 금액 (예외 시 직접 수정)</label><div class="row"><input type="number" min="1" style="width:30%" value="${f.qty}" onchange="setF('qty',Math.max(1,+this.value))"><input type="number" style="flex:1" ${rq?'disabled':''} value="${f.amt==null||rq?auto:f.amt}" oninput="f.amt=this.value"></div>
-<label>구매자 이름 (선택)</label><input value="${f.buyer}" oninput="f.buyer=this.value"><p class="mu">결제: ${PM[payOf(t,f.ch)]||'해당없음'} · 수수료율 ${t=='normal'?cfg.rates[f.pay]:0}%</p>${rq&&f.ch=='naver'?'<p class="mu">네이버 리뷰는 영수증 인증을 위해 100원 카드결제로 자동 처리돼요.</p>':''}
-<button class="p" style="width:100%" onclick="save()">저장</button></div>`}
-function list(){return `<div class="tbl"><table><tr><th>날짜</th><th>판매자</th><th>제품</th><th>유형</th><th>금액</th><th>결제</th><th>수수료</th><th></th></tr>${sales.map(x=>`<tr style="${x.void?'opacity:.4;text-decoration:line-through':''}"><td>${x.d.slice(5)}</td><td>${nm(x.uid)}</td><td>${P(x.pid).name} ${x.s=='L'?'대':'소'}×${x.qty}</td><td>${T[x.t]}${x.ch?'·'+(x.ch=='naver'?'N':'G'):''}${x.img?' 📷':''}</td><td>${won(x.a)}</td><td>${PM[x.pay]||'-'}</td><td>${won(x.c)}</td><td>${adm()?`<button onclick="edit('${x.id}')">수정</button>`:''}</td></tr>`).join('')}</table></div>`}
+function form(){const p=P(f.pid),t=f.type,ad=adm(),pay=payOf(),fx=t!='normal'&&t!='etc',au=aut();
+const tp=[['normal','정상판매'],['review','리뷰이벤트'],['service','서비스'],['sample','샘플']].concat(ad?[['etc','기타']]:[]);
+const who=ad?`<label>판매자 (대신 입력)</label><select onchange="f.uid=this.value">${Object.values(users).filter(u=>u.status=='active').map(u=>`<option value="${u.id}" ${(f.uid||me.id)==u.id?'selected':''}>${nm(u.id)}</option>`).join('')}</select><label>판매 날짜</label><input type="date" value="${f.d||today()}" onchange="f.d=this.value">`:'';
+const prod=t=='etc'?'':`<label>제품</label><select onchange="setF('pid',this.value)">${cfg.products.filter(x=>x.on).map(x=>`<option value="${x.id}" ${x.id==f.pid?'selected':''}>${x.name}</option>`).join('')}</select><label>용량</label>${seg('size',[['L','대'],['S','소']])}`;
+const rv=t=='review'?`<label>결제 방식</label>${seg('sub',[['cream','타투크림 결제 (소 '+won(p.pr.review.S)+' / 대 '+won(p.pr.review.L)+')'],['sep','별도결제 (100원 · 영수증용)']])}<label>리뷰 채널</label>${seg('ch',[['naver','네이버'],['google','구글']])}`+(f.sub=='sep'?`<label>별도결제 방법 (필수)</label>${seg('rp',[['cash','현금'],['transfer','이체']])}`:f.ch=='naver'?'<p class="mu">네이버 리뷰는 영수증 인증이 필요해서 카드결제만 가능해요.</p>':`<label>결제방법 (필수)</label>${seg('rp',Object.entries(PM))}`)+`<label>리뷰 작성자 아이디 (아이디 또는 캡처 중 하나는 필수)</label><input value="${esc(f.rid)}" oninput="f.rid=this.value"><label>리뷰 캡처 (아이디 또는 캡처 중 하나는 필수)</label><input type="file" accept="image/*" onchange="pic(this)">${f.img?'<div class="mu">✔ 캡처 첨부됨</div>':''}`:'';
+const pm=t=='normal'||t=='etc'?`<label>결제방법</label>${seg('pay',Object.entries(PM))}`:'';
+const qa=t=='etc'?`<label>금액(원)</label><input type="number" value="${f.amt==null?'':f.amt}" oninput="f.amt=this.value">`:`<label>수량${fx?'':' / 금액 (예외 시 직접 수정)'}</label><div class="row"><input type="number" min="1" style="width:30%" value="${f.qty}" onchange="setF('qty',Math.max(1,+this.value))">${t=='sample'||t=='service'?'':`<input type="number" style="flex:1" ${fx?'disabled':''} value="${f.amt==null||fx?au:f.amt}" oninput="f.amt=this.value">`}</div>`;
+const nmf=t=='sample'?'':`<label>${t=='service'?'받은 사람 이름 (필수)':t=='etc'?'항목 (필수)':'구매자 이름 (선택)'}</label><input value="${esc(f.buyer)}" oninput="f.buyer=this.value">`;
+return `<div class="card"><h2>판매 입력</h2>${who}<label>유형</label>${seg('type',tp)}${prod}${rv}${pm}${qa}${nmf}<p class="mu">결제: ${PM[pay]||'해당없음'} · 수수료율 ${t=='normal'?cfg.rates[f.pay]:0}%${t=='service'?(ad?' · 대장님 입력은 바로 반영돼요':' · 대장님 승인 후 반영돼요'):''}</p><button class="p" style="width:100%" onclick="save()">저장</button></div>`}
+const pn=x=>x.t=='etc'?esc(x.buyer||'기타'):P(x.pid).name+' '+(x.s=='L'?'대':'소')+'×'+x.qty+(x.t=='service'&&x.buyer?' → '+esc(x.buyer):'');
+function list(){return `<div class="tbl"><table><tr><th>날짜</th><th>판매자</th><th>제품</th><th>유형</th><th>금액</th><th>결제</th><th>수수료</th><th></th></tr>${sales.map(x=>`<tr style="${x.void?'opacity:.4;text-decoration:line-through':''}"><td>${x.d.slice(5)}</td><td>${nm(x.uid)}</td><td>${pn(x)}</td><td>${T[x.t]||x.t}${x.sub=='sep'?'·별도':''}${x.ch?'·'+(x.ch=='naver'?'N':'G'):''}${x.img?' 📷':''}${x.ap=='pending'?' ⏳승인대기':x.ap=='no'?' ❌반려':''}</td><td>${won(x.a)}</td><td>${PM[x.pay]||'-'}</td><td>${won(x.c)}</td><td>${adm()?`<button onclick="edit('${x.id}')">수정</button>`:''}</td></tr>`).join('')}</table></div>`}
 function edit(id){const x=sales.find(s=>s.id==id);$('#mb').innerHTML=`<h2>판매 수정</h2><label>판매자</label><select id="e_u">${Object.values(users).filter(u=>u.status=='active'||u.id==x.uid).map(u=>`<option value="${u.id}" ${u.id==x.uid?'selected':''}>${nm(u.id)}</option>`).join('')}</select>
 <label>날짜</label><input id="e_d" value="${x.d}"><label>유형</label><select id="e_t">${Object.entries(T).map(([k,v])=>`<option value="${k}" ${k==x.t?'selected':''}>${v}</option>`).join('')}</select>
 <label>용량</label><select id="e_s"><option value="L" ${x.s=='L'?'selected':''}>대</option><option value="S" ${x.s=='S'?'selected':''}>소</option></select>
@@ -83,9 +91,13 @@ n.rate=n.t=='normal'?(cfg.rates[n.pay]||0):0;n.c=Math.round(n.a*n.rate/100);n.vo
 const before={};Object.keys(n).forEach(k=>{if(n[k]!==x[k])before[k]=x[k]});
 await db.doc('sales/'+id).update({...n,hist:firebase.firestore.FieldValue.arrayUnion({by:me.name,at:new Date().toISOString(),before:JSON.stringify(before)})}).catch(err);
 $('#modal').style.display='none';await loadSales();draw()}
-function home(){const l=live(),sum=k=>l.reduce((a,x)=>a+x[k],0),g=sales.filter(x=>x.ch=='google'&&!x.img&&!x.rid&&!x.void).length;
-return `<div class="card"><div class="row"><h2 style="margin:0">${adm()?'전체':'내'} 현황</h2><input type="month" style="width:auto" value="${month}" onchange="month=this.value;loadSales().then(draw)"></div>
-<div class="kpi" style="margin-top:10px"><div class="mu">매출<div class="big">${won(sum('a'))}</div></div><div class="mu">${adm()?'지급할':'예상'} 수수료<div class="big">${won(sum('c'))}</div></div><div class="mu">무료 제공<div class="big">${l.filter(x=>x.a==0).length}건</div></div></div>${adm()?`<p class="mu">증빙 없는 구글 리뷰 건: ${g}건</p>`:''}</div><div class="card"><h2>내역</h2>${list()}</div>`}
+const nl=()=>notices.filter(x=>!x.void);
+function noticeBanner(){const l=nl().slice(0,3);return l.length?`<div class="card"><h2>📢 공지</h2>${l.map(x=>`<div style="margin-bottom:8px"><b>${esc(x.title)}</b> <span class="mu">${x.d}</span><div style="white-space:pre-wrap">${esc(x.body)}</div></div>`).join('')}</div>`:''}
+async function approve(id,v){await db.doc('sales/'+id).update({ap:v,hist:firebase.firestore.FieldValue.arrayUnion({by:me.name,at:new Date().toISOString(),before:JSON.stringify({ap:'pending'})})}).catch(err);await loadSales();draw()}
+function pendCard(){const p=allSales.filter(x=>x.ap=='pending'&&!x.void);return p.length?`<div class="card"><h2>서비스 승인 대기 ${p.length}건</h2>${p.map(x=>`<div class="row" style="margin-bottom:6px"><span>${x.d.slice(5)} ${nm(x.uid)} · ${pn(x)}</span><button class="p" onclick="approve('${x.id}','ok')">승인</button><button onclick="approve('${x.id}','no')">반려</button></div>`).join('')}</div>`:''}
+function wsum(){const m=today().slice(0,7),ts=tosses.filter(x=>!x.void&&x.d.startsWith(m)),b=bal(me);return `<div class="card"><h2>한눈에 보기</h2><div class="kpi"><div class="mu">이번 달 토스<div class="big">${ts.length}회</div>${won(ts.reduce((a,x)=>a+x.amt,0))}</div><div class="mu">쉐어비 잔액<div class="big ${b>0?'wa':''}">${b>0?won(b)+' 밀림':b<0?'선납 '+won(-b):'정상'}</div></div></div></div>`}
+function home(){const ad=adm(),l=live(),sum=k=>l.reduce((a,x)=>a+x[k],0),g=sales.filter(x=>x.ch=='google'&&!x.img&&!x.rid&&!x.void).length;
+return (ad?pendCard():'')+noticeBanner()+(ad?'':wsum())+`<div class="card"><div class="row"><h2 style="margin:0">${ad?'전체':'내'} 판매 현황</h2><input type="month" style="width:auto" value="${month}" onchange="month=this.value;loadSales().then(draw)"></div><div class="kpi" style="margin-top:10px"><div class="mu">매출<div class="big">${won(sum('a'))}</div></div><div class="mu">${ad?'지급할':'예상'} 수수료<div class="big">${won(sum('c'))}</div></div><div class="mu">무료 제공<div class="big">${l.filter(x=>x.a==0).length}건</div></div></div>${ad?`<p class="mu">증빙 없는 구글 리뷰 건: ${g}건</p>`:''}</div><div class="card"><h2>내역</h2>${list()}</div>`}
 function settle(){const m=setMonth||month,cl=cfg.closed[m];const l=live(),ids=[...new Set(l.map(x=>x.uid))];
 return `<div class="card"><h2>월 정산</h2><div class="row"><input type="month" style="width:auto" value="${m}" onchange="setMonth=this.value;month=this.value;loadSales().then(draw)"><button class="${cl?'p':''}" onclick="closeMonth('${m}',${!cl})">${cl?'🔒 마감됨 (풀기)':'월 마감하기'}</button></div>
 <div class="tbl"><table><tr><th>작업자</th><th>건수</th><th>현금·이체</th><th>카드</th><th>수수료</th><th>상태</th></tr>${ids.map(u=>{const a=l.filter(x=>x.uid==u),by=(...k)=>a.filter(x=>k.includes(x.pay)).reduce((s,x)=>s+x.a,0),k=m+u;
@@ -93,7 +105,7 @@ return `<tr><td>${nm(u)}</td><td>${a.length}</td><td>${won(by('cash','transfer')
 async function setCfg(path,v){const ks=path.split('.');let o=cfg;ks.slice(0,-1).forEach(k=>o=o[k]=o[k]||{});o[ks.at(-1)]=v;await db.doc('config/main').set(cfg).catch(err);draw()}
 async function setUser(id,st){await db.doc('users/'+id).update({status:st}).catch(err);users[id].status=st;draw()}
 function conf(){const us=Object.values(users).filter(u=>u.role!='admin');
-return `<div class="card"><h2>작업자 관리</h2>${us.map(u=>`<div class="row" style="margin-bottom:6px"><b>${u.name}</b><span class="mu">${u.email}</span><span class="${u.status=='pending'?'wa':'mu'}">${{pending:'승인 대기',active:'활성',disabled:'비활성'}[u.status]}</span>
+return `<div class="card"><h2>작업자 관리</h2>${us.map(u=>`<div class="row" style="margin-bottom:6px"><b>${esc(u.name)}</b><span class="mu">${esc(u.email)}</span><input placeholder="닉네임" value="${esc(u.nick||'')}" style="width:100px" onchange="setU('${u.id}','nick',this.value)"><input type="date" title="입사일" value="${u.since||''}" style="width:140px" onchange="setU('${u.id}','since',this.value)"><span class="${u.status=='pending'?'wa':'mu'}">${{pending:'승인 대기',active:'활성',disabled:'비활성'}[u.status]}</span>
 <button class="${u.status=='active'?'':'p'}" onclick="setUser('${u.id}','${u.status=='active'?'disabled':'active'}')">${u.status=='active'?'비활성화':u.status=='pending'?'승인':'재활성화'}</button></div>`).join('')||'<p class="mu">없음</p>'}
 <label>가게 가입코드 (작업자에게 알려주는 코드)</label><div class="row"><input id="sc" style="flex:1"><button onclick="db.doc('settings/app').set({signupCode:$('#sc').value.trim()}).then(()=>toast('변경됨')).catch(err)">저장</button></div></div>
 <div class="card"><h2>수수료율 (%)</h2><div class="row">${Object.entries(PM).map(([k,l])=>`<div style="flex:1">${l}<input type="number" value="${cfg.rates[k]}" onchange="setCfg('rates.${k}',+this.value)"></div>`).join('')}</div><p class="mu">이후 입력부터 적용돼요. 저장된 건은 입력 당시 비율을 유지해요.</p></div>
@@ -101,10 +113,10 @@ return `<div class="card"><h2>작업자 관리</h2>${us.map(u=>`<div class="row"
 <div class="row mu">${[['normal','S','정상 소'],['normal','L','정상 대'],['review','S','리뷰 소'],['review','L','리뷰 대']].map(([a,b,l])=>`<span style="flex:1">${l}<input type="number" value="${p.pr[a][b]}" onchange="setCfg('products.${i}.pr.${a}.${b}',+this.value)"></span>`).join('')}</div></div>`).join('')}
 <div class="row"><input id="np" placeholder="새 제품명" style="flex:1"><button onclick="const n=$('#np').value.trim();if(n)setCfg('products.'+cfg.products.length,{id:'p'+(cfg.products.length+1),name:n,on:1,pr:{normal:{S:5000,L:10000},review:{S:1000,L:5000}},base:{S:0,L:0}})">추가</button></div></div>`}
 const bl=()=>buys.filter(b=>!b.void);
-function calc(){const ev=[];bl().forEach(b=>ev.push({k:b.pid+b.s,d:b.d,o:0,b}));allSales.filter(x=>!x.void).forEach(x=>ev.push({k:x.pid+x.s,d:x.d,o:1,x}));cnts.filter(x=>!x.void).forEach(x=>ev.push({k:x.pid+x.s,d:x.d,o:2,n:x}));
+function calc(){const ev=[];bl().forEach(b=>ev.push({k:b.pid+b.s,d:b.d,o:0,b}));allSales.filter(x=>ok(x)&&x.pid).forEach(x=>ev.push({k:x.pid+x.s,d:x.d,o:1,x}));cnts.filter(x=>!x.void).forEach(x=>ev.push({k:x.pid+x.s,d:x.d,o:2,n:x}));
 ev.sort((a,b)=>a.d<b.d?-1:a.d>b.d?1:a.o-b.o);const st={},cost={},noc={},cnt={};
 ev.forEach(e=>{const t=st[e.k]=st[e.k]||{q:0,a:0};if(e.b){t.a=t.q>0?(t.q*t.a+e.b.total)/(t.q+e.b.qty):e.b.total/e.b.qty;t.q+=e.b.qty}else if(e.n){const bk=t.q;cnt[e.n.id]={book:bk,diff:bk-e.n.qty,loss:(bk-e.n.qty)*t.a};t.q=e.n.qty}else{cost[e.x.id]=e.x.qty*t.a;if(!t.a)noc[e.x.id]=1;t.q-=e.x.qty}});return{st,cost,noc,cnt}}
-function mar(m){const c=calc(),l=allSales.filter(x=>!x.void&&x.d.startsWith(m)),sm=k=>l.reduce((a,x)=>a+x[k],0);
+function mar(m){const c=calc(),l=allSales.filter(x=>ok(x)&&x.d.startsWith(m)),sm=k=>l.reduce((a,x)=>a+x[k],0);
 return{loss:Math.round(cnts.filter(x=>!x.void&&x.d.startsWith(m)).reduce((a,x)=>a+((c.cnt[x.id]||{}).loss||0),0)),rev:sm('a'),com:sm('c'),cs:Math.round(l.reduce((a,x)=>a+(c.cost[x.id]||0),0)),noc:l.filter(x=>c.noc[x.id]).reduce((a,x)=>a+x.qty,0),buy:bl().filter(b=>b.d.startsWith(m)).reduce((a,b)=>a+b.total,0)}}
 async function closeMonth(m,v){cfg.closed=cfg.closed||{};cfg.snap=cfg.snap||{};if(v)cfg.snap[m]=mar(m);else delete cfg.snap[m];cfg.closed[m]=v;await db.doc('config/main').set(cfg).catch(err);draw()}
 async function addBuy(){const q=+$('#b_q').value,t=+$('#b_t').value;if(!(q>0)||!(t>=0)||!$('#b_d').value)return toast('날짜, 수량, 금액을 확인하세요');
@@ -128,11 +140,11 @@ function cntCard(){const c=calc();return `<div class="card"><h2>재고 실사</h
 <div class="row"><div style="flex:1"><label>용량</label><select id="c_s"><option value="L">대</option><option value="S">소</option></select></div><div style="flex:1"><label>실제 수량</label><input id="c_q" type="number" min="0"></div></div>
 <button class="p" style="width:100%;margin-top:12px" onclick="addCnt()">실사 저장</button>
 <div class="tbl" style="margin-top:12px"><table><tr><th>날짜</th><th>제품</th><th>장부</th><th>실제</th><th>차이</th><th></th></tr>${cnts.slice(0,20).map(x=>{const k=c.cnt[x.id];return `<tr style="${x.void?'opacity:.4;text-decoration:line-through':''}"><td>${x.d.slice(2)}</td><td>${P(x.pid).name} ${x.s=='L'?'대':'소'}</td><td>${k?k.book:'-'}</td><td>${x.qty}</td><td class="${k&&k.diff?'wa':''}">${k?(k.diff>0?'부족 '+k.diff:k.diff<0?'초과 '+(-k.diff):'일치'):'-'}</td><td><button onclick="voidCnt('${x.id}',${!x.void})">${x.void?'복구':'취소'}</button></td></tr>`}).join('')}</table></div></div>`}
-const cashNet=u=>allSales.filter(x=>!x.void&&x.pay=='cash'&&(!u||x.d<=u)).reduce((a,x)=>a+x.a,0)+cashs.filter(x=>!x.void&&x.type!='count'&&(!u||x.d<=u)).reduce((a,x)=>a+(x.type=='in'?x.amount:-x.amount),0);
+const cashNet=u=>allSales.filter(x=>ok(x)&&x.pay=='cash'&&(!u||x.d<=u)).reduce((a,x)=>a+x.a,0)+cashs.filter(x=>!x.void&&x.type!='count'&&(!u||x.d<=u)).reduce((a,x)=>a+(x.type=='in'?x.amount:-x.amount),0);
 async function addCash(t){const v=$('#k_a').value;if(v===''||+v<0||!$('#k_d').value)return toast('날짜와 금액을 확인하세요');
 const ok=await db.collection('cash').add({d:$('#k_d').value,type:t,amount:+v,memo:$('#k_m').value,void:false}).then(()=>1).catch(err);if(!ok)return;await loadBuys();draw()}
 async function voidCash(id,v){await db.doc('cash/'+id).update({void:v}).catch(err);await loadBuys();draw()}
-function cashCard(){const sale=allSales.filter(x=>!x.void&&x.pay=='cash').reduce((a,x)=>a+x.a,0),f2=t=>cashs.filter(x=>!x.void&&x.type==t).reduce((a,x)=>a+x.amount,0);
+function cashCard(){const sale=allSales.filter(x=>ok(x)&&x.pay=='cash').reduce((a,x)=>a+x.a,0),f2=t=>cashs.filter(x=>!x.void&&x.type==t).reduce((a,x)=>a+x.amount,0);
 return `<div class="card"><h2>시제 (금고 현금)</h2><div class="big">${won(cashNet())}</div><p class="mu">현금 판매 ${won(sale)} + 입금 ${won(f2('in'))} − 출금 ${won(f2('out'))} · 이체와 카드는 포함되지 않아요.</p>
 <div class="row"><div style="flex:1"><label>날짜</label><input id="k_d" type="date" value="${today()}"></div><div style="flex:1"><label>금액(원)</label><input id="k_a" type="number" min="0"></div></div><label>메모</label><input id="k_m" placeholder="예: 기초 시제, 4월 수수료 지급">
 <div class="row" style="margin-top:12px"><button onclick="addCash('in')">입금 기록</button><button onclick="addCash('out')">출금 기록</button><button class="p" onclick="addCash('count')">실제 금고 금액 (실사)</button></div>
@@ -158,7 +170,32 @@ ${us.map(u=>{const b=bal(u),sf=(u.sf||[]).slice().sort((x,y)=>x.m<y.m?-1:1);retu
 <div class="row" style="margin-top:12px"><button class="p" style="flex:1" onclick="addSP('pay')">납부 저장</button><button onclick="addSP('carry')">기존 미납 추가</button></div>
 <p class="mu">기존에 밀려 있던 금액은 '기존 미납 추가'로 한 번 넣어주세요.</p>
 <div class="tbl" style="margin-top:12px"><table><tr><th>날짜</th><th>작업자</th><th>구분</th><th>금액</th><th></th></tr>${sp.slice(0,30).map(x=>`<tr style="${x.void?'opacity:.4;text-decoration:line-through':''}"><td>${x.d.slice(2)}</td><td>${nm(x.uid)}</td><td>${x.type=='pay'?'납부':'기존 미납'}</td><td>${won(x.amount)}</td><td><button onclick="voidSP('${x.id}',${!x.void})">${x.void?'복구':'취소'}</button></td></tr>`).join('')}</table></div></div>`}
-function draw(){const ad=adm(),tabs=ad?[['home','총괄'],['in','판매입력'],['set','정산'],['share','셰어비'],['inv','재고·마진'],['conf','설정']]:[['home','내 현황'],['in','판매입력']];
-view(`<div class="card row"><b>🌿 판매관리</b><span class="mu">${me.name}${ad?' (총괄)':''} · v9</span><button style="margin-left:auto" onclick="out()">로그아웃</button></div><div class="row" style="margin-bottom:12px">${tabs.map(([k,l])=>`<button class="${tab==k?'on':''}" onclick="tab='${k}';draw()">${l}</button>`).join('')}</div>`+
-(tab=='in'?form():tab=='set'&&ad?settle():tab=='conf'&&ad?conf():tab=='share'&&ad?share():tab=='inv'&&ad?inv():home()))}
+async function loadToss(){const q=await(adm()?db.collection('toss'):db.collection('toss').where('uid','==',me.id)).get();tosses=[];q.forEach(d=>tosses.push({id:d.id,...d.data()}));tosses.sort((a,b)=>b.d<a.d?-1:1)}
+async function loadNotices(){const q=await db.collection('notices').get();notices=[];q.forEach(d=>notices.push({id:d.id,...d.data()}));notices.sort((a,b)=>(b.at||'')<(a.at||'')?-1:1)}
+async function loadMySP(){const q=await db.collection('sharepay').where('uid','==',me.id).get();sp=[];q.forEach(d=>sp.push({id:d.id,...d.data()}));sp.sort((a,b)=>b.d<a.d?-1:1)}
+async function setU(id,k,v){await db.doc('users/'+id).update({[k]:v}).catch(err);users[id][k]=v}
+const tfl=()=>tosses.filter(x=>!x.void&&(tf.mode=='all'||(tf.mode=='m'&&x.d.startsWith(tf.m))||(tf.mode=='r'&&(!tf.a||x.d>=tf.a)&&(!tf.b||x.d<=tf.b)))&&(!tf.q||[x.cust,x.content,x.memo,nm(x.uid)].join(' ').includes(tf.q)));
+const artists=()=>Object.values(users).filter(u=>u.status=='active');
+async function addToss(){const d=$('#t_d').value,c=$('#t_c').value.trim(),a=$('#t_a').value,u=adm()?$('#t_u').value:me.id;if(!d||!c||a===''||+a<0)return toast('날짜, 손님 이름, 금액을 확인하세요');
+const done=await db.collection('toss').add({d,uid:u,cust:c,content:$('#t_t').value.trim(),amt:+a,memo:$('#t_m').value.trim(),void:false}).then(()=>1).catch(err);if(!done)return;await loadToss();draw()}
+function editToss(id){const x=tosses.find(t=>t.id==id);$('#mb').innerHTML=`<h2>토스 수정</h2><label>날짜</label><input id="te_d" type="date" value="${x.d}"><label>타투이스트</label><select id="te_u">${Object.values(users).filter(u=>u.status=='active'||u.id==x.uid).map(u=>`<option value="${u.id}" ${u.id==x.uid?'selected':''}>${nm(u.id)}</option>`).join('')}</select><label>손님 이름</label><input id="te_c" value="${esc(x.cust)}"><label>타투 내용</label><input id="te_t" value="${esc(x.content)}"><label>타투 금액(원)</label><input id="te_a" type="number" value="${x.amt}"><label>기타 내용</label><textarea id="te_m" rows="2">${esc(x.memo)}</textarea><div class="row" style="margin-top:12px"><button class="p" onclick="saveToss('${id}')">저장</button><button onclick="saveToss('${id}',1)">${x.void?'취소 해제':'취소 처리'}</button><button onclick="$('#modal').style.display='none'">닫기</button></div>`;$('#modal').style.display='flex'}
+async function saveToss(id,tog){const x=tosses.find(t=>t.id==id);await db.doc('toss/'+id).update({d:$('#te_d').value,uid:$('#te_u').value,cust:$('#te_c').value.trim(),content:$('#te_t').value.trim(),amt:+$('#te_a').value,memo:$('#te_m').value.trim(),void:tog?!x.void:!!x.void}).catch(err);$('#modal').style.display='none';await loadToss();draw()}
+function tossView(){const ad=adm(),l=tfl(),all=tosses.filter(x=>!x.void),sm=a=>a.reduce((s,x)=>s+x.amt,0),by={};l.forEach(x=>{const b=by[x.uid]=by[x.uid]||{n:0,a:0};b.n++;b.a+=x.amt});
+return `<div class="card"><h2>토스 현황</h2><div class="row">${[['all','전체'],['m','월간'],['r','기간']].map(([k,t])=>`<button class="${tf.mode==k?'on':''}" onclick="tf.mode='${k}';draw()">${t}</button>`).join('')}</div>${tf.mode=='m'?`<input type="month" style="margin-top:8px" value="${tf.m}" onchange="tf.m=this.value;draw()">`:''}${tf.mode=='r'?`<div class="row" style="margin-top:8px"><input type="date" style="flex:1" value="${tf.a}" onchange="tf.a=this.value;draw()"><span>~</span><input type="date" style="flex:1" value="${tf.b}" onchange="tf.b=this.value;draw()"></div>`:''}
+<input style="margin-top:8px" placeholder="검색 (손님, ${ad?'타투이스트, ':''}내용)" value="${esc(tf.q)}" onchange="tf.q=this.value;draw()">
+<div class="kpi" style="margin-top:10px"><div class="mu">횟수<div class="big">${l.length}회</div></div><div class="mu">수입금액<div class="big">${won(sm(l))}</div></div><div class="mu">전체 누계<div class="big">${all.length}회</div>${won(sm(all))}</div></div>
+${ad&&l.length?`<div class="tbl" style="margin-top:10px"><table><tr><th>타투이스트</th><th>횟수</th><th>금액</th></tr>${Object.entries(by).map(([u,b])=>`<tr><td>${nm(u)}</td><td>${b.n}회</td><td>${won(b.a)}</td></tr>`).join('')}</table></div>`:''}</div>
+<div class="card"><h2>토스 추가</h2><label>날짜</label><input id="t_d" type="date" value="${today()}">${ad?`<label>타투이스트</label><select id="t_u">${artists().map(u=>`<option value="${u.id}">${nm(u.id)}</option>`).join('')}</select>`:''}<label>손님 이름</label><input id="t_c"><label>타투 내용</label><input id="t_t"><label>타투 금액(원)</label><input id="t_a" type="number" min="0"><label>기타 내용</label><textarea id="t_m" rows="2"></textarea><button class="p" style="width:100%;margin-top:12px" onclick="addToss()">토스 저장</button></div>
+<div class="card"><h2>토스 목록</h2><div class="tbl"><table><tr><th>날짜</th>${ad?'<th>타투이스트</th>':''}<th>손님</th><th>내용</th><th>금액</th><th>기타</th>${ad?'<th></th>':''}</tr>${l.map(x=>`<tr><td>${x.d.slice(5)}</td>${ad?`<td>${nm(x.uid)}</td>`:''}<td>${esc(x.cust)}</td><td>${esc(x.content)}</td><td>${won(x.amt)}</td><td>${esc(x.memo)}</td>${ad?`<td><button onclick="editToss('${x.id}')">수정</button></td>`:''}</tr>`).join('')}</table></div></div>`}
+function shareMe(){const sf=(me.sf||[]).slice().sort((a,b)=>a.m<b.m?-1:1),since=me.since||(sf[0]&&sf[0].m+'-01'),days=since?Math.floor((new Date(today())-new Date(since))/864e5)+1:0,pays=sp.filter(x=>!x.void&&x.type=='pay'),b=bal(me),fee=curFee(me);
+return `<div class="card"><h2>${days>0?'블랙고스트와 '+days+'일째 💪':'쉐어비 현황'}</h2><div class="kpi"><div class="mu">월 쉐어비<div class="big">${fee==null?'-':won(fee)}</div></div><div class="mu">총 납부금액<div class="big">${won(spSum(me.id,'pay'))}</div></div><div class="mu">미납 현황<div class="big ${b>0?'wa':''}">${b>0?won(b):b<0?'선납 '+won(-b):'없음'}</div></div></div><p class="mu">매월 15일이 결제일이에요.</p></div><div class="card"><h2>납부 내역</h2><div class="tbl"><table><tr><th>날짜</th><th>금액</th></tr>${pays.map(x=>`<tr><td>${x.d}</td><td>${won(x.amount)}</td></tr>`).join('')||'<tr><td>내역이 없어요</td></tr>'}</table></div></div>`}
+async function postNotice(){const t=$('#n_t').value.trim(),b=$('#n_b').value.trim();if(!t)return toast('제목을 입력하세요');const done=await db.collection('notices').add({title:t,body:b,d:today(),at:new Date().toISOString(),void:false}).then(()=>1).catch(err);if(!done)return;await loadNotices();draw()}
+async function voidNotice(id,v){await db.doc('notices/'+id).update({void:v}).catch(err);await loadNotices();draw()}
+function noticeCard(){return `<div class="card"><h2>공지사항 작성</h2><p class="mu">등록하면 작업자가 앱을 열 때 팝업으로 한 번 보이고, 내현황 위에도 계속 표시돼요.</p><label>제목</label><input id="n_t"><label>내용</label><textarea id="n_b" rows="4"></textarea><button class="p" style="width:100%;margin-top:12px" onclick="postNotice()">공지 등록</button><div class="tbl" style="margin-top:12px"><table><tr><th>날짜</th><th>제목</th><th></th></tr>${notices.slice(0,15).map(x=>`<tr style="${x.void?'opacity:.4;text-decoration:line-through':''}"><td>${x.d.slice(2)}</td><td>${esc(x.title)}</td><td><button onclick="voidNotice('${x.id}',${!x.void})">${x.void?'복구':'삭제'}</button></td></tr>`).join('')}</table></div></div>`}
+function showNotice(){let seen=[];try{seen=JSON.parse(localStorage.getItem('seenN')||'[]')}catch(e){}const nw=nl().filter(x=>!seen.includes(x.id));if(!nw.length)return;
+$('#mb').innerHTML='<h2>📢 공지사항</h2>'+nw.slice(0,3).map(x=>`<div style="margin-bottom:10px"><b>${esc(x.title)}</b><div style="white-space:pre-wrap">${esc(x.body)}</div></div>`).join('')+'<button class="p" style="width:100%" onclick="ackNotice()">확인</button>';$('#modal').style.display='flex'}
+function ackNotice(){try{localStorage.setItem('seenN',JSON.stringify(nl().map(x=>x.id)))}catch(e){}$('#modal').style.display='none'}
+function draw(){const ad=adm(),tabs=ad?[['home','총괄'],['in','판매입력'],['toss','토스'],['set','정산'],['share','쉐어비'],['inv','재고·마진'],['conf','설정']]:[['home','내현황'],['in','판매입력'],['share','쉐어'],['toss','토스']];
+view((ad?'':`<div class="card"><b>${esc(me.nick||me.name)}님 오늘도 화이팅! 💪</b></div>`)+`<div class="card row"><b>BLACKGHOST TATTOO STUDIO</b><span class="mu">${esc(me.nick||me.name)}${ad?' (총괄)':''} · v10</span><button style="margin-left:auto" onclick="out()">로그아웃</button></div><div class="tabs row" style="margin-bottom:12px">${tabs.map(([k,l])=>`<button class="${tab==k?'on':''}" onclick="tab='${k}';draw()">${l}</button>`).join('')}</div>`+
+(tab=='in'?form():tab=='toss'?tossView():tab=='set'&&ad?settle():tab=='share'?(ad?share():shareMe()):tab=='conf'&&ad?conf()+noticeCard():tab=='inv'&&ad?inv():home()))}
 </script></body></html>
