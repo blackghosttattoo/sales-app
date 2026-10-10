@@ -25,6 +25,8 @@ service cloud.firestore {
         && request.resource.data.role == 'artist'
         && request.resource.data.code == get(/databases/$(database)/documents/settings/app).data.signupCode;
       allow update: if admin();
+      // 승인 대기 중인 가입 신청만 완전 삭제 가능 (기록이 있는 회원은 '삭제'=숨김 처리)
+      allow delete: if admin() && resource.data.status == 'pending';
     }
 
     // 가입코드 (대장님만)

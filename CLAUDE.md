@@ -13,8 +13,9 @@
 ## 파일 구성과 배포
 - `index.html` — 앱 전체(HTML+CSS+JS 한 파일). Firebase compat SDK 10.12.2를 CDN으로 불러온다.
 - `firestore.rules` — Firestore 보안 규칙. `main`에 push되면 GitHub Actions(`.github/workflows/rules.yml`)가 자동 게시한다(저장소 Secret `FIREBASE_RULES_KEY` 필요, 서비스 계정 역할 "Firebase 규칙 관리자"). 사용자에게는 GitHub → Actions 탭에서 "보안 규칙 게시"가 초록 체크인지 확인하라고 안내한다. 실패(빨간 X)하거나 키가 없으면 Firebase 콘솔 → Firestore → 규칙에 전체 붙여넣고 "게시"하는 수동 방법으로 안내. Actions 탭에서 "Run workflow"로 수동 실행도 가능.
+- 앱 아이콘: `manifest.json`(이름 "블랙고스트타투", standalone) + `icons/`(로고 원본에서 BG 모노그램만 잘라 만든 192/512/maskable/apple-touch/favicon, 로그인 화면 `logo.jpg`).
 - 배포: `main` 브랜치에 push하면 GitHub Pages가 1~2분 뒤 https://blackghosttattoo.github.io/sales-app/ 에 반영. 사용자는 Ctrl+Shift+R로 새로고침.
-- 버전 표시: `hdr()` 함수 안의 `· v20` 문자열. 배포할 때마다 1씩 올린다(사용자가 새 버전 적용 여부를 이걸로 확인함).
+- 버전 표시: `hdr()` 함수 안의 `· v21` 문자열. 배포할 때마다 1씩 올린다(사용자가 새 버전 적용 여부를 이걸로 확인함).
 - Firebase 프로젝트: `tattoo-cream-ecacc` (연결 정보는 index.html 상단, 공개돼도 되는 값).
 - 주의: `onclick="함수()"` 안에서는 `document`·요소의 기본 기능 이름이 먼저 잡힌다(예: `createEvent`, `open`, `close`, `clear`). 버튼에서 부르는 함수 이름은 이런 이름을 피한다(smoke.js가 검사).
 - 검증: `node scripts/smoke.js` — 가짜 데이터로 관리자·타투이스트·수강생의 모든 탭을 그려보고 주요 계산을 확인한다. 수정 후 반드시 실행.
@@ -35,6 +36,7 @@
 - 가입: 이메일 인증 → 이름·닉네임·가입구분·기수·가게 가입코드(`settings/app.signupCode`) → 대장이 "타투이스트로 승인 / 수강생으로 승인".
 - 표시 이름: 대장 / 닉네임(타투이스트) / 닉네임(강사) / "12기 이름"(수강생). 비활성은 "(비활성)".
 - 수강생은 판매·토스·쉐어비·비품·이벤트 데이터에 접근 불가(규칙 `active()`가 student 제외).
+- 회원 삭제: 기록이 있을 수 있는 회원은 '삭제'=숨김(`del:true`+`status:'disabled'`, 회원 관리 맨 아래 '삭제된 회원'에서 복구). 승인 대기 신청만 '거절·삭제'로 문서 완전 삭제(규칙도 pending만 허용). 로그인 계정(Auth)은 콘솔에서만 삭제 가능.
 - 회원별 대장 설정(`users`): `lvFix`(레벨 고정, null=자동), `evx:{on,until:'YYYY-MM',why}`(이벤트 제외, until 지나면 자동 해제).
 - `roster/{uid}`: 타투이스트끼리 서로 이름만 볼 수 있게 대장 접속 시 동기화하는 명단(쉐어비 정보 없음).
 
@@ -89,6 +91,7 @@
 - v18 배포: 제품 박스·[수당 수정]·기본율 삭제, 회원 관리 박스(수강생 기수·시작일·회차), 쉐어비 월 집계 제거·총괄 미입금 팝업, 점수제 레벨·익명 랭킹·가산점·레벨 고정, 이벤트 제외, 수당 ⚠ 확인, 보안 수정(가입 필드, config의 월마감 기록 → `settings/archive`, 쉐어비 요청 ID, 복권 할인 월, 수강료 분리). 규칙도 변경(자동 게시).
 - v19: 앱 다시 열 때 'Cannot access 't' before initialization' 오류(사용자 폰, 재현 안 됨, Firebase SDK 내부로 추정) → 시작 실패 시 자동 재시도 2회 + 오류 화면에 stack 표시. 토스 결제방법 기본값 현금.
 - v20: 폰 뒤로가기 버튼(`popstate` + `bkGuard`): 팝업 닫기 → 홈 → 홈에서 한 번 더 누르면 나감(`snack` 안내).
-- 실제 Firebase에서 v15~v20 기능은 사용자 확인 전.
+- v21: 앱 아이콘·이름(블랙고스트타투), 로그인 화면 로고, 회원 삭제(숨김)·가입 거절(완전 삭제). 규칙 변경(users delete).
+- 실제 Firebase에서 v15~v21 기능은 사용자 확인 전.
 - 실제 SDK 재현 테스트: npm `firebase@10.12.2`의 compat 파일 + Firestore/Auth 에뮬레이터 + Playwright로 로그인→새로고침 반복 가능.
 - 기존 이벤트의 레벨별 장수 `lv`는 예전 Lv.1~10 기준이었으나 이제 Lv.0부터로 해석됨.
