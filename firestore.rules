@@ -1,0 +1,218 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function prof() { return get(/databases/$(database)/documents/users/$(request.auth.uid)).data; }
+    function signedIn() { return request.auth != null && request.auth.token.email_verified; }
+    // 로그인·인증·승인 완료 (수강생 포함)
+    function activeAny() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && prof().status == 'active';
+    }
+    // 대장님과 타투이스트 (수강생은 제외)
+    function active() { return activeAny() && prof().role != 'student'; }
+    function isInst() { return active() && prof().get('inst', false) == true; }
+    function admin() { return active() && prof().role == 'admin'; }
+
+    // 사용자 프로필
+    match /users/{u} {
+      allow read: if signedIn() && (request.auth.uid == u || admin());
+      allow create: if signedIn() && request.auth.uid == u
+        && request.resource.data.status == 'pending'
+        && request.resource.data.role == 'artist'
+        && request.resource.data.code == get(/databases/$(database)/documents/settings/app).data.signupCode;
+      allow update: if admin();
+    }
+
+    // 가입코드 (대장님만)
+    match /settings/{d} {
+      allow read, write: if admin();
+    }
+
+    // 제품, 가격, 수수료율, 마감, 지급 상태
+    match /config/{d} {
+      allow read: if active();
+      allow write: if admin();
+    }
+
+    // 입고 기록 (대장님만)
+    match /purchases/{id} {
+      allow read, create, update: if admin();
+      allow delete: if false;
+    }
+
+    // 재고 실사, 시제 기록 (대장님만)
+    match /counts/{id} {
+      allow read, create, update: if admin();
+      allow delete: if false;
+    }
+    match /cash/{id} {
+      allow read, create, update: if admin();
+      allow delete: if false;
+    }
+
+    // 셰어비 납부 기록 (대장님만)
+    match /sharepay/{id} {
+      allow read: if active() && (resource.data.uid == request.auth.uid || admin());
+      allow create, update: if admin();
+      allow delete: if false;
+    }
+
+    // 토스 기록
+    match /toss/{id} {
+      allow read: if active() && (admin() || resource.data.to == request.auth.uid || resource.data.from == request.auth.uid);
+      allow create: if admin()
+        || (active() && request.resource.data.from == request.auth.uid
+            && request.resource.data.to != request.auth.uid
+            && request.resource.data.st == 'pending');
+      allow update: if admin()
+        || (active() && resource.data.to == request.auth.uid && resource.data.st == 'pending'
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['st'])
+            && request.resource.data.st in ['ok', 'no']);
+      allow delete: if false;
+    }
+
+    // 공지사항
+    match /notices/{id} {
+      allow read: if activeAny();
+      allow create, update: if admin();
+      allow delete: if false;
+    }
+
+    // 작업자 명단(이름·닉네임만, 쉐어비 정보 없음)
+    match /roster/{id} {
+      allow read: if active();
+      allow write: if admin();
+    }
+
+    // 비품·소모품 목록, 요청
+    match /supplies/{id} {
+      allow read: if active();
+      allow create, update: if admin();
+      allow delete: if false;
+    }
+    match /supreq/{id} {
+      allow read: if active() && (admin() || resource.data.uid == request.auth.uid);
+      allow create: if active() && request.resource.data.uid == request.auth.uid && request.resource.data.st == 'pending';
+      allow update: if admin();
+      allow delete: if false;
+    }
+
+    // 판매수당 정산 상태 (타투이스트는 본인 것만 읽기)
+    match /settle/{id} {
+      allow read: if active() && (admin() || resource.data.uid == request.auth.uid);
+      allow write: if admin();
+    }
+
+    // 쉐어비 월별 장부 (타투이스트는 본인 것만 읽고, 납부확인 요청만 쓸 수 있음)
+    match /shareLedger/{id} {
+      allow read: if active() && (admin() || resource.data.uid == request.auth.uid);
+      allow create: if admin()
+        || (active() && request.resource.data.uid == request.auth.uid
+            && request.resource.data.keys().hasOnly(['uid', 'm', 'req'])
+            && request.resource.data.req.st == 'pending');
+      allow update: if admin()
+        || (active() && resource.data.uid == request.auth.uid
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['req'])
+            && request.resource.data.req.st == 'pending');
+      allow delete: if false;
+    }
+
+    // 일일게스트 기록 (대장님만)
+    match /guests/{id} {
+      allow read, create, update: if admin();
+      allow delete: if false;
+    }
+
+    // 수강 (수강생은 본인 것만 읽기, 강사·대장님은 전체)
+    match /courses/{id} {
+      allow read: if activeAny() && (admin() || isInst() || resource.data.uid == request.auth.uid);
+      allow create: if admin();
+      allow update: if admin()
+        || (isInst() && request.resource.data.diff(resource.data).affectedKeys()
+              .hasOnly(['start', 'total', 'inst', 'instName', 'phone', 'insta']));
+      allow delete: if false;
+    }
+    match /sessions/{id} {
+      allow read: if activeAny() && (admin() || isInst() || resource.data.sid == request.auth.uid);
+      allow create, update: if admin() || isInst();
+      allow delete: if false;
+    }
+    // 강사 전용 특이사항 (수강생에게 보이지 않음)
+    match /studentNotes/{id} {
+      allow read, create, update: if admin() || isInst();
+      allow delete: if false;
+    }
+
+    // 이벤트 · 추첨
+    match /events/{id} {
+      allow read: if active();
+      allow create, update: if admin();
+      allow delete: if false;
+    }
+
+    // 이벤트 회차, 복권 (결과는 긁은 뒤에만 읽을 수 있음), 당첨 쉐어비 할인
+    match /eventRounds/{id} {
+      allow read: if active();
+      allow create, update: if admin();
+      allow delete: if false;
+    }
+    match /tickets/{id} {
+      allow read: if active() && (admin() || resource.data.uid == request.auth.uid);
+      allow create: if admin();
+      allow update: if admin()
+        || (active() && resource.data.uid == request.auth.uid && resource.data.scratched == false
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['scratched', 'scratchAt'])
+            && request.resource.data.scratched == true
+            && request.resource.data.scratchAt == request.time)
+        || (active() && resource.data.uid == request.auth.uid && resource.data.scratched == true
+            && !('revealed' in resource.data)
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['prize', 'revealed'])
+            && request.resource.data.revealed == true
+            && request.resource.data.prize == get(/databases/$(database)/documents/ticketPrizes/$(id)).data.prize);
+      allow delete: if admin();
+    }
+    match /ticketPrizes/{id} {
+      allow read: if active() && (admin()
+        || (resource.data.uid == request.auth.uid
+            && get(/databases/$(database)/documents/tickets/$(id)).data.scratched == true));
+      allow create, update, delete: if admin();
+    }
+    match /evDisc/{id} {
+      allow read: if active() && (admin() || resource.data.uid == request.auth.uid);
+      allow create: if admin()
+        || (active() && request.resource.data.uid == request.auth.uid
+            && exists(/databases/$(database)/documents/tickets/$(id))
+            && get(/databases/$(database)/documents/tickets/$(id)).data.uid == request.auth.uid
+            && get(/databases/$(database)/documents/tickets/$(id)).data.revealed == true
+            && get(/databases/$(database)/documents/tickets/$(id)).data.prize != null
+            && get(/databases/$(database)/documents/tickets/$(id)).data.prize.t == 'disc'
+            && request.resource.data.a == get(/databases/$(database)/documents/tickets/$(id)).data.prize.a);
+      allow update, delete: if admin();
+    }
+
+    // 판매 내역
+    match /sales/{id} {
+      allow read: if active() && (resource.data.uid == request.auth.uid || admin());
+      allow create: if active()
+        && (request.resource.data.uid == request.auth.uid || admin())
+        && (request.resource.data.t != 'etc' || admin())
+        && (request.resource.data.t != 'service' || admin() || request.resource.data.ap == 'pending')
+        && (request.resource.data.t != 'review'
+            || request.resource.data.sub == 'sep'
+            || request.resource.data.rid != '' || request.resource.data.rn != '' || request.resource.data.img != '');
+      allow update: if admin()
+        || (active() && resource.data.uid == request.auth.uid
+            && request.resource.data.uid == resource.data.uid
+            && request.resource.data.void == resource.data.void
+            && request.resource.data.t == resource.data.t
+            && request.resource.data.t != 'etc'
+            && (request.resource.data.t == 'service'
+                ? request.resource.data.ap == 'pending'
+                : request.resource.data.get('ap', '') == resource.data.get('ap', ''))
+            && request.resource.data.hist.size() == resource.data.hist.size() + 1);
+      allow delete: if false;
+    }
+  }
+}
