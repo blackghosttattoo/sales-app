@@ -47,5 +47,10 @@ for (const [who, list] of Object.entries(tabs)) {
 run(`tab='conf'`); for (const c of ['user', 'prod', 'toss', 'note']) { try { run(`cs='${c}';draw()`); ok(`설정 ${c}`, out().length > 100); } catch (e) { ok(`설정 ${c} (${e.message})`, false); } }
 try { run(`me=users.s1;draw()`); ok('수강생 화면', /오늘도 화이팅/.test(out())); } catch (e) { ok('수강생 화면 (' + e.message + ')', false); }
 
+// 버튼 onclick 안에서는 document·요소의 기본 기능 이름이 먼저 잡힌다 (예: createEvent → document.createEvent). 겹치는 이름 금지
+const BUILTIN = ['createEvent','createElement','open','close','write','writeln','clear','append','prepend','remove','replaceWith','before','after','focus','blur','click','submit','reset','select','evaluate','getSelection','hasFocus','animate','scroll','scrollTo','scrollBy','matches','closest','contains','normalize','toggleAttribute','setAttribute','getAttribute','removeAttribute','addEventListener','dispatchEvent','querySelector','importNode','adoptNode','elementFromPoint','show','showModal','checkValidity','reportValidity','setCustomValidity','stepUp','stepDown','showPicker','requestFullscreen','attachShadow','insertAdjacentHTML','cloneNode','appendChild','removeChild','replaceChildren','getElementById','getAnimations','computedStyleMap','hidePopover','showPopover','togglePopover','add','item','namedItem'];
+const used = new Set(); for (const m of html.matchAll(/on(?:click|change|input|keyup|keydown|submit|blur|focus)="([^"]*)"/g)) for (const x of m[1].matchAll(/(?<![.\w$])([A-Za-z_$][\w$]*)\s*\(/g)) used.add(x[1]);
+const clash = [...used].filter(n => BUILTIN.includes(n)); ok('버튼 함수 이름이 브라우저 기본 기능과 안 겹침' + (clash.length ? ' (' + clash.join(',') + ')' : ''), !clash.length);
+
 console.log(fail ? `\n실패 ${fail}건` : '\n모두 통과');
 process.exit(fail ? 1 : 0);

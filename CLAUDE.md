@@ -14,8 +14,9 @@
 - `index.html` — 앱 전체(HTML+CSS+JS 한 파일). Firebase compat SDK 10.12.2를 CDN으로 불러온다.
 - `firestore.rules` — Firestore 보안 규칙. `main`에 push되면 GitHub Actions(`.github/workflows/rules.yml`)가 자동 게시한다(저장소 Secret `FIREBASE_RULES_KEY` 필요, 서비스 계정 역할 "Firebase 규칙 관리자"). 사용자에게는 GitHub → Actions 탭에서 "보안 규칙 게시"가 초록 체크인지 확인하라고 안내한다. 실패(빨간 X)하거나 키가 없으면 Firebase 콘솔 → Firestore → 규칙에 전체 붙여넣고 "게시"하는 수동 방법으로 안내. Actions 탭에서 "Run workflow"로 수동 실행도 가능.
 - 배포: `main` 브랜치에 push하면 GitHub Pages가 1~2분 뒤 https://blackghosttattoo.github.io/sales-app/ 에 반영. 사용자는 Ctrl+Shift+R로 새로고침.
-- 버전 표시: `hdr()` 함수 안의 `· v16` 문자열. 배포할 때마다 1씩 올린다(사용자가 새 버전 적용 여부를 이걸로 확인함).
+- 버전 표시: `hdr()` 함수 안의 `· v17` 문자열. 배포할 때마다 1씩 올린다(사용자가 새 버전 적용 여부를 이걸로 확인함).
 - Firebase 프로젝트: `tattoo-cream-ecacc` (연결 정보는 index.html 상단, 공개돼도 되는 값).
+- 주의: `onclick="함수()"` 안에서는 `document`·요소의 기본 기능 이름이 먼저 잡힌다(예: `createEvent`, `open`, `close`, `clear`). 버튼에서 부르는 함수 이름은 이런 이름을 피한다(smoke.js가 검사).
 - 검증: `node scripts/smoke.js` — 가짜 데이터로 관리자·타투이스트·수강생의 모든 탭을 그려보고 주요 계산을 확인한다. 수정 후 반드시 실행.
 
 ## 코드 구조 (index.html의 `<script>`)
@@ -69,5 +70,5 @@
 - 수강(`courses`, `sessions`, `studentNotes`): 강사·대장만 수강관리, 수강료 납부는 대장만, 기본 25회(변경 가능), 이수 완료 시 "쉐어 전향 승인".
 
 ## 현재 상태 (2026-10-11)
-- v16 배포됨(이벤트 등록 무반응 수정: 숫자 칸 입력 시 화면 재그리기로 버튼 클릭이 씹히던 문제, 등록 중 표시·성공/실패 메시지 추가). 실제 Firebase에서 v15(특히 복권 긁기, 토스 카드 부담 방식)는 아직 사용자 확인 전.
+- v17 배포됨(이벤트 등록 무반응 수정: 함수 이름 `createEvent`가 브라우저 기본 기능 `document.createEvent`와 겹쳐 버튼이 동작 안 했음 → `addEvt`로 변경. v16에서 숫자 칸 재그리기·등록 중 표시·성공/실패 메시지 추가). 실제 Firebase에서 v15(특히 복권 긁기, 토스 카드 부담 방식)는 아직 사용자 확인 전.
 - 규칙 자동 게시(GitHub Actions) 설정 완료, 첫 수동 실행 성공(2026-10-10) → v15 규칙 게시됨.
