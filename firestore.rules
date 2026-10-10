@@ -230,6 +230,16 @@ service cloud.firestore {
       allow delete: if false;
     }
 
+    // 판매 리뷰 사진 (판매 상세를 열 때만 불러옴 · 판매자 본인과 대장님만)
+    match /saleImg/{id} {
+      allow read: if active() && (admin() || resource.data.uid == request.auth.uid);
+      allow create, update: if admin()
+        || (active() && request.resource.data.uid == request.auth.uid
+            && request.resource.data.keys().hasOnly(['uid', 'img'])
+            && get(/databases/$(database)/documents/sales/$(id)).data.uid == request.auth.uid);
+      allow delete: if false;
+    }
+
     // 판매 내역
     match /sales/{id} {
       allow read: if active() && (resource.data.uid == request.auth.uid || admin());
