@@ -14,7 +14,7 @@
 - `index.html` — 앱 전체(HTML+CSS+JS 한 파일). Firebase compat SDK 10.12.2를 CDN으로 불러온다.
 - `firestore.rules` — Firestore 보안 규칙. `main`에 push되면 GitHub Actions(`.github/workflows/rules.yml`)가 자동 게시한다(저장소 Secret `FIREBASE_RULES_KEY` 필요, 서비스 계정 역할 "Firebase 규칙 관리자"). 사용자에게는 GitHub → Actions 탭에서 "보안 규칙 게시"가 초록 체크인지 확인하라고 안내한다. 실패(빨간 X)하거나 키가 없으면 Firebase 콘솔 → Firestore → 규칙에 전체 붙여넣고 "게시"하는 수동 방법으로 안내. Actions 탭에서 "Run workflow"로 수동 실행도 가능.
 - 배포: `main` 브랜치에 push하면 GitHub Pages가 1~2분 뒤 https://blackghosttattoo.github.io/sales-app/ 에 반영. 사용자는 Ctrl+Shift+R로 새로고침.
-- 버전 표시: `hdr()` 함수 안의 `· v19` 문자열. 배포할 때마다 1씩 올린다(사용자가 새 버전 적용 여부를 이걸로 확인함).
+- 버전 표시: `hdr()` 함수 안의 `· v20` 문자열. 배포할 때마다 1씩 올린다(사용자가 새 버전 적용 여부를 이걸로 확인함).
 - Firebase 프로젝트: `tattoo-cream-ecacc` (연결 정보는 index.html 상단, 공개돼도 되는 값).
 - 주의: `onclick="함수()"` 안에서는 `document`·요소의 기본 기능 이름이 먼저 잡힌다(예: `createEvent`, `open`, `close`, `clear`). 버튼에서 부르는 함수 이름은 이런 이름을 피한다(smoke.js가 검사).
 - 검증: `node scripts/smoke.js` — 가짜 데이터로 관리자·타투이스트·수강생의 모든 탭을 그려보고 주요 계산을 확인한다. 수정 후 반드시 실행.
@@ -88,6 +88,7 @@
 ## 현재 상태 (2026-10-11)
 - v18 배포: 제품 박스·[수당 수정]·기본율 삭제, 회원 관리 박스(수강생 기수·시작일·회차), 쉐어비 월 집계 제거·총괄 미입금 팝업, 점수제 레벨·익명 랭킹·가산점·레벨 고정, 이벤트 제외, 수당 ⚠ 확인, 보안 수정(가입 필드, config의 월마감 기록 → `settings/archive`, 쉐어비 요청 ID, 복권 할인 월, 수강료 분리). 규칙도 변경(자동 게시).
 - v19: 앱 다시 열 때 'Cannot access 't' before initialization' 오류(사용자 폰, 재현 안 됨, Firebase SDK 내부로 추정) → 시작 실패 시 자동 재시도 2회 + 오류 화면에 stack 표시. 토스 결제방법 기본값 현금.
-- 실제 Firebase에서 v15~v19 기능은 사용자 확인 전.
+- v20: 폰 뒤로가기 버튼(`popstate` + `bkGuard`): 팝업 닫기 → 홈 → 홈에서 한 번 더 누르면 나감(`snack` 안내).
+- 실제 Firebase에서 v15~v20 기능은 사용자 확인 전.
 - 실제 SDK 재현 테스트: npm `firebase@10.12.2`의 compat 파일 + Firestore/Auth 에뮬레이터 + Playwright로 로그인→새로고침 반복 가능.
 - 기존 이벤트의 레벨별 장수 `lv`는 예전 Lv.1~10 기준이었으나 이제 Lv.0부터로 해석됨.
