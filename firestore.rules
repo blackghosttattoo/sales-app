@@ -18,7 +18,9 @@ service cloud.firestore {
     // 사용자 프로필
     match /users/{u} {
       allow read: if signedIn() && (request.auth.uid == u || admin());
+      // 가입 신청: 정해진 항목만 (강사 표시·쉐어비 등 몰래 넣기 방지)
       allow create: if signedIn() && request.auth.uid == u
+        && request.resource.data.keys().hasOnly(['name', 'nick', 'want', 'cohort', 'email', 'role', 'status', 'code'])
         && request.resource.data.status == 'pending'
         && request.resource.data.role == 'artist'
         && request.resource.data.code == get(/databases/$(database)/documents/settings/app).data.signupCode;
@@ -105,15 +107,17 @@ service cloud.firestore {
       allow write: if admin();
     }
 
-    // 쉐어비 월별 장부 (타투이스트는 본인 것만 읽고, 납부확인 요청만 쓸 수 있음)
+    // 쉐어비 월별 장부 (타투이스트는 본인 것만 읽고, 본인 칸에 납부확인 요청만 쓸 수 있음)
     match /shareLedger/{id} {
       allow read: if active() && (admin() || resource.data.uid == request.auth.uid);
       allow create: if admin()
         || (active() && request.resource.data.uid == request.auth.uid
+            && id == request.auth.uid + '_' + request.resource.data.m
             && request.resource.data.keys().hasOnly(['uid', 'm', 'req'])
             && request.resource.data.req.st == 'pending');
       allow update: if admin()
         || (active() && resource.data.uid == request.auth.uid
+            && id == request.auth.uid + '_' + resource.data.m
             && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['req'])
             && request.resource.data.req.st == 'pending');
       allow delete: if false;
@@ -123,6 +127,12 @@ service cloud.firestore {
     match /guests/{id} {
       allow read, create, update: if admin();
       allow delete: if false;
+    }
+
+    // 수강료 (대장님만, 수강생은 본인 것 읽기만 · 강사는 못 봄)
+    match /coursePay/{id} {
+      allow read: if activeAny() && (admin() || resource.data.uid == request.auth.uid);
+      allow write: if admin();
     }
 
     // 수강 (수강생은 본인 것만 읽기, 강사·대장님은 전체)
@@ -180,16 +190,42 @@ service cloud.firestore {
       allow create, update, delete: if admin();
     }
     match /evDisc/{id} {
+      function tkt() { return get(/databases/$(database)/documents/tickets/$(id)).data; }
+      // 긁은 시각(한국 시간)의 다음 달 'YYYY-MM'
+      function nextYm(ts) {
+        let k = ts + duration.value(9, 'h');
+        let y = k.year();
+        let mo = k.month();
+        return mo == 12 ? string(y + 1) + '-01' : string(y) + '-' + (mo < 9 ? '0' : '') + string(mo + 1);
+      }
       allow read: if active() && (admin() || resource.data.uid == request.auth.uid);
       allow create: if admin()
         || (active() && request.resource.data.uid == request.auth.uid
+            && request.resource.data.keys().hasOnly(['uid', 'm', 'a', 'title', 'tid', 'void', 'at'])
+            && request.resource.data.void == false
+            && request.resource.data.tid == id
             && exists(/databases/$(database)/documents/tickets/$(id))
+            && request.resource.data.m == nextYm(tkt().scratchAt)
             && get(/databases/$(database)/documents/tickets/$(id)).data.uid == request.auth.uid
             && get(/databases/$(database)/documents/tickets/$(id)).data.revealed == true
             && get(/databases/$(database)/documents/tickets/$(id)).data.prize != null
             && get(/databases/$(database)/documents/tickets/$(id)).data.prize.t == 'disc'
             && request.resource.data.a == get(/databases/$(database)/documents/tickets/$(id)).data.prize.a);
       allow update, delete: if admin();
+    }
+
+    // 레벨: 랭킹(점수만, 누구인지 없음)은 모두, 내 점수 내역은 본인만, 가산점은 대장님만
+    match /lvRank/{id} {
+      allow read: if active();
+      allow write: if admin();
+    }
+    match /lvMine/{id} {
+      allow read: if active() && (admin() || resource.data.uid == request.auth.uid);
+      allow write: if admin();
+    }
+    match /lvBonus/{id} {
+      allow read, create, update: if admin();
+      allow delete: if false;
     }
 
     // 판매 내역

@@ -35,6 +35,22 @@ ok('토스 받는사람부담 20,000/70,000', t('recv').sIn === 20000 && t('recv
 // 쉐어비 장부
 ok('쉐어비 입사월부터 생성', run(`monthsOf(users.w1)[0]`) === '2018-01');
 ok('이벤트 할인 반영', run(`rowOf(users.w1,'2099-01').evd`) === 50000);
+// 점수제 레벨: 2026-04 레벨업(15일) 기간 = 2026-03-15 ~ 2026-04-14
+run(`cfg=JSON.parse(JSON.stringify(cfg));cfg.lv=defLv();cfg.lv.start='2000-01';cfg.lv.from='2000-01-01';
+allSales=[{id:'s1',uid:'w1',t:'normal',qty:3,a:30000,d:'2026-03-20',void:false,ap:''},{id:'s2',uid:'w1',t:'normal',qty:5,a:50000,d:'2026-04-15',void:false,ap:''}];
+tosses=[{from:'w1',to:'a',st:'ok',d:'2026-03-25',void:false},{from:'a',to:'w1',st:'pending',d:'2026-03-26',void:false}];`);
+const br = JSON.parse(run(`JSON.stringify(lvScore(users.w1,'2026-04'))`));
+ok('레벨 점수: 판매 3개×10점, 기간 밖 제외', br.sale === 30);
+ok('레벨 점수: 확정 토스만 (보냄 20점)', br.toss === 20);
+ok('레벨 단계: 150점 → Lv.1', run(`lvOfPts(150)`) === 1 && run(`lvOfPts(99)`) === 0);
+ok('레벨 고정이 우선', run(`levelOf({id:'zz',lvFix:3})`) === 3);
+run(`users.w1.evx={on:true,until:'2000-01'}`); ok('이벤트 제외 기간 지나면 자동 해제', run(`evxOn(users.w1)`) === false);
+run(`users.w1.evx={on:true,until:''}`); ok('이벤트 제외 중이면 복권 0장', run(`evOut({lv:[5]},users.w1)`) === true); run(`delete users.w1.evx`);
+// 판매수당 조작 확인
+run(`cfg.cmChk='2000';cfg.cmh=[{at:'0000',pid:'p1',cm:{cash:{t:'pct',pct:20},card:{t:'pct',pct:0},review:{t:'pct',pct:0}}}]`);
+ok('수당 설정과 맞으면 통과', run(`cmBad({at:'2026-01-01T00:00:00Z',pid:'p1',t:'normal',pay:'cash',s:'L',qty:1,a:10000,c:2000})`) === false);
+ok('수당을 부풀리면 ⚠', !!run(`cmBad({at:'2026-01-01T00:00:00Z',pid:'p1',t:'normal',pay:'cash',s:'L',qty:1,a:10000,c:5000})`));
+run(`allSales=[];sales=[];tosses=[]`);
 
 const tabs = { admin: ['home', 'in', 'toss', 'share', 'more', 'sup', 'acd', 'set', 'inv', 'evt', 'conf'], artist: ['home', 'in', 'toss', 'share', 'more', 'sup', 'evt', 'acd'] };
 for (const [who, list] of Object.entries(tabs)) {
@@ -44,7 +60,7 @@ for (const [who, list] of Object.entries(tabs)) {
     catch (e) { ok(`${who} ${k} 화면 (${e.message})`, false); }
   }
 }
-run(`tab='conf'`); for (const c of ['user', 'prod', 'toss', 'note']) { try { run(`cs='${c}';draw()`); ok(`설정 ${c}`, out().length > 100); } catch (e) { ok(`설정 ${c} (${e.message})`, false); } }
+run(`tab='conf'`); for (const c of ['user', 'prod', 'lv', 'toss', 'note']) { try { run(`cs='${c}';draw()`); ok(`설정 ${c}`, out().length > 100); } catch (e) { ok(`설정 ${c} (${e.message})`, false); } }
 try { run(`me=users.s1;draw()`); ok('수강생 화면', /오늘도 화이팅/.test(out())); } catch (e) { ok('수강생 화면 (' + e.message + ')', false); }
 
 // 버튼 onclick 안에서는 document·요소의 기본 기능 이름이 먼저 잡힌다 (예: createEvent → document.createEvent). 겹치는 이름 금지
