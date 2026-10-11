@@ -13,9 +13,10 @@
 ## 파일 구성과 배포
 - `index.html` — 앱 전체(HTML+CSS+JS 한 파일). Firebase compat SDK 10.12.2를 CDN으로 불러온다.
 - `firestore.rules` — Firestore 보안 규칙. `main`에 push되면 GitHub Actions(`.github/workflows/rules.yml`)가 자동 게시한다(저장소 Secret `FIREBASE_RULES_KEY` 필요, 서비스 계정 역할 "Firebase 규칙 관리자"). 사용자에게는 GitHub → Actions 탭에서 "보안 규칙 게시"가 초록 체크인지 확인하라고 안내한다. 실패(빨간 X)하거나 키가 없으면 Firebase 콘솔 → Firestore → 규칙에 전체 붙여넣고 "게시"하는 수동 방법으로 안내. Actions 탭에서 "Run workflow"로 수동 실행도 가능.
+- `guide.html` — 타투이스트용 설치·사용·FAQ·보안 안내(로그인 없이 보는 공개 페이지, 로그인 화면·더보기에서 링크). 앱 기능이 바뀌면 이 안내도 맞게 고칠 것.
 - 앱 아이콘: `manifest.json`(이름 "블랙고스트타투", standalone) + `icons/`(로고 원본에서 BG 모노그램만 잘라 만든 192/512/maskable/apple-touch/favicon, 로그인 화면 `logo.jpg`).
 - 배포: `main` 브랜치에 push하면 GitHub Pages가 1~2분 뒤 https://blackghosttattoo.github.io/sales-app/ 에 반영. 사용자는 Ctrl+Shift+R로 새로고침.
-- 버전 표시: `hdr()` 함수 안의 `· v23` 문자열. 배포할 때마다 1씩 올린다(사용자가 새 버전 적용 여부를 이걸로 확인함).
+- 버전 표시: `hdr()` 함수 안의 `· v24` 문자열. 배포할 때마다 1씩 올린다(사용자가 새 버전 적용 여부를 이걸로 확인함).
 - Firebase 프로젝트: `tattoo-cream-ecacc` (연결 정보는 index.html 상단, 공개돼도 되는 값).
 - 주의: `onclick="함수()"` 안에서는 `document`·요소의 기본 기능 이름이 먼저 잡힌다(예: `createEvent`, `open`, `close`, `clear`). 버튼에서 부르는 함수 이름은 이런 이름을 피한다(smoke.js가 검사).
 - 검증: `node scripts/smoke.js` — 가짜 데이터로 관리자·타투이스트·수강생의 모든 탭을 그려보고 주요 계산을 확인한다. 수정 후 반드시 실행.
