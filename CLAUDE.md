@@ -15,7 +15,7 @@
 - `firestore.rules` — Firestore 보안 규칙. `main`에 push되면 GitHub Actions(`.github/workflows/rules.yml`)가 자동 게시한다(저장소 Secret `FIREBASE_RULES_KEY` 필요, 서비스 계정 역할 "Firebase 규칙 관리자"). 사용자에게는 GitHub → Actions 탭에서 "보안 규칙 게시"가 초록 체크인지 확인하라고 안내한다. 실패(빨간 X)하거나 키가 없으면 Firebase 콘솔 → Firestore → 규칙에 전체 붙여넣고 "게시"하는 수동 방법으로 안내. Actions 탭에서 "Run workflow"로 수동 실행도 가능.
 - 앱 아이콘: `manifest.json`(이름 "블랙고스트타투", standalone) + `icons/`(로고 원본에서 BG 모노그램만 잘라 만든 192/512/maskable/apple-touch/favicon, 로그인 화면 `logo.jpg`).
 - 배포: `main` 브랜치에 push하면 GitHub Pages가 1~2분 뒤 https://blackghosttattoo.github.io/sales-app/ 에 반영. 사용자는 Ctrl+Shift+R로 새로고침.
-- 버전 표시: `hdr()` 함수 안의 `· v22` 문자열. 배포할 때마다 1씩 올린다(사용자가 새 버전 적용 여부를 이걸로 확인함).
+- 버전 표시: `hdr()` 함수 안의 `· v23` 문자열. 배포할 때마다 1씩 올린다(사용자가 새 버전 적용 여부를 이걸로 확인함).
 - Firebase 프로젝트: `tattoo-cream-ecacc` (연결 정보는 index.html 상단, 공개돼도 되는 값).
 - 주의: `onclick="함수()"` 안에서는 `document`·요소의 기본 기능 이름이 먼저 잡힌다(예: `createEvent`, `open`, `close`, `clear`). 버튼에서 부르는 함수 이름은 이런 이름을 피한다(smoke.js가 검사).
 - 검증: `node scripts/smoke.js` — 가짜 데이터로 관리자·타투이스트·수강생의 모든 탭을 그려보고 주요 계산을 확인한다. 수정 후 반드시 실행.
@@ -34,6 +34,13 @@
 - `db.enablePersistence` (폰 임시 저장)로 다시 열 때 읽기 절약.
 - 리뷰 사진은 `saleImg/{saleId}`(uid, img)에 따로, 판매 문서엔 `img:'y'` 표시만. 판매 상세를 열 때만 불러옴. 예전 사진(`img`가 data:)은 대장 앱이 열릴 때 `migImg()`가 옮김.
 - 기간 필터 `pf`(월/최근 1~6개월/연도/기간/전체 + 검색)를 홈·토스에서 공통 사용.
+
+## 보안 (v23)
+- **받은 데이터 무력화**: Firestore에서 읽는 모든 문서는 `cl()`을 거쳐 `< > " ' \` &`를 비슷한 모양의 전각 글자로 바꾼다(다른 사람이 넣은 글자가 대장 화면에서 코드로 실행되는 것 방지). 문서 ID는 `cid()`. 새로 `.data()`를 읽는 코드를 쓰면 반드시 `cl(x.data())`로 감쌀 것. 예외: `config/main`(대장만 씀), 복권 상품 비교(`ticketPrizes`의 prize).
+- **규칙 검사**(타투이스트 입력): 판매는 오늘(이틀 전~하루 뒤) 날짜만, 숫자 범위, 서비스·샘플은 0원·수당 0, 정산 끝난 달은 입력·수정 불가, 수정 시 날짜 변경 불가·이력 보존. 토스는 앱과 같은 계산식으로 수수료 10~20%·카드 수수료·각자 몫을 규칙에서 다시 계산해 비교(`tossOk`). 사진은 진짜 이미지 데이터만. 문서 ID는 영문·숫자만(`okId`).
+- 계산 규칙(토스 `tcalc`, 카드 수수료)을 바꾸면 `firestore.rules`의 `tossOk`도 같이 바꿔야 한다. 안 그러면 타투이스트 토스가 저장되지 않는다.
+- 이벤트 취소: `evCancel`(이벤트 전체)·`rdCancel`(회차) — 안 긁은 복권 삭제, 긁은 복권 `canceled`, 관련 `evDisc`(쉐어비 할인) 모두 `void`.
+- 백업: 설정 > 백업에서 전체 JSON / 판매 CSV 내려받기.
 
 ## 역할
 - `users/{uid}`: `role` = `admin`(대장) | `artist`(타투이스트) | `student`(수강생), `status` = `pending`|`active`|`disabled`, `inst:true`면 강사.

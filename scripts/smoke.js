@@ -52,6 +52,18 @@ ok('수당 설정과 맞으면 통과', run(`cmBad({at:'2026-01-01T00:00:00Z',pi
 ok('수당을 부풀리면 ⚠', !!run(`cmBad({at:'2026-01-01T00:00:00Z',pid:'p1',t:'normal',pay:'cash',s:'L',qty:1,a:10000,c:5000})`));
 run(`allSales=[];sales=[];tosses=[]`);
 
+// 내부자 해킹 흉내: 다른 사람이 넣은 글자가 대장님 화면에서 코드로 실행되면 안 됨
+ctx.__P = '<img src=x onerror=alert(1)>" onmouseover="alert(2)" \'); alert(3);//&#39;';
+run(`users.zz=cl({id:'zz',name:__P,nick:__P,role:'artist',status:'active',email:__P});
+allSales=[cl({id:'x1',d:__P,at:__P,uid:'zz',pid:'p1',s:'L',qty:__P,t:__P,pay:__P,a:__P,c:__P,buyer:__P,memo:__P,rid:__P,rn:__P,ap:'pending',hist:[{by:__P,at:'x',chg:__P}]})];sales=allSales.slice();
+tosses=[cl({id:'t1',d:__P,from:'zz',to:'a',uid:'a',cust:__P,content:__P,memo:__P,amt:__P,pays:[{m:__P,a:__P}],st:'pending',fee:1,cf:0,rIn:1,aIn:0,sIn:1})];me=users.a`);
+{ const BAD = /<img src=x|" onmouseover="|'\); alert\(3\)|&#39;/; let leak = [];
+  for (const k of ['home', 'toss', 'share', 'set', 'conf']) { run(`tab='${k}';cs='user';sd.u='zz';draw()`); if (BAD.test(out())) leak.push(k); }
+  run(`showSale('x1')`); if (BAD.test(el('#mb').innerHTML)) leak.push('판매상세');
+  ok('해킹 글자 무력화' + (leak.length ? ' (' + leak.join(',') + ')' : ''), !leak.length); }
+ok('저장 시간(Timestamp) 같은 객체는 그대로', (() => { class TS { toDate() { return 1 } } ctx.__t = new TS(); return run(`typeof cl({t:__t}).t.toDate`) === 'function'; })());
+run(`delete users.zz;allSales=[];sales=[];tosses=[]`);
+
 const tabs = { admin: ['home', 'in', 'toss', 'share', 'more', 'sup', 'acd', 'set', 'inv', 'evt', 'conf'], artist: ['home', 'in', 'toss', 'share', 'more', 'sup', 'evt', 'acd'] };
 for (const [who, list] of Object.entries(tabs)) {
   run(who === 'admin' ? `me=users.a` : `me=Object.assign({},users.w1);shareOK=true`);

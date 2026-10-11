@@ -15,6 +15,66 @@ service cloud.firestore {
     function isInst() { return active() && prof().get('inst', false) == true; }
     function admin() { return active() && prof().role == 'admin'; }
 
+    // ── 입력값 검사 도구 ──
+    // 문서 ID: 영문·숫자·_·- 만 (따옴표 등으로 화면을 깨뜨리는 ID 방지)
+    function okId(id) { return id.matches('^[A-Za-z0-9_-]{1,100}$'); }
+    function isInt(v, lo, hi) { return v is int && v >= lo && v <= hi; }
+    function txt(v, n) { return v is string && v.size() <= n; }
+    // 한국 시간 기준 'YYYY-MM-DD'
+    function ymdKst(ts) {
+      let k = ts + duration.value(9, 'h');
+      return string(k.year()) + '-' + (k.month() < 10 ? '0' : '') + string(k.month())
+        + '-' + (k.day() < 10 ? '0' : '') + string(k.day());
+    }
+    // 오늘 날짜인지 (폰이 늦게 올리는 경우를 위해 이틀 전·하루 뒤까지 허용)
+    function recentDay(d) {
+      return d == ymdKst(request.time)
+        || d == ymdKst(request.time - duration.value(1, 'd'))
+        || d == ymdKst(request.time - duration.value(2, 'd'))
+        || d == ymdKst(request.time + duration.value(1, 'd'));
+    }
+    // 그 사람의 그 달 판매수당이 이미 '정산' 처리됐는지
+    function settledM(uid, d) {
+      let p = d.split('-');
+      let path = /databases/$(database)/documents/settle/$(p[0] + '-' + p[1] + '_' + uid);
+      return exists(path) && get(path).data.get('paid', false) == true;
+    }
+    // 타투이스트가 넣는 판매 숫자 검사 (서비스·샘플은 0원·수당 없음)
+    function saleNums(x) {
+      return isInt(x.a, 0, 10000000) && isInt(x.qty, 1, 999)
+        && x.c is number && x.c >= 0 && x.c <= 10000000
+        && x.t in ['normal', 'review', 'service', 'sample']
+        && ((x.t != 'service' && x.t != 'sample') || (x.a == 0 && x.c == 0));
+    }
+    // 토스: 결제 줄(최대 3줄) 합계와 카드 금액
+    function payOk(p) { return p.m in ['cash', 'transfer', 'card'] && isInt(p.a, 0, 100000000); }
+    function paysOk(ps, amt) {
+      return ps is list && ps.size() >= 1 && ps.size() <= 3 && payOk(ps[0])
+        && (ps.size() < 2 || payOk(ps[1])) && (ps.size() < 3 || payOk(ps[2]))
+        && (ps.size() == 1 ? ps[0].a
+            : ps.size() == 2 ? ps[0].a + ps[1].a
+            : ps[0].a + ps[1].a + ps[2].a) == amt;
+    }
+    function cardOf(ps) {
+      return (ps[0].m == 'card' ? ps[0].a : 0)
+        + (ps.size() > 1 && ps[1].m == 'card' ? ps[1].a : 0)
+        + (ps.size() > 2 && ps[2].m == 'card' ? ps[2].a : 0);
+    }
+    // 타투이스트끼리 토스 금액 계산이 앱 계산과 똑같은지 (숫자 조작 방지)
+    function tossOk(x) {
+      let fee = x.fee;
+      let cf = x.cf;
+      let amt = x.amt;
+      return isInt(amt, 1, 100000000) && paysOk(x.pays, amt)
+        && isInt(fee, 0, amt) && fee * 10 >= amt && fee * 5 <= amt
+        && cf == math.round(cardOf(x.pays) * get(/databases/$(database)/documents/config/main).data.get('cardFee', 10) / 100.0)
+        && x.aIn == 0
+        && x.cfm in ['share', 'send', 'recv']
+        && (x.cfm == 'send' ? (x.sIn == fee - cf && x.rIn == amt - fee)
+            : x.cfm == 'share' ? (x.sIn == math.round(fee * (amt - cf) / (amt * 1.0)) && x.rIn == amt - cf - x.sIn)
+            : (x.sIn == fee && x.rIn == amt - fee - cf));
+    }
+
     // 사용자 프로필
     match /users/{u} {
       allow read: if signedIn() && (request.auth.uid == u || admin());
@@ -23,6 +83,9 @@ service cloud.firestore {
         && request.resource.data.keys().hasOnly(['name', 'nick', 'want', 'cohort', 'email', 'role', 'status', 'code'])
         && request.resource.data.status == 'pending'
         && request.resource.data.role == 'artist'
+        && txt(request.resource.data.name, 40) && txt(request.resource.data.get('nick', ''), 40)
+        && txt(request.resource.data.get('cohort', ''), 20) && txt(request.resource.data.get('email', ''), 120)
+        && request.resource.data.get('want', 'artist') in ['artist', 'student']
         && request.resource.data.code == get(/databases/$(database)/documents/settings/app).data.signupCode;
       allow update: if admin();
       // 승인 대기 중인 가입 신청만 완전 삭제 가능 (기록이 있는 회원은 '삭제'=숨김 처리)
@@ -67,9 +130,12 @@ service cloud.firestore {
     match /toss/{id} {
       allow read: if active() && (admin() || resource.data.to == request.auth.uid || resource.data.from == request.auth.uid);
       allow create: if admin()
-        || (active() && request.resource.data.from == request.auth.uid
+        || (active() && okId(id) && request.resource.data.from == request.auth.uid
             && request.resource.data.to != request.auth.uid
-            && request.resource.data.st == 'pending');
+            && exists(/databases/$(database)/documents/users/$(request.resource.data.to))
+            && request.resource.data.st == 'pending'
+            && request.resource.data.get('void', false) == false
+            && tossOk(request.resource.data));
       allow update: if admin()
         || (active() && resource.data.to == request.auth.uid && resource.data.st == 'pending'
             && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['st'])
@@ -98,7 +164,7 @@ service cloud.firestore {
     }
     match /supreq/{id} {
       allow read: if active() && (admin() || resource.data.uid == request.auth.uid);
-      allow create: if active() && request.resource.data.uid == request.auth.uid && request.resource.data.st == 'pending';
+      allow create: if active() && okId(id) && request.resource.data.uid == request.auth.uid && request.resource.data.st == 'pending';
       allow update: if admin();
       allow delete: if false;
     }
@@ -116,12 +182,15 @@ service cloud.firestore {
         || (active() && request.resource.data.uid == request.auth.uid
             && id == request.auth.uid + '_' + request.resource.data.m
             && request.resource.data.keys().hasOnly(['uid', 'm', 'req'])
-            && request.resource.data.req.st == 'pending');
+            && request.resource.data.m.matches('^20[0-9]{2}-[01][0-9]$')
+            && request.resource.data.req.st == 'pending'
+            && txt(request.resource.data.req.get('txt', ''), 500));
       allow update: if admin()
         || (active() && resource.data.uid == request.auth.uid
             && id == request.auth.uid + '_' + resource.data.m
             && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['req'])
-            && request.resource.data.req.st == 'pending');
+            && request.resource.data.req.st == 'pending'
+            && txt(request.resource.data.req.get('txt', ''), 500));
       allow delete: if false;
     }
 
@@ -236,6 +305,8 @@ service cloud.firestore {
       allow create, update: if admin()
         || (active() && request.resource.data.uid == request.auth.uid
             && request.resource.data.keys().hasOnly(['uid', 'img'])
+            && request.resource.data.img is string && request.resource.data.img.size() < 700000
+            && request.resource.data.img.matches('^data:image/[a-z]+;base64,[A-Za-z0-9+/=]+$')
             && get(/databases/$(database)/documents/sales/$(id)).data.uid == request.auth.uid);
       allow delete: if false;
     }
@@ -247,6 +318,10 @@ service cloud.firestore {
         && (request.resource.data.uid == request.auth.uid || admin())
         && (request.resource.data.t != 'etc' || admin())
         && (request.resource.data.t != 'service' || admin() || request.resource.data.ap == 'pending')
+        && (admin() || (okId(id) && recentDay(request.resource.data.d)
+            && saleNums(request.resource.data)
+            && request.resource.data.get('void', false) == false
+            && !settledM(request.auth.uid, request.resource.data.d)))
         && (request.resource.data.t != 'review'
             || request.resource.data.sub == 'sep'
             || request.resource.data.rid != '' || request.resource.data.rn != '' || request.resource.data.img != '');
@@ -259,7 +334,11 @@ service cloud.firestore {
             && (request.resource.data.t == 'service'
                 ? request.resource.data.ap == 'pending'
                 : request.resource.data.get('ap', '') == resource.data.get('ap', ''))
-            && request.resource.data.hist.size() == resource.data.hist.size() + 1);
+            && request.resource.data.hist.size() == resource.data.hist.size() + 1
+            && request.resource.data.hist.hasAll(resource.data.hist)
+            && request.resource.data.d == resource.data.d
+            && saleNums(request.resource.data)
+            && !settledM(resource.data.uid, resource.data.d));
       allow delete: if false;
     }
   }
