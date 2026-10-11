@@ -29,6 +29,7 @@ label{font-size:13px;color:var(--mu);display:block;margin:10px 0 4px}.mu{color:v
 .nav button.on{background:var(--soft);color:var(--ac)}.nav i,.grid i{font-style:normal;font-size:20px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}.grid button{padding:16px 8px;display:flex;flex-direction:column;align-items:center;gap:6px}
 .tk{display:inline-block;margin:4px;padding:14px 16px;border-radius:12px;border:1px dashed var(--ac);background:var(--soft)}
+@keyframes spin{to{transform:rotate(360deg)}}.spin{width:28px;height:28px;margin:0 auto;border:3px solid var(--ln);border-top-color:var(--ac);border-radius:50%;animation:spin .8s linear infinite}
 #modal{position:fixed;inset:0;background:#0009;display:none;align-items:center;justify-content:center;padding:12px;z-index:9}#modal>div{max-height:90vh;overflow:auto;width:100%;max-width:440px}
 .bx{border:1px solid var(--ln);border-radius:12px;padding:10px 12px;margin-bottom:10px;background:var(--bg)}.bx .hd2{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.bx .hd2 b{font-size:15px;margin-right:auto;min-width:0;overflow-wrap:anywhere}
 .tag{display:inline-block;font-size:11px;padding:2px 7px;border-radius:999px;border:1px solid var(--ln);color:var(--mu);white-space:nowrap}.tag.ok{color:var(--ac);border-color:var(--ac)}.tag.wa{color:var(--wa);border-color:var(--wa)}
@@ -98,16 +99,22 @@ let bootUid='';
 auth.onAuthStateChanged(async u=>{if(!u){bootUid='';return login()}if(bootUid==u.uid)return;bootUid=u.uid;
 for(let i=0;i<3;i++){try{await boot(u);return}catch(e){console.log(e);if(i<2){await new Promise(r=>setTimeout(r,800*(i+1)));continue}
 gate('오류가 났어요','<p>'+esc(e.message||e)+'</p><p class="mu">새로고침해도 계속되면 이 화면을 캡처해서 보내주세요.</p><pre class="mu" style="white-space:pre-wrap;font-size:11px;max-height:200px;overflow:auto">'+esc(String(e.stack||'').split('\n').slice(0,8).join('\n'))+'</pre>');bootUid=''}}});
-async function boot(u){await u.reload();await u.getIdToken(true);
+const ld=m=>{const a=$('#app');if(a&&!me)a.innerHTML='<div class="card" style="text-align:center;padding:28px 16px"><div class="spin"></div><p style="margin:12px 0 0">'+m+'</p><p class="mu" style="margin:4px 0 0">처음 열 때는 조금 걸릴 수 있어요</p></div>'};
+async function boot(u){ld('계정 확인 중…');if(!u.emailVerified)await u.reload();if(u.emailVerified){const tr=await u.getIdTokenResult().catch(()=>null);if(!tr||!tr.claims.email_verified)await u.getIdToken(true)}
 if(!u.emailVerified)return gate('이메일 인증이 필요해요','<p>'+u.email+'로 보낸 인증 메일의 링크를 누른 뒤 새로고침하세요. 메일이 안 오면 스팸함을 확인하세요.</p>');
 const s=await db.doc('users/'+u.uid).get();
 if(!s.exists)return gate('가입 정보 입력',`<label>이름</label><input id="nn"><label>닉네임 (앱에 표시돼요)</label><input id="nk"><label>가입 구분</label><select id="kd"><option value="artist">타투이스트 (쉐어)</option><option value="student">수강생</option></select><label>수강생이면 기수 (예: 12)</label><input id="ch"><label>가게 가입코드</label><input id="cd"><button class="p" style="margin-top:12px" onclick="mkProfile('${u.uid}','${u.email}')">신청</button>`);
 me={id:u.uid,...cl(s.data())};if(me.status=='disabled')return gate('비활성 계정','<p>대장님께 문의하세요.</p>');
 if(me.status!='active')return gate('승인 대기 중','<p>대장님이 승인하면 사용할 수 있어요.</p>');
-if(me.role!='student')await liveQ('cfg',db.doc('config/main'),d=>{if(d.exists)cfg=d.data()});
+ld('기록 불러오는 중…');
 liveQ('me',db.doc('users/'+me.id),d=>{if(d.metadata.fromCache)return;if(!d.exists)return location.reload();const x=cl(d.data());if(x.role!=me.role||x.status!=me.status)return location.reload();Object.assign(me,x)});
-if(adm()){await loadUsers();await migrate();await loadBuys()}
-if(me.role=='student'){await loadNotices();await loadAcad();tab='home';draw();showNotice();startAuto();return}await loadSales();if(adm())migImg();await loadRoster();await loadToss();if(!adm())await loadMySP();await loadLevels();await loadEvents();if(isInst())await loadAcad();await loadNotices();await loadSup();await loadSettle();if(adm())await syncRoster();tab='home';draw();showNotice();startAuto()}
+if(me.role=='student'){await Promise.all([loadNotices(),loadAcad()]);tab='home';draw();showNotice();startAuto();return}
+// 서로 상관없는 자료는 동시에 받는다 (하나씩 차례로 받으면 서버 왕복이 줄줄이 쌓여 느려짐)
+const cfgP=liveQ('cfg',db.doc('config/main'),d=>{if(d.exists)cfg=d.data()}),A=[cfgP,loadSales(),loadRoster(),loadToss(),loadNotices(),loadSup(),loadSettle()];
+if(adm())A.push(Promise.all([cfgP,loadUsers()]).then(migrate),loadBuys());else A.push(loadMySP());
+await Promise.all(A);tab='home';draw();showNotice();startAuto();
+// 첫 화면을 띄운 뒤에 받아도 되는 것 (레벨·이벤트·수강·명단 정리)
+(async()=>{try{if(adm())migImg();await loadLevels();await loadEvents();if(isInst())await loadAcad();if(adm())await syncRoster()}catch(e){console.log(e)}redraw()})()}
 function mkProfile(id,email){db.doc('users/'+id).set({name:$('#nn').value.trim(),nick:$('#nk').value.trim(),want:$('#kd').value,cohort:$('#ch').value.trim(),email,role:'artist',status:'pending',code:$('#cd').value.trim()}).then(()=>location.reload()).catch(()=>toast('가입코드가 맞지 않아요'))}
 async function loadSales(){return liveQ('sales',adm()?db.collection('sales'):db.collection('sales').where('uid','==',me.id),sn=>{allSales=byTk(docsOf(sn));sales=allSales.filter(x=>inP(x.d))})}
 async function loadBuys(){await Promise.all([liveQ('buys',db.collection('purchases'),sn=>buys=byTk(docsOf(sn))),liveQ('cnts',db.collection('counts'),sn=>cnts=byTk(docsOf(sn))),liveQ('cash',db.collection('cash'),sn=>cashs=byTk(docsOf(sn))),loadLedger(),loadGuests()])}
@@ -634,7 +641,7 @@ const form=`<div class="card fold"><h2>이벤트 만들기</h2><label>이벤트 
 return form+`<div class="card"><h2>이벤트 목록</h2><div class="tbl"><table><tr><th>이벤트</th><th>종류</th><th>반복</th><th>상품</th><th>상태</th><th></th></tr>${evs.map(e=>`<tr style="${e.void?'opacity:.4;text-decoration:line-through':''}"><td>${esc(e.title)}</td><td>${e.kind=='ticket'?'복권':'추첨'}</td><td>${REP[e.rep]}</td><td style="white-space:normal">${pzTx(e.prizes)}</td><td>${e.void?(e.canceledAt?'취소됨':'삭제됨'):e.st=='off'?'중지':'진행'}</td><td>${e.void?'':`<button class="s" onclick="evTog('${e.id}','st','${e.st=='off'?'on':'off'}')">${e.st=='off'?'재개':'중지'}</button> <button class="d s" onclick="evCancel('${e.id}')">취소(삭제)</button>`}</td></tr>`).join('')||'<tr><td>이벤트가 없어요</td></tr>'}</table></div></div>
 <div class="card"><h2>회차 (최근 45일)</h2><div class="tbl"><table><tr><th>기간</th><th>이벤트</th><th>상태</th><th>결과</th><th></th></tr>${rows.map(r=>`<tr><td>${r.d}${r.end&&r.end!=r.d?'~'+r.end.slice(5):''}</td><td>${esc(r.title)}</td><td>${r.kind=='ticket'?'복권':'추첨'} · ${r.st=='canceled'?'<span class="wa">취소됨</span>':r.st=='drawn'?'완료':'진행'}</td><td style="white-space:normal">${r.kind=='ticket'?'발행 '+(r.tix||0)+'장 · 당첨 '+(r.wins||0)+'장':(r.st=='drawn'?(r.winners||[]).map(w=>esc(w.name)+'('+esc(w.prize.n)+')').join(', '):'추첨 전')}</td><td>${r.kind=='ticket'?`<button class="s" onclick="showRoundPrizes('${r.id}')">당첨자</button>`:(r.st=='open'?`<button class="p s" onclick="drawRound('${r.id}')">추첨</button>`:'')}${r.st!='canceled'?` <button class="d s" onclick="rdCancelAsk('${r.id}')">회차 취소</button>`:''}</td></tr>`).join('')||'<tr><td>회차가 없어요</td></tr>'}</table></div><p class="mu">쉐어비 할인 당첨은 다음 달 쉐어비에 자동으로 반영돼요.</p></div>`}
 function hdr(){const st=startOf(me),days=st?Math.floor((new Date(today())-new Date(st))/864e5)+1:0,isS=me.role=='student',who=isS?((me.cohort?me.cohort+'기 ':'')+me.name):(me.nick||me.name),sub=isS?'수강생':[adm()?'총괄':'',days>0?'블랙고스트와 '+days+'일째':'',!adm()?'Lv.'+levelOf(me):''].filter(Boolean).join(' · ');
-return `<div class="card"><div class="row" style="justify-content:space-between"><span class="mu">BLACKGHOST TATTOO STUDIO · v27</span><button class="s" onclick="out()">로그아웃</button></div><div class="hi">${esc(who)}님 오늘도 화이팅! 💪</div>${sub?`<div class="mu">${esc(sub)}</div>`:''}</div>`}
+return `<div class="card"><div class="row" style="justify-content:space-between"><span class="mu">BLACKGHOST TATTOO STUDIO · v28</span><button class="s" onclick="out()">로그아웃</button></div><div class="hi">${esc(who)}님 오늘도 화이팅! 💪</div>${sub?`<div class="mu">${esc(sub)}</div>`:''}</div>`}
 let cs='user';
 function confView(){const bar=`<div class="card"><div class="row">${[['user','회원 관리'],['prod','제품·수당'],['lv','레벨'],['toss','토스'],['note','공지'],['bk','백업']].map(([k,l])=>`<button class="${cs==k?'on':''}" onclick="cs='${k}';draw()">${l}</button>`).join('')}</div></div>`;
 return bar+(cs=='user'?memberView():cs=='prod'?prodView():cs=='lv'?lvSetView():cs=='toss'?tossSet():cs=='bk'?bkView():noticeCard())}
