@@ -1,6 +1,6 @@
 {
-  "name": "BG DESK · BLACKGHOST TATTOO STUDIO",
-  "short_name": "BG DESK",
+  "name": "블랙고스트타투(전용)",
+  "short_name": "블랙고스트타투(전용)",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
