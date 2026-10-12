@@ -1,0 +1,312 @@
+<title>유령 마을 시안</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gowun+Dodum&display=swap">
+<style>
+/* 레이아웃: 폰 화면 하나 = 살아 움직이는 유령 마을. 카메라(.cam) 안에 배경 SVG·집·유령·입자 캔버스. 집을 누르면 문이 열리고 카메라가 집으로 다가간 뒤 화면 전환. */
+:root{
+  --page:#0b0a12; --card:#16141f; --ln:#33304a; --silver:#ece9f3; --mu:#a7a2b8;
+  --ac:#58c2a6; --warm:#ffcf6b; --pink:#ff7aa8;
+  --f-disp:"Black Han Sans","Apple SD Gothic Neo",sans-serif; --f-body:"Gowun Dodum","Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+  color-scheme:dark;
+}
+html,body{height:100%}
+body{margin:0;background:var(--page);color:var(--silver);font-family:var(--f-body);display:flex;justify-content:center;padding-inline:16px;padding-block:12px;box-sizing:border-box}
+*{box-sizing:border-box}
+.phone{width:100%;max-width:400px;display:flex;flex-direction:column;gap:10px}
+.note{font-size:12px;color:var(--mu);text-align:center;line-height:1.5;margin:0}
+.note b{color:var(--warm)}
+.screen{position:relative;border-radius:22px;overflow:hidden;border:1px solid var(--ln);background:#000;height:680px;max-height:calc(100vh - 110px);min-height:540px;display:flex;flex-direction:column}
+.top{display:flex;align-items:center;gap:8px;padding:10px 12px;background:linear-gradient(#000c,#0000);position:absolute;left:0;right:0;top:0;z-index:8}
+.top h1{font-family:var(--f-disp);font-weight:400;font-size:18px;margin:0;letter-spacing:.5px;color:#fff;text-shadow:0 2px 6px #000}
+.top .who{font-size:12px;color:#ddd8ea}
+.top .sp{flex:1}
+.ib{border:1px solid #fff5;background:#0008;color:#fff;border-radius:999px;padding:6px 10px;font:inherit;font-size:12px;cursor:pointer;backdrop-filter:blur(4px);transition:background .2s}
+.ib.on{background:var(--warm);color:#3a2a00;border-color:var(--warm)}
+.ib:focus-visible,.house:focus-visible,.nav button:focus-visible,.back:focus-visible,.gb:focus-visible{outline:2px solid var(--warm);outline-offset:2px}
+
+.village{position:relative;flex:1;overflow:hidden;cursor:pointer}
+.cam{position:absolute;inset:0;transform-origin:50% 50%;transition:transform .7s cubic-bezier(.65,0,.35,1),filter .7s}
+.cam.zoom{filter:brightness(.4) blur(1px)}
+.scene{position:absolute;inset:0;width:100%;height:100%}
+#fx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:3}
+.sky{transition:opacity 1.2s}
+.sway{transform-box:fill-box;transform-origin:50% 100%;animation:sway 5s ease-in-out infinite}
+@keyframes sway{50%{transform:rotate(2.5deg)}}
+.lampg{animation:lampg 2.6s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes lampg{50%{opacity:.6;transform:scale(.9)}}
+.cloud{animation:cloud 40s linear infinite}
+@keyframes cloud{from{transform:translateX(-160px)}to{transform:translateX(460px)}}
+
+.house{position:absolute;background:none;border:0;padding:0;cursor:pointer;color:inherit;font:inherit;text-align:center;z-index:2;animation:hb 6s ease-in-out infinite}
+@keyframes hb{50%{transform:translateY(-2px)}}
+.house.hit{animation:squash .45s ease}
+@keyframes squash{0%{transform:scale(1)}30%{transform:scale(1.08,.9)}60%{transform:scale(.95,1.06)}100%{transform:scale(1)}}
+.house svg{width:100%;height:auto;display:block;filter:drop-shadow(0 10px 8px #000a);overflow:visible}
+.house .door{transform-box:fill-box;transform-origin:0% 50%;transition:transform .45s ease}
+.house.open .door{transform:perspective(60px) rotateY(-75deg) scaleX(.35)}
+.house .lb{display:inline-block;margin-top:-4px;font-size:11.5px;background:#0b0a12d9;color:#fff;border:1px solid #ffffff22;border-radius:8px;padding:2px 7px;white-space:nowrap}
+.bub{position:absolute;top:-8px;right:-6px;background:var(--pink);color:#fff;font-size:11px;font-weight:700;border-radius:999px;padding:3px 8px;box-shadow:0 2px 8px #000a;animation:bob 1.8s ease-in-out infinite;white-space:nowrap;z-index:1}
+.bub.y{background:var(--warm);color:#3a2a00}
+@keyframes bob{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-5px) scale(1.04)}}
+.win{animation:flick 5s infinite}
+:root.day .win{animation:none;opacity:.35}
+@keyframes flick{0%,100%{opacity:1}46%{opacity:1}48%{opacity:.7}50%{opacity:1}52%{opacity:.8}}
+.neon{animation:neon 1.6s steps(2) infinite}
+@keyframes neon{50%{opacity:.5}}
+.smoke{animation:smk 5s ease-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes smk{0%{opacity:0;transform:translate(0,0) scale(.5)}25%{opacity:.7}100%{opacity:0;transform:translate(10px,-34px) scale(1.8)}}
+
+/* 내 유령: JS가 위치를 옮김 */
+.me{position:absolute;width:86px;height:93px;margin:-80px 0 0 -43px;z-index:4;transition:left 1.1s cubic-bezier(.45,0,.25,1),top 1.1s cubic-bezier(.45,0,.25,1);pointer-events:none}
+.me .body{width:100%;height:100%;animation:fl 2.6s ease-in-out infinite;transform-origin:50% 90%}
+.me .tilt{width:100%;height:100%;transition:transform .5s}
+.me.spin .body{animation:spin .9s ease}
+.me.jump .body{animation:jmp .7s ease}
+@keyframes fl{0%,100%{transform:translateY(0) scale(1,1)}50%{transform:translateY(-10px) scale(.97,1.03)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes jmp{0%{transform:scale(1.15,.85)}35%{transform:translateY(-34px) scale(.9,1.1)}70%{transform:translateY(0) scale(1.1,.9)}100%{transform:scale(1)}}
+.me .say{position:absolute;bottom:100%;left:50%;transform:translateX(-50%) scale(1);background:#fff;color:#222;font-size:12px;border-radius:10px;padding:4px 9px;white-space:nowrap;margin-bottom:4px;box-shadow:0 3px 8px #0008;transition:transform .25s,opacity .25s}
+.me .say.hide{transform:translateX(-50%) scale(.6);opacity:0}
+.me .say::after{content:"";position:absolute;left:50%;top:100%;margin-left:-5px;border:5px solid transparent;border-top-color:#fff}
+.shadow{position:absolute;left:50%;bottom:-12px;width:50px;height:9px;margin-left:-25px;border-radius:50%;background:#0008;animation:shd 2.6s ease-in-out infinite;filter:blur(1px)}
+@keyframes shd{50%{transform:scale(.75);opacity:.55}}
+.mini{position:absolute;width:32px;height:35px;margin:-30px 0 0 -16px;z-index:3;transition:left 3.5s linear,top 3.5s linear;pointer-events:none}
+.mini .body{animation:fl 2.2s ease-in-out infinite;width:100%;height:100%}
+.mini .nm{position:absolute;top:-15px;left:50%;transform:translateX(-50%);font-size:10px;color:#fff;background:#0009;border-radius:6px;padding:0 4px;white-space:nowrap}
+.mini .hi{position:absolute;bottom:115%;left:50%;transform:translateX(-50%);font-size:10px;background:#fff;color:#222;border-radius:8px;padding:1px 6px;white-space:nowrap;opacity:0;transition:opacity .3s}
+.mini .hi.on{opacity:1}
+.tap{position:absolute;width:30px;height:12px;margin:-6px 0 0 -15px;border:2px solid #ffffffaa;border-radius:50%;z-index:2;pointer-events:none;animation:tap .7s ease-out forwards}
+@keyframes tap{from{transform:scale(.3);opacity:1}to{transform:scale(1.6);opacity:0}}
+
+.nav{display:flex;gap:2px;padding:6px;background:var(--card);border-top:1px solid var(--ln);position:relative;z-index:8}
+.nav button{flex:1;border:0;background:none;color:var(--mu);font:inherit;font-size:11px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px 0;border-radius:10px;cursor:pointer}
+.nav button.on{background:#58c2a622;color:var(--ac)}
+.nav i{font-style:normal;font-size:19px}
+
+.inside{position:absolute;inset:0;background:var(--card);display:flex;flex-direction:column;z-index:9;clip-path:circle(0% at var(--cx,50%) var(--cy,50%));transition:clip-path .55s cubic-bezier(.6,0,.3,1);visibility:hidden}
+.inside.open{clip-path:circle(150% at var(--cx,50%) var(--cy,50%));visibility:visible}
+.inside .hd{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--ln);background:var(--hb,#1f1c2b)}
+.back{border:1px solid #ffffff33;background:#0005;color:#fff;border-radius:10px;padding:6px 10px;font:inherit;font-size:13px;cursor:pointer}
+.inside h2{font-family:var(--f-disp);font-weight:400;font-size:19px;margin:0;color:#fff}
+.inside .body2{padding:14px;overflow:auto;display:flex;flex-direction:column;gap:10px}
+.box{border:1px solid var(--ln);border-radius:14px;padding:12px;background:#ffffff08;animation:rise .45s both}
+.box:nth-child(2){animation-delay:.08s}.box:nth-child(3){animation-delay:.16s}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}}
+.box h3{margin:0 0 6px;font-size:14px}
+.mu{color:var(--mu);font-size:12px}
+.row{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--ln);border-radius:10px;padding:7px 10px;font-size:13px}
+.chip.on{background:var(--ac);border-color:var(--ac);color:#06231c}
+.btn{display:block;width:100%;border:0;border-radius:12px;padding:11px;background:var(--ac);color:#06231c;font:inherit;font-weight:700;text-align:center}
+.big{font-family:var(--f-disp);font-size:24px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.gb{border:1px solid var(--ln);border-radius:12px;background:#ffffff08;color:var(--silver);padding:14px 6px;font:inherit;cursor:pointer}
+.ex{font-size:11px;color:var(--warm);margin:0}
+/* 집 안 배경 그림 (대장님이 만든 그림) */
+.hero{position:relative;height:50%;flex-shrink:0;overflow:hidden;display:none;background:#000}
+.hasHero .hero{display:block}
+.heroImg{position:absolute;inset:-6%;background:center 40%/cover no-repeat;animation:kb 20s ease-in-out infinite alternate}
+@keyframes kb{from{transform:scale(1) translate(0,0)}to{transform:scale(1.1) translate(-2%,-1%)}}
+.warm{position:absolute;inset:0;background:radial-gradient(ellipse at 15% 35%,#ffb45a55,#0000 55%),radial-gradient(circle at 64% 30%,#ffd28a44,#0000 30%);mix-blend-mode:screen;animation:warm 4s ease-in-out infinite}
+@keyframes warm{0%,100%{opacity:.9}43%{opacity:.75}45%{opacity:1}47%{opacity:.8}}
+.ray{position:absolute;left:-20%;top:-10%;width:70%;height:140%;background:linear-gradient(100deg,#0000 30%,#ffe2a833 45%,#0000 60%);animation:ray 7s ease-in-out infinite;mix-blend-mode:screen}
+@keyframes ray{50%{transform:translateX(18%);opacity:.6}}
+.dust{position:absolute;width:3px;height:3px;border-radius:50%;background:#fff1c9;box-shadow:0 0 6px 1px #ffd98aaa;animation:dust linear infinite;opacity:0}
+@keyframes dust{0%{transform:translate(0,0);opacity:0}15%{opacity:.9}100%{transform:translate(30px,-140px);opacity:0}}
+.shade{position:absolute;left:0;right:0;bottom:0;height:40%;background:linear-gradient(#0000,var(--card))}
+.heroGhost{position:absolute;right:8%;bottom:16%;width:74px;height:80px;animation:fl 2.6s ease-in-out infinite}
+.heroGhost .say{position:absolute;bottom:100%;right:0;background:#fff;color:#222;font-size:12px;border-radius:10px;padding:4px 9px;white-space:nowrap;margin-bottom:4px;box-shadow:0 3px 8px #0008;animation:rise .5s .5s both}
+.hasHero .hd{position:absolute;left:0;right:0;top:0;z-index:3;background:linear-gradient(#000b,#0000);border:0}
+.hasHero .body2{position:relative;margin-top:-22px;border-radius:20px 20px 0 0;background:var(--card);box-shadow:0 -8px 20px #0007;flex:1}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* v5: 대장님 AI 마을 그림을 지도로. 세로로 길어서 위아래로 밀어 볼 수 있음 */
+.village{padding-top:54px;background:#120d10;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.village::-webkit-scrollbar{display:none}
+.map{position:relative;width:100%;aspect-ratio:941/1672;transform-origin:50% 50%;transition:transform .75s cubic-bezier(.65,0,.35,1),filter .75s}
+.map.zoom{filter:brightness(.35) blur(1.5px)}
+.mapImg{position:absolute;inset:0;width:100%;height:100%;display:block;user-select:none;-webkit-user-drag:none}
+.tint{position:absolute;inset:0;pointer-events:none;background:#08062a;mix-blend-mode:multiply;opacity:0;transition:opacity 1.4s}
+:root.night .tint{opacity:.55}
+.glows{position:absolute;inset:0;pointer-events:none;mix-blend-mode:screen}
+.lg2{position:absolute;width:15%;aspect-ratio:1;margin:-7.5% 0 0 -7.5%;border-radius:50%;background:radial-gradient(#ffcf7aaa,#ff9a3a33 40%,#0000 70%);animation:lampg 2.8s ease-in-out infinite}
+:root.night .lg2{background:radial-gradient(#ffd98add,#ffa04a55 40%,#0000 70%)}
+.win2{position:absolute;border-radius:40%;background:radial-gradient(#ffd27a99,#0000 70%);animation:flick 5s infinite;pointer-events:none;mix-blend-mode:screen}
+.smk{position:absolute;width:3.5%;aspect-ratio:1;border-radius:50%;background:#e9e4f2;filter:blur(2px);animation:smk2 4.5s ease-out infinite;pointer-events:none}
+@keyframes smk2{0%{opacity:0;transform:translate(0,0) scale(.5)}20%{opacity:.55}100%{opacity:0;transform:translate(14px,-40px) scale(2.2)}}
+.fall{position:absolute;left:3.2%;top:13%;width:8%;height:15%;pointer-events:none;background:repeating-linear-gradient(180deg,#ffffff00 0 8px,#ffffff55 8px 11px);background-size:100% 40px;animation:fall .5s linear infinite;mix-blend-mode:screen;opacity:.7;border-radius:30%}
+@keyframes fall{to{background-position:0 40px}}
+.spot{position:absolute;background:none;border:0;padding:0;cursor:pointer;z-index:2;border-radius:30%}
+.spot::before{content:"";position:absolute;inset:6%;border-radius:40%;box-shadow:0 0 0 0 #ffd98a00;transition:box-shadow .3s,background .3s}
+.spot:hover::before,.spot.hit::before{background:#ffe7a822;box-shadow:0 0 22px 6px #ffd98a88}
+.spot .lb{position:absolute;left:50%;bottom:-4px;transform:translateX(-50%);font-size:11px;background:#0b0a12d9;color:#fff;border:1px solid #ffffff2a;border-radius:8px;padding:2px 7px;white-space:nowrap;font-family:var(--f-body)}
+.spot .bub{top:2%;right:4%}
+.spot:focus-visible{outline:2px solid var(--warm);outline-offset:2px}
+.me{width:16%;height:auto;aspect-ratio:120/130;margin:0;transform:translate(-50%,-85%)}
+.mini{width:8%;height:auto;aspect-ratio:120/130;margin:0;transform:translate(-50%,-85%)}
+#fx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:3}
+.hint{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);z-index:7;font-size:11px;color:#fff;background:#000a;border-radius:999px;padding:4px 10px;pointer-events:none;animation:hintf 4s 3s forwards}
+@keyframes hintf{to{opacity:0}}
+</style>
+
+<div class="phone">
+  <p class="note"><b>미리보기 시안 6</b> · 대장님이 AI로 만든 마을 그림을 넣었어요. 숫자는 모두 예시예요.<br>위아래로 밀어 마을을 구경하고, 건물을 눌러 들어가 보세요. 🔊로 음악을 켤 수 있어요.</p>
+  <div class="screen">
+    <div class="top"><div><h1>유령 마을</h1><div class="who">길동님 · 👻 뭉치 (아기 유령)</div></div><span class="sp"></span><button class="ib" id="snd" type="button" aria-pressed="false">🔇 음악</button><button class="ib" id="dn" type="button">🌙 밤</button></div>
+    <div class="village" id="vil">
+      <div class="map" id="map">
+        <img class="mapImg" src="village.jpg" alt="유령 마을 지도" draggable="false">
+        <div class="tint"></div>
+        <div class="fall"></div>
+        <div class="glows" id="glows"></div>
+        <canvas id="fx"></canvas>
+        <div class="me" id="me" style="left:50%;top:58%"><div class="say" id="say">어서 와! 👻</div><div class="tilt" id="tilt"><div class="body" id="mebody"></div></div><div class="shadow"></div></div>
+      </div>
+    </div>
+    <div class="hint">⬆⬇ 밀어서 마을 구경</div>
+    <nav class="nav">
+      <button class="on" type="button"><i>🏘</i>마을</button>
+      <button type="button" data-go="cream"><i>🧾</i>판매입력</button>
+      <button type="button" data-go="toss"><i>🤝</i>토스</button>
+      <button type="button" data-go="share"><i>💳</i>쉐어비</button>
+      <button type="button"><i>☰</i>더보기</button>
+    </nav>
+    <section class="inside" id="in" aria-live="polite"><div class="hd"><button class="back" id="bk" type="button">← 마을로</button><h2 id="ttl"></h2></div><div class="hero" id="hero"><div class="heroImg" id="heroImg"></div><div class="ray"></div><div class="warm"></div><div id="dust"></div><div class="shade"></div><div class="heroGhost" id="heroGhost"></div></div><div class="body2" id="bd"></div></section>
+  </div>
+  <p class="note">건물 배정은 예시예요 (물약가게=크림, 빵집=토스, 책방=쉐어비 장부, 분수=소원 복권 …). 바꾸고 싶으면 말씀해 주세요.</p>
+</div>
+
+<script>
+const $=s=>document.querySelector(s);
+const rnd=(a,b)=>a+Math.random()*(b-a);
+// 그림 속 건물 위치 (그림 가로·세로에 대한 %): x, y, 폭, 높이
+const H={
+  cream:{n:'타투크림하우스',sign:'🧴',hb:'#4a2a6b',bg:'studio.jpg',hi:'어서 와! 오늘도 크림 팔자 🧴',r:[20,12,30,20]},
+  toss:{n:'토스하우스',sign:'🤝',hb:'#6b3d0f',bg:'in_toss.jpg',hi:'작업 넘겨줄 손님 있어? 🤝',r:[57,13,27,18],b:['🔔 승인 1건','']},
+  supply:{n:'창고',sign:'📦',hb:'#2f4a2a',bg:'in_supply.jpg',hi:'니들이랑 랩 챙겨 갈까? 📦',r:[3,28,28,18]},
+  pet:{n:'유령 온실',sign:'🌱',hb:'#1e5246',r:[66,29,32,19],b:['🍙 배고파요','y'],bs:'top:45%;right:2%'},
+  lotto:{n:'소원 분수',sign:'🎁',hb:'#6b5410',bg:'in_lotto.jpg',hi:'오늘의 행운을 긁어 봐! 🎟',r:[39,37,27,14],b:['🎟 2장','']},
+  deco:{n:'꾸미기 상점',sign:'🎨',hb:'#7a2a2a',r:[9,48,35,21]},
+  share:{n:'쉐어비 책방',sign:'💳',hb:'#2a2a5a',bg:'in_share.jpg',hi:'금고는 비밀번호로만 열려 🔒',r:[63,49,35,21],b:['입금 예정','y']},
+  game:{n:'게임 동굴',sign:'🎮',hb:'#3a2a1a',bg:'in_game.jpg',hi:'한 판 하고 가! 🎮',r:[10,0,18,9],b:['오늘 12/30','y'],bs:'top:auto;bottom:-70%;right:-30%'},
+  castle:{n:'대장님 성',sign:'🏰',hb:'#3a1a3a',r:[80,0,19,10]}
+};
+
+// 건물 누르는 자리 만들기
+const map=$('#map');
+Object.entries(H).forEach(([k,h])=>{const [x,y,w,hh]=h.r,b=document.createElement('button');b.className='spot';b.type='button';b.dataset.h=k;b.style.cssText=`left:${x}%;top:${y}%;width:${w}%;height:${hh}%`;b.setAttribute('aria-label',h.n+' 들어가기');
+ b.innerHTML=(h.b&&h.b[0]?`<span class="bub ${h.b[1]}" ${h.bs?`style="${h.bs}"`:''}>${h.b[0]}</span>`:'')+`<span class="lb">${h.sign} ${h.n}</span>`;map.appendChild(b)});
+// 그림 위 효과: 등불 빛, 창문 빛, 굴뚝 연기
+const G=$('#glows');
+[[53,33],[33,35],[31,47],[52,49],[67,44],[45,58],[63,60],[14,66],[48,82],[61,82],[68,85],[29,26],[73,26],[90,24]].forEach(([x,y],i)=>{const e=document.createElement('div');e.className='lg2';e.style.left=x+'%';e.style.top=y+'%';e.style.animationDelay=(-i*.37)+'s';G.appendChild(e)});
+[[26,24,6,4],[38,24,9,5],[66,24,8,4],[80,23,5,4],[12,38,7,4],[85,38,10,6],[22,62,8,4],[77,62,10,6],[90,60,6,5]].forEach(([x,y,w,h],i)=>{const e=document.createElement('div');e.className='win2';e.style.cssText=`left:${x-w/2}%;top:${y-h/2}%;width:${w}%;height:${h}%;animation-delay:${-i*.7}s`;G.appendChild(e)});
+[[30,11.5],[62.5,11.5],[89,47.5]].forEach(([x,y])=>{for(let i=0;i<3;i++){const e=document.createElement('div');e.className='smk';e.style.left=x+'%';e.style.top=y+'%';e.style.animationDelay=(-i*1.5)+'s';map.appendChild(e)}});
+const T1='M60 8C30 8 14 32 14 62v52l12-10 11 12 12-12 11 12 11-12 12 12 11-12 12 10V62C106 32 90 8 60 8z',T2='M60 8C30 8 14 32 14 62v48l12 4 11-8 12 8 11-8 11 8 12-8 11 8 12-4V62C106 32 90 8 60 8z';
+const ghost=(c,acc,id)=>`<svg viewBox="0 0 120 130" aria-hidden="true" style="width:100%;height:100%;overflow:visible"><path d="${T1}" fill="${c}"><animate attributeName="d" values="${T1};${T2};${T1}" dur="1.2s" repeatCount="indefinite"/></path><path d="${T1}" fill="#fff" opacity=".18" transform="translate(-4 -4) scale(.92)"/>
+<g ${id?`id="${id}"`:''} style="transition:transform .25s"><ellipse cx="44" cy="58" rx="7" ry="9" fill="#1d1d1b"><animate attributeName="ry" values="9;9;1;9;9" keyTimes="0;.9;.93;.96;1" dur="${3.5+Math.random()*2}s" repeatCount="indefinite"/></ellipse><ellipse cx="76" cy="58" rx="7" ry="9" fill="#1d1d1b"><animate attributeName="ry" values="9;9;1;9;9" keyTimes="0;.9;.93;.96;1" dur="${3.5+Math.random()*2}s" repeatCount="indefinite"/></ellipse><circle cx="46" cy="55" r="2.6" fill="#fff"/><circle cx="78" cy="55" r="2.6" fill="#fff"/></g>
+<path ${id?'id="mouth"':''} d="M50 76q10 9 20 0" stroke="#1d1d1b" stroke-width="3.5" fill="none" stroke-linecap="round"/><ellipse cx="34" cy="72" rx="6" ry="3.5" fill="#f3a6b8" opacity=".75"/><ellipse cx="86" cy="72" rx="6" ry="3.5" fill="#f3a6b8" opacity=".75"/>${acc||''}</svg>`;
+
+$('#mebody').innerHTML=ghost('#f4f1ea','<path d="M60 16l-17-9v18zM60 16l17-9v18z" fill="#ff5fa2"/><circle cx="60" cy="16" r="4.5" fill="#c21f6b"/>','eyes');
+
+// 입자: 낙엽, 반딧불이(밤), 물 위 반짝임, 분수 물방울, 유령 반짝이
+const cv=$('#fx'),cx=cv.getContext('2d');let CW=0,CH2=0,dpr=Math.min(2,window.devicePixelRatio||1);
+function fit(){const r=map.getBoundingClientRect();CW=r.width;CH2=r.width*1672/941;cv.width=CW*dpr;cv.height=CH2*dpr;cx.setTransform(dpr,0,0,dpr,0,0)}fit();addEventListener('resize',fit);
+let NIGHT=false;const P=[];
+for(let i=0;i<22;i++)P.push({k:'leaf',x:rnd(0,1),y:rnd(0,1),p:rnd(0,6.3),s:rnd(.6,1.2),c:['#e8662b','#f2a33a','#c9411f','#ffb347'][i%4]});
+for(let i=0;i<18;i++)P.push({k:'fly',x:rnd(.05,.95),y:rnd(.2,.8),p:rnd(0,6.3),s:rnd(.5,1)});
+for(let i=0;i<26;i++)P.push({k:'glint',x:rnd(0,1),y:rnd(.84,1),p:rnd(0,6.3)});
+function spark(x,y,n,col){for(let i=0;i<n;i++)P.push({k:'sp',x,y,vx:rnd(-.7,.7),vy:rnd(-1.5,-.3),life:1,c:col||'#fff6c0'})}
+let lastT=performance.now(),moving=false;
+function loop(t){const dt=Math.min(50,t-lastT)/16.7;lastT=t;cx.clearRect(0,0,CW,CH2);
+ for(let i=P.length-1;i>=0;i--){const q=P[i];
+  if(q.k=='leaf'){q.y+=.0007*dt*q.s;q.p+=.025*dt;if(q.y>1){q.y=-.02;q.x=rnd(0,1)}const x=q.x*CW+Math.sin(q.p)*16,y=q.y*CH2;cx.save();cx.translate(x,y);cx.rotate(q.p*1.5);cx.scale(1,Math.abs(Math.cos(q.p)));cx.fillStyle=q.c;cx.beginPath();cx.ellipse(0,0,4.5*q.s,2.6*q.s,0,0,7);cx.fill();cx.restore()}
+  else if(q.k=='fly'){if(!NIGHT)continue;q.p+=.02*dt;const x=q.x*CW+Math.sin(q.p*1.3)*16,y=q.y*CH2+Math.cos(q.p)*10,a=.3+.7*Math.abs(Math.sin(q.p*2));const g=cx.createRadialGradient(x,y,0,x,y,6*q.s);g.addColorStop(0,`rgba(255,246,160,${a})`);g.addColorStop(1,'rgba(255,246,160,0)');cx.fillStyle=g;cx.beginPath();cx.arc(x,y,6*q.s,0,7);cx.fill()}
+  else if(q.k=='glint'){q.p+=.05*dt;const a=Math.max(0,Math.sin(q.p))*.8;if(a<.05)continue;cx.fillStyle=`rgba(255,220,150,${a})`;cx.fillRect(q.x*CW,q.y*CH2,4,1.2)}
+  else if(q.k=='sp'){q.x+=q.vx*dt;q.y+=q.vy*dt;q.vy+=.03*dt;q.life-=.025*dt;if(q.life<=0){P.splice(i,1);continue}cx.globalAlpha=q.life;cx.fillStyle=q.c;const r=2.2*q.life+.4;cx.beginPath();cx.moveTo(q.x,q.y-r*2);cx.lineTo(q.x+r*.6,q.y-r*.6);cx.lineTo(q.x+r*2,q.y);cx.lineTo(q.x+r*.6,q.y+r*.6);cx.lineTo(q.x,q.y+r*2);cx.lineTo(q.x-r*.6,q.y+r*.6);cx.lineTo(q.x-r*2,q.y);cx.lineTo(q.x-r*.6,q.y-r*.6);cx.fill();cx.globalAlpha=1}}
+ if(Math.random()<.35*dt)P.push({k:'sp',x:CW*rnd(.49,.55),y:CH2*.415,vx:rnd(-.5,.5),vy:rnd(-1.3,-.6),life:.8,c:'#bfe8ff'});
+ if(moving&&Math.random()<.6*dt){const r=me.getBoundingClientRect(),m=map.getBoundingClientRect();spark(r.left-m.left+r.width/2+rnd(-10,10),r.bottom-m.top-8,1)}
+ requestAnimationFrame(loop)}requestAnimationFrame(loop);
+
+// 내 유령: 땅을 누르면 날아감, 눈이 따라봄, 혼자 놀기
+let mx=50,my=58,idleT=0;const say=$('#say'),me=$('#me');
+function talk(t,ms){say.textContent=t;say.classList.remove('hide');clearTimeout(say._t);say._t=setTimeout(()=>say.classList.add('hide'),ms||2600)}
+function look(px,py){const e=$('#eyes');if(!e)return;const r=me.getBoundingClientRect(),dx=px-(r.left+r.width/2),dy=py-(r.top+r.height*.45),d=Math.hypot(dx,dy)||1;e.style.transform=`translate(${dx/d*4}px,${dy/d*3}px)`}
+function moveTo(x,y){const nx=Math.max(6,Math.min(94,x)),ny=Math.max(12,Math.min(92,y));$('#tilt').style.transform=`rotate(${nx>mx?8:-8}deg)`;mx=nx;my=ny;me.style.left=nx+'%';me.style.top=ny+'%';moving=true;clearTimeout(me._t);me._t=setTimeout(()=>{moving=false;$('#tilt').style.transform=''},1100);idleT=0}
+map.addEventListener('click',e=>{if(e.target.closest('.spot'))return;const r=map.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*100,y=(e.clientY-r.top)/r.height*100;
+ const t=document.createElement('div');t.className='tap';t.style.left=x+'%';t.style.top=y+'%';map.appendChild(t);setTimeout(()=>t.remove(),700);
+ const mr=me.getBoundingClientRect();if(e.clientX>mr.left&&e.clientX<mr.right&&e.clientY>mr.top&&e.clientY<mr.bottom){me.classList.remove('jump');void me.offsetWidth;me.classList.add('jump');talk(['헤헤 간지러워!','분수에 소원 빌러 갈까? 🎁','배고파… 판매 입력해 줘 🍙','동굴에 게임하러 가자! 🎮','책방에서 장부 확인했어? 📖'][Math.floor(Math.random()*5)]);spark(mr.left-r.left+mr.width/2,mr.top-r.top+20,14,'#ff9fc4');sfx('poke');return}
+ moveTo(x,y);sfx('step')});
+addEventListener('pointermove',e=>look(e.clientX,e.clientY));
+setInterval(()=>{if(moving||$('#in').classList.contains('open'))return;idleT++;if(idleT%3)return;const a=Math.random();
+ if(a<.3){me.classList.remove('spin');void me.offsetWidth;me.classList.add('spin');talk('빙글빙글~ 🌀',1500)}
+ else if(a<.5){const m=$('#mouth');m.setAttribute('d','M54 74q6 10 12 0q-6-6-12 0z');m.setAttribute('fill','#1d1d1b');talk('하아암… 😪',1600);setTimeout(()=>{m.setAttribute('d','M50 76q10 9 20 0');m.setAttribute('fill','none')},1600)}
+ else moveTo(rnd(38,64),rnd(52,62))},2000);
+// 다른 유령들 (광장·골목을 돌아다님)
+const WP=[[50,57],[36,50],[64,51],[50,32],[46,72],[56,76],[30,46],[70,46],[50,64]];
+[{n:'타투',c:'#ffe6f0',a:'<path d="M22 90q38 16 76 0v11q-38 16-76 0z" fill="#e0475b"/>'},{n:'몽글',c:'#d9ecff',a:'<rect x="33" y="49" width="22" height="15" rx="6" fill="#111"/><rect x="65" y="49" width="22" height="15" rx="6" fill="#111"/><path d="M55 55h10" stroke="#111" stroke-width="3"/>'},{n:'반짝',c:'#e8fff1',a:'<ellipse cx="60" cy="6" rx="24" ry="5.5" fill="none" stroke="#ffd34d" stroke-width="4"/>'}].forEach((f,i)=>{const el=document.createElement('div');el.className='mini';el.innerHTML=`<div class="hi">안녕! 👋</div><div class="body">${ghost(f.c,f.a)}</div><span class="nm">${f.n}</span>`;map.appendChild(el);
+ const go=()=>{const [x,y]=WP[Math.floor(Math.random()*WP.length)];el.style.left=x+'%';el.style.top=y+'%';el.firstChild.classList.toggle('on',Math.hypot(x-mx,y-my)<12&&Math.random()<.7);setTimeout(()=>el.firstChild.classList.remove('on'),1800)};el.style.left=WP[i+1][0]+'%';el.style.top=WP[i+1][1]+'%';setTimeout(()=>{go();setInterval(go,3800+i*900)},300+i*700)});
+
+// ---------- 배경음악: 오르골 멜로디 + 부드러운 패드 + 베이스 + 살랑이는 리듬 (파일 없이 폰에서 직접 연주) ----------
+let AC=null,bus=null,timer=null,step=0,nextT=0,musicOn=false,noise=null;
+const N=n=>440*Math.pow(2,(n-69)/12),BPM=92,S16=60/BPM/4;
+// 8마디 x 2 (A단조): 코드 진행과 멜로디(16분음표 16칸 = 1마디)
+const CHD=[[57,60,64],[53,57,60],[48,52,55,59],[55,59,62],[57,60,64],[53,57,60,64],[52,56,59,62],[52,56,59],
+          [50,53,57],[57,60,64],[53,57,60],[52,56,59],[50,53,57,60],[48,52,55],[52,56,59,62],[57,60,64]];
+const M=s=>s.split(' ').map(x=>x=='.'?0:+x);
+const MEL=[M('76 . . 81 . 79 76 . 72 . . 74 . 76 . .'),M('77 . . 76 . 72 . . 69 . . 72 . . . .'),M('76 . 79 . 84 . 83 . 81 . 79 . 76 . . .'),M('74 . . 79 . 74 . 71 . . 74 . 79 . . .'),
+ M('76 . . 81 . 79 76 . 84 . . 83 . 81 . .'),M('81 . 77 . 76 . 74 . 72 . . 74 . . . .'),M('71 . 74 . 76 . 80 . 83 . . 80 . 76 . .'),M('76 . . . 74 . . . 71 . . . . . . .'),
+ M('77 . . 81 . 77 74 . 77 . . 81 . 86 . .'),M('84 . . 81 . 76 . . 81 . 84 . 88 . . .'),M('84 . 81 . 77 . 81 . 84 . . 86 . 84 . .'),M('83 . . 80 . 76 . . 80 . 83 . 86 . . .'),
+ M('86 . 84 . 81 . 77 . 84 . 81 . 77 . 74 .'),M('76 . 79 . 84 . 79 . 76 . 72 . 79 . . .'),M('80 . 83 . 86 . 83 . 80 . 76 . 74 . 71 .'),M('69 . . . 72 . . . 76 . . . 81 . . .')];
+function voice(type,f,t,dur,vol,att,dest,detune){const o=AC.createOscillator(),g=AC.createGain();o.type=type;o.frequency.value=f;if(detune)o.detune.value=detune;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+(att||.01));g.gain.exponentialRampToValueAtTime(.0004,t+dur);o.connect(g);g.connect(dest||bus);o.start(t);o.stop(t+dur+.1)}
+function box(n,t,v){const f=N(n),d=(Math.random()-.5)*6;voice('sine',f,t,2.2,v,.004,null,d);voice('sine',f*2,t,.9,v*.3,.004);voice('sine',f*3.01,t,.35,v*.12,.002);voice('triangle',f*4.2,t,.12,v*.05,.001)}
+function pad(ch,t,dur){const lp=AC.createBiquadFilter();lp.type='lowpass';lp.frequency.setValueAtTime(500,t);lp.frequency.linearRampToValueAtTime(1100,t+dur*.5);lp.frequency.linearRampToValueAtTime(600,t+dur);lp.Q.value=.6;lp.connect(bus);
+ ch.forEach(n=>{[-7,7].forEach(dt=>{const o=AC.createOscillator(),g=AC.createGain();o.type='sawtooth';o.frequency.value=N(n);o.detune.value=dt;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.022,t+.5);g.gain.setValueAtTime(.022,t+dur-.3);g.gain.linearRampToValueAtTime(0,t+dur+.4);o.connect(g);g.connect(lp);o.start(t);o.stop(t+dur+.5)})})}
+function bass(n,t){const o=AC.createOscillator(),g=AC.createGain(),lp=AC.createBiquadFilter();lp.type='lowpass';lp.frequency.value=420;o.type='triangle';o.frequency.value=N(n);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.16,t+.01);g.gain.exponentialRampToValueAtTime(.001,t+.55);o.connect(lp);lp.connect(g);g.connect(bus);o.start(t);o.stop(t+.6)}
+function hat(t,v){const s=AC.createBufferSource();s.buffer=noise;const hp=AC.createBiquadFilter();hp.type='highpass';hp.frequency.value=7000;const g=AC.createGain();g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.0005,t+.05);s.connect(hp);hp.connect(g);g.connect(bus);s.start(t);s.stop(t+.06)}
+function kick(t){const o=AC.createOscillator(),g=AC.createGain();o.frequency.setValueAtTime(110,t);o.frequency.exponentialRampToValueAtTime(42,t+.18);g.gain.setValueAtTime(.22,t);g.gain.exponentialRampToValueAtTime(.001,t+.25);o.connect(g);g.connect(bus);o.start(t);o.stop(t+.3)}
+function snap(t){const s=AC.createBufferSource();s.buffer=noise;const bp=AC.createBiquadFilter();bp.type='bandpass';bp.frequency.value=1800;bp.Q.value=.8;const g=AC.createGain();g.gain.setValueAtTime(.09,t);g.gain.exponentialRampToValueAtTime(.001,t+.12);s.connect(bp);bp.connect(g);g.connect(bus);s.start(t);s.stop(t+.14)}
+function sched(){while(nextT<AC.currentTime+.3){const bar=Math.floor(step/16)%16,i=step%16,loop2=Math.floor(step/256)%2,ch=CHD[bar],n=MEL[bar][i];
+ if(i==0)pad(ch,nextT,S16*16);
+ if(n)box(n,nextT,.13);
+ if(loop2&&i%2==0&&!n)box(ch[(i/2)%ch.length]+24,nextT,.025);
+ if(i==0||i==10)bass(ch[0]-12,nextT);if(i==6||i==14)bass(ch[0],nextT);
+ if(bar>=2||loop2){if(i%4==0)hat(nextT,.035);if(i%2==1)hat(nextT,.012);if(i==0||i==8)kick(nextT);if(i==4||i==12)snap(nextT)}
+ nextT+=S16;step++}}
+function musicStart(){if(!AC){const C=window.AudioContext||window.webkitAudioContext;if(!C)return false;AC=new C();
+ const comp=AC.createDynamicsCompressor();comp.threshold.value=-18;comp.ratio.value=3;comp.connect(AC.destination);
+ const len=AC.sampleRate*2.6,ir=AC.createBuffer(2,len,AC.sampleRate);for(let c=0;c<2;c++){const d=ir.getChannelData(c);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.8)}
+ const rev=AC.createConvolver();rev.buffer=ir;const wet=AC.createGain();wet.gain.value=.35;rev.connect(wet);wet.connect(comp);
+ bus=AC.createGain();bus.gain.value=0;bus.connect(comp);bus.connect(rev);
+ noise=AC.createBuffer(1,AC.sampleRate*.5,AC.sampleRate);const nd=noise.getChannelData(0);for(let i=0;i<nd.length;i++)nd[i]=Math.random()*2-1}
+ AC.resume&&AC.resume();bus.gain.cancelScheduledValues(AC.currentTime);bus.gain.setValueAtTime(bus.gain.value,AC.currentTime);bus.gain.linearRampToValueAtTime(.8,AC.currentTime+1.5);nextT=AC.currentTime+.08;step=0;timer=setInterval(sched,50);return true}
+function musicStop(){if(!AC)return;bus.gain.cancelScheduledValues(AC.currentTime);bus.gain.setValueAtTime(bus.gain.value,AC.currentTime);bus.gain.linearRampToValueAtTime(0,AC.currentTime+.8);setTimeout(()=>{clearInterval(timer);timer=null},850)}
+function sfx(kind){if(!musicOn||!AC)return;const t=AC.currentTime+.01;if(kind=='door'){[72,76,79,84,88].forEach((n,i)=>box(n,t+i*.06,.12))}else if(kind=='back'){[84,79,76,72].forEach((n,i)=>box(n,t+i*.06,.1))}else if(kind=='step'){voice('sine',N(84),t,.25,.06,.005);voice('sine',N(91),t+.05,.25,.04,.005)}else{[88,91,96].forEach((n,i)=>box(n,t+i*.05,.09))}}
+$('#snd').addEventListener('click',()=>{musicOn=!musicOn;const b=$('#snd');if(musicOn){if(!musicStart()){musicOn=false;b.textContent='소리 안 됨';return}b.textContent='🔊 음악';b.classList.add('on')}else{musicStop();b.textContent='🔇 음악';b.classList.remove('on')}b.setAttribute('aria-pressed',musicOn)});
+
+
+// ---------- 건물에 들어가기: 빛나고 → 유령이 문 앞으로 → 카메라가 다가가고 → 화면이 열림 ----------
+const IN={
+  pet:`<div class="box"><h3>🌱 유령 온실</h3><p class="mu">뭉치 · 아기 유령 · 성장 120 / 150</p><p class="mu">🍙 배부름 40% · 💛 기분 70%</p></div><button class="btn" type="button">⭐ 오늘의 미션 했어요</button><p class="ex">예시 화면 · 지금의 유령 키우기 화면</p>`,
+  deco:`<div class="box"><h3>🎨 꾸미기 상점</h3><p class="mu">리본 30 · 선글라스 40 · 목도리 60 · 별 머리핀 80 · 천사 링 120 포인트</p></div><p class="ex">예시 화면</p>`,
+  castle:`<div class="box"><h3>🏰 대장님 성</h3><p class="mu">📢 공지 · 📜 샵 이용규칙 · 문신사법 안내</p></div><p class="ex">예시 화면</p>`,
+  cream:`<div class="box"><h3>🧴 크림 판매 입력</h3><div class="row"><span class="chip on">정상판매</span><span class="chip">리뷰이벤트</span><span class="chip">서비스</span><span class="chip">샘플</span></div><p class="mu" style="margin:8px 0 4px">제품</p><div class="row"><span class="chip on">허니구 대</span><span class="chip">허니구 소</span></div><p class="mu" style="margin:8px 0 4px">결제</p><div class="row"><span class="chip on">현금</span><span class="chip">카드</span><span class="chip">이체</span></div></div><button class="btn" type="button">저장하고 유령 밥 주기 🍙</button><p class="ex">예시 화면 · 실제로는 지금 판매입력 화면이 그대로 들어가요</p>`,
+  toss:`<div class="box"><h3>🔔 승인 요청 1건</h3><p class="mu">타투님이 보낸 토스 · 손님 김○○ · 레터링</p><div class="row" style="margin-top:8px"><span class="chip on">승인</span><span class="chip">반려</span></div></div><div class="box"><h3>이번 달 토스</h3><div class="grid2"><div><span class="mu">받은 토스</span><div class="big">3회</div></div><div><span class="mu">보낸 토스</span><div class="big">1회</div></div></div></div><button class="btn" type="button">＋ 토스 보내기</button><p class="ex">예시 화면</p>`,
+  share:`<div class="box" style="text-align:center"><div style="font-size:34px">🔒</div><h3>쉐어비하우스</h3><p class="mu">작업자끼리 절대 비밀이라, 로그인 비밀번호를 한 번 더 확인해요</p></div><div class="box"><h3>이번 달</h3><p class="mu">10월 쉐어비 · 15일까지 <b style="color:var(--warm)">입금 예정</b></p><p class="mu">🎁 지금까지 총 ●●●원 할인받으셨어요</p></div><p class="ex">예시 화면 · 금액은 지금처럼 가려진 채로 보여요</p>`,
+  game:`<div class="box"><h3>🎮 오늘 받은 포인트 12 / 30</h3><p class="mu">포인트로 뭉치가 자라고 꾸미기를 살 수 있어요</p></div><div class="grid2"><button class="gb" type="button">👻 유령 점프</button><button class="gb" type="button">🍬 사탕 받기</button><button class="gb" type="button">🪦 무덤 숨바꼭질</button><button class="gb" type="button">🎯 잉크 찍기</button></div><div class="box"><h3>🏆 이번 주 게임왕</h3><p class="mu">🥇 몽글 54 · 🥈 뭉치 42 · 🥉 타투 30</p></div><p class="ex">예시 화면</p>`,
+  supply:`<div class="box"><h3>📦 비품 · 소모품</h3><p class="mu">니들 RL 3 · <b style="color:var(--warm)">부족</b></p><p class="mu">그린솝 · 정상</p><p class="mu">랩 · <b style="color:var(--pink)">품절</b></p></div><button class="btn" type="button">요청하기</button><p class="ex">예시 화면</p>`,
+  lotto:`<div class="box"><h3>🎟 긁지 않은 복권 2장</h3><div class="row"><span class="chip">🎟 매일 복권</span><span class="chip">🎟 매일 복권</span></div></div><div class="box"><h3>🏆 내 레벨</h3><p class="mu">Lv.1 · 랭킹 3위 / 12명 · 다음 레벨업 10/15</p></div><p class="ex">예시 화면</p>`
+};
+
+const ins=$('#in'),bd=$('#bd'),ttl=$('#ttl'),vil=$('#vil');let curS=null,busy=false;
+function enter(k){if(busy)return;busy=true;const s=document.querySelector(`.spot[data-h="${k}"]`),h=H[k],[x,y,w,hh]=h.r;curS=s;s.classList.add('hit');
+ const cxp=x+w/2,cyp=y+hh*.8;vil.scrollTo({top:Math.max(0,map.offsetHeight*cyp/100-vil.clientHeight/2),behavior:'smooth'});moveTo(cxp,Math.min(92,cyp+3));sfx('door');
+ setTimeout(()=>{map.style.transformOrigin=`${cxp}% ${y+hh/2}%`;map.style.transform='scale(2.4)';map.classList.add('zoom')},420);
+ setTimeout(()=>{const sc=$('.screen').getBoundingClientRect(),sr=s.getBoundingClientRect();ins.style.setProperty('--cx',(sr.left+sr.width/2-sc.left)/sc.width*100+'%');ins.style.setProperty('--cy',(sr.top+sr.height/2-sc.top)/sc.height*100+'%');
+  ins.classList.toggle('hasHero',!!h.bg);if(h.bg){$('#heroImg').style.backgroundImage=`url(${h.bg})`;$('#heroGhost').innerHTML=`<div class="say">${h.hi}</div>`+ghost('#f4f1ea','<path d="M60 16l-17-9v18zM60 16l17-9v18z" fill="#ff5fa2"/><circle cx="60" cy="16" r="4.5" fill="#c21f6b"/>');const du=$('#dust');du.innerHTML='';for(let i=0;i<16;i++){const d=document.createElement('span');d.className='dust';d.style.left=rnd(5,90)+'%';d.style.top=rnd(35,95)+'%';d.style.animationDuration=rnd(5,10)+'s';d.style.animationDelay=(-rnd(0,10))+'s';du.appendChild(d)}}
+  ins.style.setProperty('--hb',h.hb);ttl.textContent=h.sign+' '+h.n;bd.innerHTML=IN[k]||`<div class="box"><h3>${h.sign} ${h.n}</h3><p class="mu">준비 중이에요</p></div>`;ins.classList.add('open');busy=false;$('#bk').focus()},950)}
+map.addEventListener('click',e=>{const s=e.target.closest('.spot');if(s){e.stopPropagation();enter(s.dataset.h)}},true);
+document.querySelectorAll('.nav [data-go]').forEach(b=>b.addEventListener('click',()=>enter(b.dataset.go)));
+$('#bk').addEventListener('click',()=>{ins.classList.remove('open');sfx('back');setTimeout(()=>{map.style.transform='';map.classList.remove('zoom');if(curS)curS.classList.remove('hit');moveTo(50,58)},250)});
+$('#dn').addEventListener('click',()=>{NIGHT=!NIGHT;document.documentElement.classList.toggle('night',NIGHT);$('#dn').textContent=NIGHT?'🌅 저녁':'🌙 밤';talk(NIGHT?'밤이 됐어… 반딧불이다 ✨':'노을이 예쁘다 🌅',1800)});
+addEventListener('load',()=>{fit();vil.scrollTop=map.offsetHeight*.5-vil.clientHeight/2});setTimeout(()=>{fit();vil.scrollTop=map.offsetHeight*.5-vil.clientHeight/2;talk('땅을 눌러서 날 움직여 봐! 👻',3200)},300);
+</script>
