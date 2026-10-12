@@ -9,7 +9,7 @@ const els = {}; const el = id => els[id] || (els[id] = { style: {}, innerHTML: '
 const fb = {
   initializeApp() {},
   auth: Object.assign(() => ({ onAuthStateChanged() {} }), {}),
-  firestore: Object.assign(() => ({}), { FieldValue: { arrayUnion: x => x, delete: () => null, serverTimestamp: () => new Date() } }),
+  firestore: Object.assign(() => ({ enablePersistence: () => Promise.resolve() }), { FieldValue: { arrayUnion: x => x, delete: () => null, serverTimestamp: () => new Date() } }),
 };
 const ctx = {
   firebase: fb, console, URL, Math, JSON, Date, String, Object, Number, Array, Uint32Array,
@@ -72,13 +72,44 @@ for (const [who, list] of Object.entries(tabs)) {
     catch (e) { ok(`${who} ${k} 화면 (${e.message})`, false); }
   }
 }
-run(`tab='conf'`); for (const c of ['user', 'prod', 'lv', 'toss', 'note']) { try { run(`cs='${c}';draw()`); ok(`설정 ${c}`, out().length > 100); } catch (e) { ok(`설정 ${c} (${e.message})`, false); } }
-try { run(`me=users.s1;draw()`); ok('수강생 화면', /오늘도 화이팅/.test(out())); } catch (e) { ok('수강생 화면 (' + e.message + ')', false); }
+run(`tab='conf'`); for (const c of ['user', 'prod', 'lv', 'toss', 'note', 'ph', 'bk']) { try { run(`cs='${c}';draw()`); ok(`설정 ${c}`, out().length > 100); } catch (e) { ok(`설정 ${c} (${e.message})`, false); } }
+try { run(`me=users.s1;draw()`); ok('수강생 화면 (오늘의 문구)', /12기 이수강님/.test(out())); } catch (e) { ok('수강생 화면 (' + e.message + ')', false); }
 
 // 버튼 onclick 안에서는 document·요소의 기본 기능 이름이 먼저 잡힌다 (예: createEvent → document.createEvent). 겹치는 이름 금지
 const BUILTIN = ['createEvent','createElement','open','close','write','writeln','clear','append','prepend','remove','replaceWith','before','after','focus','blur','click','submit','reset','select','evaluate','getSelection','hasFocus','animate','scroll','scrollTo','scrollBy','matches','closest','contains','normalize','toggleAttribute','setAttribute','getAttribute','removeAttribute','addEventListener','dispatchEvent','querySelector','importNode','adoptNode','elementFromPoint','show','showModal','checkValidity','reportValidity','setCustomValidity','stepUp','stepDown','showPicker','requestFullscreen','attachShadow','insertAdjacentHTML','cloneNode','appendChild','removeChild','replaceChildren','getElementById','getAnimations','computedStyleMap','hidePopover','showPopover','togglePopover','add','item','namedItem'];
 const used = new Set(); for (const m of html.matchAll(/on(?:click|change|input|keyup|keydown|submit|blur|focus)="([^"]*)"/g)) for (const x of m[1].matchAll(/(?<![.\w$])([A-Za-z_$][\w$]*)\s*\(/g)) used.add(x[1]);
 const clash = [...used].filter(n => BUILTIN.includes(n)); ok('버튼 함수 이름이 브라우저 기본 기능과 안 겹침' + (clash.length ? ' (' + clash.join(',') + ')' : ''), !clash.length);
 
-console.log(fail ? `\n실패 ${fail}건` : '\n모두 통과');
-process.exit(fail ? 1 : 0);
+
+// 매일 복권: 예산 자동 분배 (기간 16일~15일 · 쉐어비 차등 · 예산 초과 없음)
+{ const W = [];
+  ctx.__fakeDb = { batch: () => ({ set: (r, d) => W.push([r, d]), delete() {}, update() {}, commit: async () => {} }), doc: p => ({ p, update: async () => {} }) };
+  run(`db.batch=__fakeDb.batch;db.doc=__fakeDb.doc;users={a:{id:'a',name:'대장',role:'admin',status:'active'},
+   w1:{id:'w1',name:'가',role:'artist',status:'active',since:'2020-01-01',plan:[{from:'2020-01',amt:300000}]},
+   w2:{id:'w2',name:'나',role:'artist',status:'active',since:'2020-01-01',plan:[{from:'2020-01',amt:250000}]},
+   w3:{id:'w3',name:'다',role:'artist',status:'active',since:'2020-01-01',plan:[{from:'2020-01',amt:150000}]},
+   w4:{id:'w4',name:'라',role:'artist',status:'active',since:'2020-01-01',plan:[{from:'2020-01',amt:150000}]}};
+   evs=[{id:'E1',kind:'budget',budget:50000,base:300000,fill:false,lv:[1],ex:[],title:'매일 복권'}];rnds={};evd=[];`);
+  ok('복권 기간: 1/15는 1월분, 1/16은 2월분', run(`bpOf('2027-01-15')`) === '2027-01' && run(`bpOf('2027-01-16')`) === '2027-02' && run(`JSON.stringify(bpRange('2027-01'))`) === '["2026-12-16","2027-01-15"]');
+  (async () => {
+    let total = 0, bad = 0, n = 0;
+    for (let i = 0; i < 31; i++) {
+      const d = run(`(()=>{const x=new Date('2026-12-16T00:00:00');x.setDate(x.getDate()+${i});return x.toLocaleDateString('sv')})()`);
+      if (d > '2027-01-15') break;
+      run(`rnds['E1_${d}']={id:'E1_${d}',eid:'E1',kind:'budget',d:'${d}',st:'open'}`);
+      W.length = 0; await vm.runInContext(`issueBudget(rnds['E1_${d}'])`, ctx);
+      W.filter(([r]) => r.p.startsWith('ticketPrizes/')).forEach(([r, x]) => { if (x.prize) { n++; total += x.prize.a; if (x.prize.a % 10) bad++; } });
+      W.filter(([r]) => r.p.startsWith('tickets/')).forEach(([r, x]) => { if (x.pm !== '2027-02' || !x.exp) bad++; });
+    }
+    ok(`복권 예산 5만원 안에서 분배 (당첨 ${n}장, 합계 ${total}원)`, total <= 50000 && total > 20000 && !bad);
+    run(`for(const k in rnds)delete rnds[k]`);
+    run(`users.w1.plan=[{from:'2020-01',amt:300000}]`);
+    ok('쉐어비 차등: 30만 100%, 25만 83%, 15만 50%', run(`[bRatio(evs[0],users.w1,'2027-02'),Math.round(bRatio(evs[0],users.w2,'2027-02')*100),bRatio(evs[0],users.w3,'2027-02')].join()`) === '1,83,0.5');
+    run(`led={'w1_2027-02':{st:'rest'}};evd=[{uid:'w1',m:'2027-02',a:1000,void:false}]`);
+    ok('휴무 달 당첨 할인은 다음 달로', run(`evAdj('w1','2027-02')`) === 0 && run(`evAdj('w1','2027-03')`) === 1000);
+    run(`led={};evd=[];delete db.batch;delete db.doc`);
+    finish();
+  })();
+}
+function finish(){console.log(fail ? `\n실패 ${fail}건` : '\n모두 통과');
+process.exit(fail ? 1 : 0);}
