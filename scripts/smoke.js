@@ -115,6 +115,12 @@ const clash = [...used].filter(n => BUILTIN.includes(n)); ok('버튼 함수 이�
     ok('쉐어비 차등: 30만 100%, 25만 83%, 15만 50%', run(`[bRatio(evs[0],users.w1,'2027-02'),Math.round(bRatio(evs[0],users.w2,'2027-02')*100),bRatio(evs[0],users.w3,'2027-02')].join()`) === '1,83,0.5');
     run(`led={'w1_2027-02':{st:'rest'}};evd=[{uid:'w1',m:'2027-02',a:1000,void:false}]`);
     ok('휴무 달 당첨 할인은 다음 달로', run(`evAdj('w1','2027-02')`) === 0 && run(`evAdj('w1','2027-03')`) === 1000);
+    run(`led={};evd=[];users.w4.since='2018-01-01';users.w4.plan=[{from:'2018-01',to:'2025-12',amt:300000}]`);
+    ok('쉐어비 구간 끝 달: 2025-12까지만 청구', run(`planAmt(users.w4,'2025-12')`) === 300000 && run(`planAmt(users.w4,'2026-01')`) === null && run(`monthsOf(users.w4).slice(-1)[0]`) === '2025-12');
+    run(`users.w4.plan=[{from:'2025-12',amt:300000}];led={'w4_2019-03':{uid:'w4',m:'2019-03',st:'done',paid:300000},'w4_2026-01':{uid:'w4',m:'2026-01',st:'done',paid:300000,base:300000}}`);
+    ok('구간 밖 완료 기록은 ⚠, 구간 없는 빈 달은 안 보임', run(`monthsOf(users.w4)[0]`) === '2019-03' && run(`monthsOf(users.w4).includes('2019-04')`) === false && run(`rowOf(users.w4,'2019-03').warn.length`) === 1 && run(`rowOf(users.w4,'2026-01').warn.length`) === 0);
+    run(`users.w4.plan=[{from:'2025-12',amt:200000}]`);
+    ok('완료한 달 금액은 구간을 바꿔도 고정', run(`rowOf(users.w4,'2026-01').due`) === 300000 && run(`rowOf(users.w4,'2026-02').due`) === 200000);
     run(`led={};evd=[];delete db.batch;delete db.doc`);
     finish();
   })();
