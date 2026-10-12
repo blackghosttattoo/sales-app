@@ -73,9 +73,11 @@ for (const [who, list] of Object.entries(tabs)) {
     catch (e) { ok(`${who} ${k} 화면 (${e.message})`, false); }
   }
 }
-run(`tab='conf'`); for (const c of ['user', 'prod', 'lv', 'toss', 'note', 'ph', 'adj', 'pub', 'err', 'bk']) { try { run(`cs='${c}';draw()`); ok(`설정 ${c}`, out().length > 100); } catch (e) { ok(`설정 ${c} (${e.message})`, false); } }
+run(`tab='conf'`); for (const c of ['user', 'prod', 'lv', 'toss', 'note', 'ph', 'petc', 'adj', 'pub', 'err', 'bk']) { try { run(`cs='${c}';draw()`); ok(`설정 ${c}`, out().length > 100); } catch (e) { ok(`설정 ${c} (${e.message})`, false); } }
 try { run(`me=users.s1;tab='home';draw()`); ok('수강생 화면 (오늘의 문구)', /12기 이수강님/.test(out())); run(`tab='edu';draw()`); ok('수강생 기본교육', /바늘 모양/.test(out())); } catch (e) { ok('수강생 화면 (' + e.message + ')', false); }
 ok('유령 키우기 (광장·상태)', (run(`me=Object.assign({},users.w1);tab='pet';draw()`), /유령 광장/.test(out()) && /핑크빵/.test(out())));
+ok('유령: 시작일 전 기록은 안 셈', (run(`cfg.pet={start:'2026-10-12'};allSales=[{id:'o1',uid:'w1',t:'normal',qty:1,a:1,c:0,d:'2020-01-01',ap:'',void:false},{id:'o2',uid:'w1',t:'normal',qty:1,a:1,c:0,d:'2026-10-13',ap:'',void:false}];me=Object.assign({},users.w1);myPet={}`), run(`petCalc(users.w1).ex`) === 10 && run(`petCalc(users.w1).st`) === 0));
+run(`allSales=[];delete cfg.pet`);
 ok('레벨 기본 이름', run(`defLv().steps[9].name`) === '레전드 고스트');
 ok('쉐어비 15일 전엔 입금 예정', (run(`me=users.a;tab='home';draw()`), true));
 ok('컨벤션 달력', (run(`me=users.a;tab='conv';draw()`), /Test Con/.test(out())));
