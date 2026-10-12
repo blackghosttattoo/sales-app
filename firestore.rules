@@ -185,6 +185,22 @@ service cloud.firestore {
       allow read, delete: if admin();
     }
 
+    // 유령 키우기: 모두 읽기(광장), 본인은 이름·꾸미기·미션 날짜만, 상태 요약(st·ex·full·mood)은 대장 앱이 계산해 저장
+    match /pets/{u} {
+      function petOk(d) {
+        return txt(d.get('name', ''), 10) && txt(d.get('deco', ''), 12)
+          && d.get('mis', []) is list && d.get('mis', []).size() <= 60;
+      }
+      allow read: if active();
+      allow create: if admin()
+        || (active() && request.auth.uid == u
+            && request.resource.data.keys().hasOnly(['name', 'deco', 'mis', 'at']) && petOk(request.resource.data));
+      allow update: if admin()
+        || (active() && request.auth.uid == u
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name', 'deco', 'mis', 'at']) && petOk(request.resource.data));
+      allow delete: if admin();
+    }
+
     // 작업자 명단(이름·닉네임만, 쉐어비 정보 없음)
     match /roster/{id} {
       allow read: if active();

@@ -64,8 +64,8 @@ tosses=[cl({id:'t1',d:__P,from:'zz',to:'a',uid:'a',cust:__P,content:__P,memo:__P
 ok('저장 시간(Timestamp) 같은 객체는 그대로', (() => { class TS { toDate() { return 1 } } ctx.__t = new TS(); return run(`typeof cl({t:__t}).t.toDate`) === 'function'; })());
 run(`delete users.zz;allSales=[];sales=[];tosses=[]`);
 
-run(`edus=[];cvJ={items:[{s:'2026-10-16',e:'2026-10-18',name:'Test Con',city:'Seoul',country:'한국',url:'https://x.y',big:true}]};cvA=[];errs=[];pubD={};cvM='2026-10'`);
-const tabs = { admin: ['home', 'in', 'toss', 'share', 'more', 'sup', 'acd', 'set', 'inv', 'evt', 'conf', 'edu', 'conv'], artist: ['home', 'in', 'toss', 'share', 'more', 'sup', 'evt', 'acd', 'edu', 'conv'] };
+run(`LS.pets={p:Promise.resolve()};pets={zz:{st:2,name:'핑크빵',full:80}};roster.zz={id:'zz',nick:'핑크빵'};edus=[];cvJ={items:[{s:'2026-10-16',e:'2026-10-18',name:'Test Con',city:'Seoul',country:'한국',url:'https://x.y',big:true}]};cvA=[];errs=[];pubD={};cvM='2026-10'`);
+const tabs = { admin: ['home', 'in', 'toss', 'share', 'more', 'sup', 'acd', 'set', 'inv', 'evt', 'conf', 'edu', 'conv', 'pet'], artist: ['home', 'in', 'toss', 'share', 'more', 'sup', 'evt', 'acd', 'edu', 'conv', 'pet'] };
 for (const [who, list] of Object.entries(tabs)) {
   run(who === 'admin' ? `me=users.a` : `me=Object.assign({},users.w1);shareOK=true`);
   for (const k of list) {
@@ -73,8 +73,11 @@ for (const [who, list] of Object.entries(tabs)) {
     catch (e) { ok(`${who} ${k} 화면 (${e.message})`, false); }
   }
 }
-run(`tab='conf'`); for (const c of ['user', 'prod', 'lv', 'toss', 'note', 'ph', 'pub', 'err', 'bk']) { try { run(`cs='${c}';draw()`); ok(`설정 ${c}`, out().length > 100); } catch (e) { ok(`설정 ${c} (${e.message})`, false); } }
+run(`tab='conf'`); for (const c of ['user', 'prod', 'lv', 'toss', 'note', 'ph', 'adj', 'pub', 'err', 'bk']) { try { run(`cs='${c}';draw()`); ok(`설정 ${c}`, out().length > 100); } catch (e) { ok(`설정 ${c} (${e.message})`, false); } }
 try { run(`me=users.s1;tab='home';draw()`); ok('수강생 화면 (오늘의 문구)', /12기 이수강님/.test(out())); run(`tab='edu';draw()`); ok('수강생 기본교육', /바늘 모양/.test(out())); } catch (e) { ok('수강생 화면 (' + e.message + ')', false); }
+ok('유령 키우기 (광장·상태)', (run(`me=Object.assign({},users.w1);tab='pet';draw()`), /유령 광장/.test(out()) && /핑크빵/.test(out())));
+ok('레벨 기본 이름', run(`defLv().steps[9].name`) === '레전드 고스트');
+ok('쉐어비 15일 전엔 입금 예정', (run(`me=users.a;tab='home';draw()`), true));
 ok('컨벤션 달력', (run(`me=users.a;tab='conv';draw()`), /Test Con/.test(out())));
 ok('쉐어비 금액 가리기·워터마크', (run(`me=Object.assign({},users.w1);shareOK=true;tab='share';draw()`), /●●●원/.test(out()) && /유출금지/.test(out()) && !/300,000원/.test(out().replace(/data-v="[^"]*"/g,''))));
 
