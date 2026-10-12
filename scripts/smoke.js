@@ -35,6 +35,11 @@ ok('토스 받는사람부담 20,000/70,000', t('recv').sIn === 20000 && t('recv
 // 쉐어비 장부
 ok('쉐어비 입사월부터 생성', run(`monthsOf(users.w1)[0]`) === '2018-01');
 ok('이벤트 할인 반영', run(`rowOf(users.w1,'2099-01').evd`) === 50000);
+// 함께한 날: 구간 안의 날만, 휴무 달 제외 / 할인 합계: 확정된 달만
+run(`users.g1={id:'g1',role:'artist',status:'active',since:'2022-01-10',plan:[{from:'2022-01',to:'2022-03',amt:300000},{from:'2023-01',to:'2023-02',amt:250000}]};led['g1_2022-02']={uid:'g1',m:'2022-02',st:'rest'};led['g1_2022-03']={uid:'g1',m:'2022-03',st:'done',paid:300000};`);
+ok('함께한 날: 쉰 기간·휴무 달 빼고 계산', run(`workDays(users.g1,'2026-01-01')`) === 22 + 31 + 31 + 28);
+ok('할인 합계: 휴무 30만 + 25만 구간 5만×2 (확정된 달)', run(`discOf(users.g1)`) === 300000 + 50000 * 2);
+run(`delete users.g1;delete led['g1_2022-02'];delete led['g1_2022-03']`);
 // 점수제 레벨: 2026-04 레벨업(15일) 기간 = 2026-03-15 ~ 2026-04-14
 run(`cfg=JSON.parse(JSON.stringify(cfg));cfg.lv=defLv();cfg.lv.start='2000-01';cfg.lv.from='2000-01-01';
 allSales=[{id:'s1',uid:'w1',t:'normal',qty:3,a:30000,d:'2026-03-20',void:false,ap:''},{id:'s2',uid:'w1',t:'normal',qty:5,a:50000,d:'2026-04-15',void:false,ap:''}];
