@@ -151,9 +151,38 @@ service cloud.firestore {
     }
 
     // 오늘의 문구 등 가게 안내 (타투이스트용 / 수강생용 따로, 대장님만 수정)
+    // law = 문신사법 안내(모두), pub = 손님 페이지 정보(로그인 없이 누구나 읽음 · 공개 정보만)
     match /shop/{k} {
-      allow read: if (k == 'student' && activeAny()) || (k == 'artist' && active());
-      allow write: if admin() && k in ['artist', 'student'];
+      allow read: if k == 'pub'
+        || ((k == 'student' || k == 'law') && activeAny())
+        || (k == 'artist' && active());
+      allow write: if admin() && k in ['artist', 'student', 'law', 'pub'];
+    }
+
+    // 기본교육 (수강생·타투이스트 읽기, 대장·강사 작성)
+    match /edu/{id} {
+      allow read: if activeAny();
+      allow create, update: if (admin() || isInst())
+        && txt(request.resource.data.get('title', ''), 100) && txt(request.resource.data.get('body', ''), 8000)
+        && txt(request.resource.data.get('cat', ''), 20) && txt(request.resource.data.get('img', ''), 700000);
+      allow delete: if admin() || isInst();
+    }
+
+    // 타투 컨벤션 (대장이 직접 넣은 행사)
+    match /conv/{id} {
+      allow read: if active();
+      allow write: if admin();
+    }
+
+    // 오류 보내기: 로그인한 사람은 본인 이름으로 쓰기만, 읽기·삭제는 대장님만
+    match /errLog/{id} {
+      allow create: if signedIn() && request.resource.data.uid == request.auth.uid
+        && request.resource.data.keys().hasOnly(['uid', 'name', 'msg', 'stack', 'where', 'memo', 'ver', 'ua', 'at'])
+        && txt(request.resource.data.msg, 500) && txt(request.resource.data.get('stack', ''), 1500)
+        && txt(request.resource.data.get('memo', ''), 200) && txt(request.resource.data.get('ua', ''), 200)
+        && txt(request.resource.data.get('name', ''), 60) && txt(request.resource.data.get('where', ''), 40)
+        && txt(request.resource.data.get('ver', ''), 20) && txt(request.resource.data.get('at', ''), 40);
+      allow read, delete: if admin();
     }
 
     // 작업자 명단(이름·닉네임만, 쉐어비 정보 없음)
