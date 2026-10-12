@@ -33,6 +33,7 @@ input::placeholder,textarea::placeholder{color:var(--mu);opacity:.85}input:disab
 label{font-size:13px;color:var(--mu);display:block;margin:10px 0 4px}.mu{color:var(--mu);font-size:13px}.big{font-size:22px;font-weight:700}.wa{color:var(--wa)}
 .kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}.kpi div{background:var(--bg);border-radius:12px;padding:10px}
 .hm{display:inline-block;min-width:4.5em;padding:0 4px;border-radius:6px;background:var(--soft);user-select:none;-webkit-user-select:none}
+.updb{position:fixed;left:12px;right:12px;top:calc(10px + env(safe-area-inset-top));z-index:50;max-width:696px;margin:0 auto;display:flex;gap:10px;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:14px;background:var(--card,#1f1f1d);border:2px solid var(--ac);box-shadow:0 6px 24px rgba(0,0,0,.4);font-weight:700}.updb button{flex:0 0 auto}
 .hmb{position:fixed;left:12px;right:12px;bottom:calc(74px + env(safe-area-inset-bottom));z-index:6;max-width:696px;margin:0 auto;padding:14px;font-size:16px;font-weight:700;border-radius:14px;box-shadow:0 4px 18px #0006;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:none}.hm.on{background:transparent}
 .wm{position:fixed;inset:-20%;pointer-events:none;z-index:4;display:flex;flex-wrap:wrap;gap:40px 60px;align-content:flex-start;transform:rotate(-24deg);opacity:.09;font-size:13px;font-weight:700;color:var(--tx);overflow:hidden}.wm span{white-space:nowrap}
 #app.blr{filter:blur(14px)}
@@ -72,6 +73,14 @@ label{font-size:13px;color:var(--mu);display:block;margin:10px 0 4px}.mu{color:v
 .clk{cursor:pointer}.clk:hover{outline:1px solid var(--ac)}
 #snack{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#000c;color:#fff;padding:10px 16px;border-radius:999px;font-size:13px;z-index:10;display:none;white-space:nowrap}
 </style></head><body><main id="app">불러오는 중…</main><div id="modal"><div class="card" id="mb"></div></div><div id="snack"></div>
+<script>window.APPV0='v1.35';
+// ----- 새 버전 알림: ver.json(배포할 때 APPV와 같이 올림)을 캐시 없이 받아 다르면 위에 [업데이트] 버튼 (아이폰 홈화면 앱은 새로고침이 어려워서)
+let _vcT=0;
+function verChk(){if(typeof fetch!='function'||Date.now()-_vcT<60000)return;_vcT=Date.now();fetch('ver.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():null).then(j=>{if(j&&typeof j.v=='string'&&j.v!==window.APPV0)updBar(j.v)}).catch(()=>{})}
+function updBar(v){if(!document.createElement||document.getElementById('updb'))return;const b=document.createElement('div');b.id='updb';b.className='updb';b.innerHTML=`<span>✨ 새 버전(${String(v).replace(/[^\w.]/g,'')})이 나왔어요</span><button class="p" onclick="goUpd()">업데이트</button>`;document.body.appendChild(b)}
+function goUpd(){location.replace(location.pathname+'?u='+Date.now())}
+if(typeof fetch=='function'){setTimeout(verChk,2000);setInterval(verChk,600000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)verChk()})}
+</script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -648,7 +657,8 @@ const st=$('#pc_s').value||today(),o=cfg.pet||{};if(o.start&&st!=o.start&&!confi
 cfg.pet={start:st,pts:{sale:g('#pc_sale'),toss:g('#pc_toss'),mis:g('#pc_mis'),sc:g('#pc_sc'),share:g('#pc_share')},lv};const ok1=await db.doc('config/main').set(cfg).then(()=>1).catch(err);if(ok1){toast('저장했어요');petSync();draw()}}
 // 대장 앱: 광장용 요약을 계산해 저장 (바뀐 사람만)
 async function petSync(){if(!adm())return;await loadPets();const b=db.batch();let n=0;Object.values(users).filter(u=>u.status=='active'&&u.role!='student'&&!u.del).forEach(u=>{const p=petCalc(u),o=pets[u.id]||{};if(o.st!==p.st||o.ex!==p.ex||o.full!==p.full||o.mood!==p.mood){b.set(db.doc('pets/'+u.id),{st:p.st,ex:p.ex,full:p.full,mood:p.mood,sAt:NOW()},{merge:true});n++}});if(n)await b.commit().catch(e=>console.log(e))}
-const APPV='v1.34',verLine=()=>`<p class="mu" style="text-align:center;margin:4px 0 12px">BLACKGHOST TATTOO STUDIO · ${APPV}</p>`;
+const APPV='v1.35',verLine=()=>`<p class="mu" style="text-align:center;margin:4px 0 12px">BLACKGHOST TATTOO STUDIO · ${APPV} <button class="s" style="margin-left:6px" onclick="goUpd()">🔄 새로고침</button></p>`;
+
 function sdraw(){const nv=`<nav class="nav">${[['home','내 수강','🎓'],['edu','기본교육','📚']].map(([k,l,i])=>`<button class="${tab==k?'on':''}" onclick="go('${k}')"><i>${i}</i>${l}</button>`).join('')}</nav>`;view(hdr()+(tab=='edu'?eduView():noticeBanner()+studentHome())+verLine()+nv)}
 async function saveCourse(id){const v=k=>$('#ac_'+k).value,c=crs[id],iu=instList().find(u=>u.id==v('inst')),o={phone:v('phone').trim(),insta:v('insta').trim(),start:v('start'),total:Math.max(1,+v('total')||25),inst:v('inst'),instName:iu?(iu.nick||iu.name):''};const fee=adm()?+v('fee')||0:null;await db.doc('courses/'+id).update(o).catch(err);Object.assign(c,o);if(fee!=null&&fee!==cpOf(id).fee){const cp=Object.assign({uid:id,pays:[]},cpOf(id),{fee});await db.doc('coursePay/'+id).set(cp).catch(err);cpay[id]=cp}draw()}
 async function addSes(sid){const n=+$('#ss_n').value,d=$('#ss_d').value,t=$('#ss_c').value.trim();if(!(n>0)||!d||!t)return toast('회차, 날짜, 수강 내용을 입력하세요');const done=await db.collection('sessions').add({at:NOW(),sid,n,d,content:t,done:$('#ss_s').value=='1',by:me.id,byName:me.nick||me.name,void:false}).then(()=>1).catch(err);if(!done)return;await loadAcad();draw()}

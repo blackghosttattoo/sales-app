@@ -125,5 +125,5 @@ const clash = [...used].filter(n => BUILTIN.includes(n)); ok('버튼 함수 이�
     finish();
   })();
 }
-function finish(){console.log(fail ? `\n실패 ${fail}건` : '\n모두 통과');
+function finish(){{const fs2=require('fs'),V=JSON.parse(fs2.readFileSync(__dirname+'/../ver.json','utf8')).v,H=fs2.readFileSync(__dirname+'/../index.html','utf8'),A=(H.match(/const APPV='([^']+)'/)||[])[1],A0=(H.match(/APPV0='([^']+)'/)||[])[1];ok('ver.json 버전('+V+') = APPV('+A+') = APPV0('+A0+')',V===A&&A===A0)}console.log(fail ? `\n실패 ${fail}건` : '\n모두 통과');
 process.exit(fail ? 1 : 0);}
