@@ -137,6 +137,17 @@ body.vmode{overflow:hidden}body.vmode main{padding-bottom:0}
 .vhg{position:absolute;right:7%;bottom:22%;width:70px;animation:vfl 2.6s ease-in-out infinite}
 .vhg .vsay{position:absolute;bottom:100%;right:0;background:#fff;color:#222;font-size:12px;border-radius:10px;padding:4px 9px;white-space:nowrap;margin-bottom:4px;box-shadow:0 3px 8px #0008}
 @media (prefers-reduced-motion:reduce){.vwrap *,.vhero *{animation:none!important;transition:none!important}}
+.gnav{background:linear-gradient(#2a1d33,#140d18);border-top:2px solid #d4af37;box-shadow:0 -4px 18px #000a,inset 0 1px 0 #fff2;padding-top:8px;gap:4px}
+.gnav button{background:none!important;color:#e9dcc0;padding:0 0 2px;gap:3px;overflow:visible}
+.gnav .gt{position:relative;width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 30% 25%,#fff6,#fff0 45%),linear-gradient(160deg,var(--g1),var(--g2));border:2px solid #d4af37;box-shadow:0 3px 0 #6b5310,0 5px 10px #000a,inset 0 -4px 0 #0003;transition:transform .25s cubic-bezier(.3,1.6,.5,1),box-shadow .25s}
+.gnav .gt i{font-size:24px;filter:drop-shadow(0 2px 1px #0007)}
+.gnav .gl{font-size:11px;font-weight:700;text-shadow:0 1px 2px #000;color:#e9dcc0}
+.gnav button.on .gt{transform:translateY(-10px) scale(1.12);box-shadow:0 3px 0 #6b5310,0 0 16px 4px #ffd34d99,inset 0 -4px 0 #0003;animation:gbob 1.6s ease-in-out infinite}
+.gnav button.on .gl{color:#ffd34d}
+.gnav button:active .gt{transform:translateY(2px) scale(.95)}
+@keyframes gbob{50%{transform:translateY(-13px) scale(1.12)}}
+.gdot{position:absolute;top:-6px;right:-6px;min-width:19px;height:19px;padding:0 5px;border-radius:999px;background:#ff3b5c;color:#fff;font-size:11px;line-height:17px;border:2px solid #fff;box-shadow:0 2px 4px #0008}
+@media (prefers-reduced-motion:reduce){.gnav *{animation:none!important}}
 </style></head><body><main id="app">불러오는 중…</main><div id="modal"><div class="card" id="mb"></div></div><div id="snack"></div>
 <script>window.APPV0='v1.40';
 // ----- 새 버전 알림: ver.json(배포할 때 APPV와 같이 올림)을 캐시 없이 받아 다르면 위에 [업데이트] 버튼 (아이폰 홈화면 앱은 새로고침이 어려워서)
@@ -1147,8 +1158,12 @@ function sfx(k){if(!mus||!AC)return;const t=AC.currentTime+.01;(k=='door'?[72,76
 function after(){if(!document.createElement||!document.body)return;try{const s=!!document.getElementById('vslot');document.body.classList.toggle('vmode',s);if(s)mount();
  const inV=s||vHeroOn();if(mus&&AC&&!inV&&!paused){paused=true;fade(0,.6)}else if(mus&&AC&&inV&&paused){paused=false;fade(.8,1)}}catch(e){console.error(e)}}
 return{after}})();
+// 게임 아이콘 하단 메뉴 (마을 켜졌을 때): 색 보석 타일 + 금테, 누른 칸은 위로 튀어 오름, 토스 승인 대기 숫자
+const GNI={home:['🏘','#7b4fd6','#3d1f7a'],in:['🧴','#ff5fa2','#a3175a'],toss:['🤝','#ff9a3c','#a34a0c'],share:['📖','#2fb59a','#0f5f50'],more:['🎒','#8a8fa3','#3c3f4f']};
+function gNav(main,inMore){const tp=tosses.filter(x=>x.to==me.id&&x.st=='pending'&&!x.void).length,it=main.map(([k,l])=>[k,adm()&&k=='home'?'총괄':l,tab==k]).concat([['more','더보기',inMore]]);
+return `<nav class="nav gnav">${it.map(([k,l,on])=>{const g=GNI[k]||GNI.more;return `<button class="${on?'on':''}" onclick="go('${k}')"><span class="gt" style="--g1:${g[1]};--g2:${g[2]}"><i>${adm()&&k=='home'?'👑':g[0]}</i>${k=='toss'&&tp?`<b class="gdot">${tp}</b>`:''}</span><span class="gl">${l}</span></button>`}).join('')}</nav>`}
 function draw(){if(me.role=='student')return sdraw();const ad=adm(),V=vilOn(),main=[['home',ad?'총괄':V?'마을':'내현황',V?'🏘':'🏠'],['in','판매입력','🧾'],['toss','토스','🤝'],['share','쉐어비','💳']],
 more=ad?[['vil','블랙고스트마을','🏘'],['sup','비품·소모품','📦'],['acd','수강관리','🎓'],['pet','유령 키우기','👻'],['edu','기본교육','📚'],['conv','컨벤션 일정','🗓'],['set','정산','💰'],['inv','재고·마진','📊'],['evt','이벤트','🎁'],['conf','설정','⚙️']]:(V?[['my','내현황','📋']]:[]).concat([['pet','유령 키우기','👻'],['sup','비품·소모품','📦'],['evt','이벤트','🎁'],['edu','기본교육','📚'],['conv','컨벤션 일정','🗓']]).concat(isInst()?[['acd','수강관리','🎓']]:[]),inMore=tab=='more'||more.some(x=>x[0]==tab);
 const vs=tab=='vil'||(tab=='home'&&V),body0=vs?'<div id="vslot"></div>':tab=='my'?myHome():tab=='deco'?decoView():tab=='game'?gameCard()+'<div class="card">'+(gkHtml()||'<p class="mu">이번 주 게임왕은 아직 없어요. 첫 번째가 되어 보세요! 👑</p>')+'</div>':tab=='castle'?castleView():tab=='in'?form():tab=='toss'?tossView():tab=='share'?(ad?share():shareMe()):tab=='sup'?supView():tab=='acd'&&isInst()?acdView():tab=='evt'?evtView():tab=='edu'?eduView():tab=='conv'?convView():tab=='pet'?petView():tab=='set'&&ad?settle():tab=='conf'&&ad?confView():tab=='inv'&&ad?inv():tab=='more'?moreView(more):home(),vh=vHeroOn(),body=vh?vHero(VT[tab])+body0:body0;
-view((vs?vSlim():vh?'':hdr())+body+`<nav class="nav">${main.map(([k,l,i])=>`<button class="${tab==k?'on':''}" onclick="go('${k}')"><i>${i}</i>${l}</button>`).join('')}<button class="${inMore?'on':''}" onclick="go('more')"><i>☰</i>더보기</button></nav>`);VIL.after()}
+view((vs?vSlim():vh?'':hdr())+body+(V||vAd?gNav(main,inMore):`<nav class="nav">${main.map(([k,l,i])=>`<button class="${tab==k?'on':''}" onclick="go('${k}')"><i>${i}</i>${l}</button>`).join('')}<button class="${inMore?'on':''}" onclick="go('more')"><i>☰</i>더보기</button></nav>`));VIL.after()}
 </script></body></html>
