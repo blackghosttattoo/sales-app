@@ -149,7 +149,7 @@ body.vmode{overflow:hidden}body.vmode main{padding-bottom:0}
 .gdot{position:absolute;top:-6px;right:-6px;min-width:19px;height:19px;padding:0 5px;border-radius:999px;background:#ff3b5c;color:#fff;font-size:11px;line-height:17px;border:2px solid #fff;box-shadow:0 2px 4px #0008}
 @media (prefers-reduced-motion:reduce){.gnav *{animation:none!important}}
 </style></head><body><main id="app">불러오는 중…</main><div id="modal"><div class="card" id="mb"></div></div><div id="snack"></div>
-<script>window.APPV0='v1.40';
+<script>window.APPV0='v1.41';
 // ----- 새 버전 알림: ver.json(배포할 때 APPV와 같이 올림)을 캐시 없이 받아 다르면 위에 [업데이트] 버튼 (아이폰 홈화면 앱은 새로고침이 어려워서)
 let _vcT=0;
 function verChk(){if(typeof fetch!='function'||Date.now()-_vcT<60000)return;_vcT=Date.now();fetch('ver.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():null).then(j=>{if(j&&typeof j.v=='string'&&j.v!==window.APPV0)updBar(j.v)}).catch(()=>{})}
@@ -779,7 +779,7 @@ const m=$('#gmsg');if(m)m.innerHTML=`<b>끝! 점수 ${g.sc}${nb?' 🏆 내 최�
 if(get>0||nb)await petSave({gday:td,gtod:s.tod+get,gpt:s.tot+get,wkw:wkKey(td),wkp:s.wk+get,best})}
 // 대장 앱: 광장용 요약을 계산해 저장 (바뀐 사람만)
 async function petSync(){if(!adm())return;await loadPets();const b=db.batch();let n=0;Object.values(users).filter(u=>u.status=='active'&&u.role!='student'&&!u.del).forEach(u=>{const p=petCalc(u),o=pets[u.id]||{};if(o.st!==p.st||o.ex!==p.ex||o.full!==p.full||o.mood!==p.mood){b.set(db.doc('pets/'+u.id),{st:p.st,ex:p.ex,full:p.full,mood:p.mood,sAt:NOW()},{merge:true});n++}});if(n)await b.commit().catch(e=>console.log(e))}
-const APPV='v1.40',verLine=()=>`<p class="mu" style="text-align:center;margin:4px 0 12px">BLACKGHOST TATTOO STUDIO · ${APPV} <button class="s" style="margin-left:6px" onclick="goUpd()">🔄 새로고침</button></p>`;
+const APPV='v1.41',verLine=()=>`<p class="mu" style="text-align:center;margin:4px 0 12px">BLACKGHOST TATTOO STUDIO · ${APPV} <button class="s" style="margin-left:6px" onclick="goUpd()">🔄 새로고침</button></p>`;
 
 function sdraw(){const nv=`<nav class="nav">${[['home','내 수강','🎓'],['edu','기본교육','📚']].map(([k,l,i])=>`<button class="${tab==k?'on':''}" onclick="go('${k}')"><i>${i}</i>${l}</button>`).join('')}</nav>`;view(hdr()+(tab=='edu'?eduView():noticeBanner()+studentHome())+verLine()+nv)}
 async function saveCourse(id){const v=k=>$('#ac_'+k).value,c=crs[id],iu=instList().find(u=>u.id==v('inst')),o={phone:v('phone').trim(),insta:v('insta').trim(),start:v('start'),total:Math.max(1,+v('total')||25),inst:v('inst'),instName:iu?(iu.nick||iu.name):''};const fee=adm()?+v('fee')||0:null;await db.doc('courses/'+id).update(o).catch(err);Object.assign(c,o);if(fee!=null&&fee!==cpOf(id).fee){const cp=Object.assign({uid:id,pays:[]},cpOf(id),{fee});await db.doc('coursePay/'+id).set(cp).catch(err);cpay[id]=cp}draw()}
@@ -1129,7 +1129,7 @@ function mount(){const s=document.getElementById('vslot');if(!s)return;if(!EL)bu
  fit();upd();const v=q('.vsc');if(sc<0){sc=Math.max(0,MAP.offsetHeight*.5-v.clientHeight/2);setTimeout(()=>talk('땅을 눌러서 날 움직여 봐! 👻',3200),400)}v.scrollTop=sc;
  if(mx<20||mx>80)moveTo(50,58);if(!raf){lastT=0;raf=requestAnimationFrame(loop)}}
 // 배경 음악: 오르골 멜로디·패드·베이스·리듬 (파일 없이 폰에서 직접 연주). 마을·건물 안에서만 나오고 다른 화면에선 잠시 멈춤
-let AC=null,bus=null,tm=null,step=0,nextT=0,noise=null,paused=false;
+let AC=null,bus=null,tm=null,step=0,nextT=0,noise=null;
 const NF=n=>440*Math.pow(2,(n-69)/12),S16=60/92/4,MM=s=>s.split(' ').map(x=>x=='.'?0:+x);
 const CHD=[[57,60,64],[53,57,60],[48,52,55,59],[55,59,62],[57,60,64],[53,57,60,64],[52,56,59,62],[52,56,59],[50,53,57],[57,60,64],[53,57,60],[52,56,59],[50,53,57,60],[48,52,55],[52,56,59,62],[57,60,64]];
 const MEL=['76 . . 81 . 79 76 . 72 . . 74 . 76 . .','77 . . 76 . 72 . . 69 . . 72 . . . .','76 . 79 . 84 . 83 . 81 . 79 . 76 . . .','74 . . 79 . 74 . 71 . . 74 . 79 . . .','76 . . 81 . 79 76 . 84 . . 83 . 81 . .','81 . 77 . 76 . 74 . 72 . . 74 . . . .','71 . 74 . 76 . 80 . 83 . . 80 . 76 . .','76 . . . 74 . . . 71 . . . . . . .','77 . . 81 . 77 74 . 77 . . 81 . 86 . .','84 . . 81 . 76 . . 81 . 84 . 88 . . .','84 . 81 . 77 . 81 . 84 . . 86 . 84 . .','83 . . 80 . 76 . . 80 . 83 . 86 . . .','86 . 84 . 81 . 77 . 84 . 81 . 77 . 74 .','76 . 79 . 84 . 79 . 76 . 72 . 79 . . .','80 . 83 . 86 . 83 . 80 . 76 . 74 . 71 .','69 . . . 72 . . . 76 . . . 81 . . .'].map(MM);
@@ -1150,13 +1150,16 @@ function music(on){const b=EL&&q('[data-a="snd"]');if(on){if(!AC){const C=window
   const comp=AC.createDynamicsCompressor();comp.threshold.value=-18;comp.ratio.value=3;comp.connect(AC.destination);const len=AC.sampleRate*2.6,ir=AC.createBuffer(2,len,AC.sampleRate);for(let c=0;c<2;c++){const d=ir.getChannelData(c);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.8)}
   const rev=AC.createConvolver();rev.buffer=ir;const wet=AC.createGain();wet.gain.value=.35;rev.connect(wet);wet.connect(comp);bus=AC.createGain();bus.gain.value=0;bus.connect(comp);bus.connect(rev);
   noise=AC.createBuffer(1,AC.sampleRate*.5,AC.sampleRate);const nd=noise.getChannelData(0);for(let i=0;i<nd.length;i++)nd[i]=Math.random()*2-1}
-  AC.resume&&AC.resume();fade(.8,1.5);if(!tm){nextT=AC.currentTime+.08;step=0;tm=setInterval(sch,50)}mus=true;paused=false}
+  AC.resume&&AC.resume();fade(.8,1.5);if(!tm){nextT=AC.currentTime+.08;step=0;tm=setInterval(sch,50)}mus=true}
  else{mus=false;if(AC){fade(0,.8);setTimeout(()=>{if(!mus&&tm){clearInterval(tm);tm=null}},850)}}
  if(b){b.textContent=mus?'🔊':'🔇';b.classList.toggle('on',mus)}try{localStorage.setItem('vMus',mus?'1':'')}catch(e){}}
 function sfx(k){if(!mus||!AC)return;const t=AC.currentTime+.01;(k=='door'?[72,76,79,84,88]:k=='step'?[84,91]:[88,91,96]).forEach((n,i)=>bell(n,t+i*(k=='step'?.05:.06),k=='step'?.06:.11))}
-// draw() 뒤에 부름: 마을 자리가 있으면 붙이고, 마을·건물 밖 화면에선 음악을 잠시 멈춤
+// 음악은 켜 두면 앱 어느 화면에서든 계속(사용자 요청 v1.41). 다시 열면 첫 터치 때 이어서 켜짐(폰은 터치 없이 소리를 못 냄), 앱 복귀 때 다시 재생
+try{if(localStorage.getItem('vMus')&&document.addEventListener){const f=()=>{document.removeEventListener('pointerdown',f,true);if(!mus&&vilOn())music(true)};document.addEventListener('pointerdown',f,true)}}catch(e){}
+if(document.addEventListener)document.addEventListener('visibilitychange',()=>{if(!document.hidden&&mus&&AC&&AC.resume)AC.resume()});
+// draw() 뒤에 부름: 마을 자리가 있으면 붙임
 function after(){if(!document.createElement||!document.body)return;try{const s=!!document.getElementById('vslot');document.body.classList.toggle('vmode',s);if(s)mount();
- const inV=s||vHeroOn();if(mus&&AC&&!inV&&!paused){paused=true;fade(0,.6)}else if(mus&&AC&&inV&&paused){paused=false;fade(.8,1)}}catch(e){console.error(e)}}
+ if(EL){const b=q('[data-a="snd"]');b.textContent=mus?'🔊':'🔇';b.classList.toggle('on',mus)}}catch(e){console.error(e)}}
 return{after}})();
 // 게임 아이콘 하단 메뉴 (마을 켜졌을 때): 색 보석 타일 + 금테, 누른 칸은 위로 튀어 오름, 토스 승인 대기 숫자
 const GNI={home:['🏘','#7b4fd6','#3d1f7a'],in:['🧴','#ff5fa2','#a3175a'],toss:['🤝','#ff9a3c','#a34a0c'],share:['📖','#2fb59a','#0f5f50'],more:['🎒','#8a8fa3','#3c3f4f']};
