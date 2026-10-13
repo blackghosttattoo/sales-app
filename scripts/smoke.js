@@ -86,6 +86,13 @@ run(`allSales=[];delete cfg.pet`);
 ok('레벨 기본 이름', run(`defLv().steps[9].name`) === '레전드 고스트');
 ok('쉐어비 15일 전엔 입금 예정', (run(`me=users.a;tab='home';draw()`), true));
 ok('컨벤션 달력', (run(`me=users.a;tab='conv';draw()`), /Test Con/.test(out())));
+// 블랙고스트마을 (v1.39): 타투이스트 첫 화면 = 마을, 건물 탭 위에 건물 안 그림, 대장이 끄면 예전 내현황
+run(`me=Object.assign({},users.w1);delete cfg.vil;tab='home';draw()`); ok('마을: 타투이스트 첫 화면', /id="vslot"/.test(out()) && /마을/.test(out()));
+run(`tab='in';draw()`); ok('마을: 판매입력 위 크림 가게 그림', /in_cream\.jpg/.test(out()) && /마을로/.test(out()));
+for (const k of ['my', 'deco', 'game', 'castle']) { try { run(`tab='${k}';draw()`); ok(`마을: ${k} 화면`, out().length > 300 && /vhero|내역/.test(out())); } catch (e) { ok(`마을: ${k} (${e.message})`, false); } }
+run(`cfg.vil=false;tab='home';draw()`); ok('마을 끄면 예전 내현황', !/vslot/.test(out()) && /내역/.test(out()));
+run(`tab='in';draw()`); ok('마을 끄면 건물 그림 없음', !/vhero/.test(out())); run(`delete cfg.vil`);
+run(`me=users.a;go('vil')`); ok('대장 마을 미리보기', /id="vslot"/.test(out())); run(`go('home')`); ok('대장 총괄은 그대로', !/vslot/.test(out()));
 ok('쉐어비 금액 가리기·워터마크', (run(`me=Object.assign({},users.w1);shareOK=true;tab='share';draw()`), /●●●원/.test(out()) && /유출금지/.test(out()) && !/300,000원/.test(out().replace(/data-v="[^"]*"/g,''))));
 
 // 버튼 onclick 안에서는 document·요소의 기본 기능 이름이 먼저 잡힌다 (예: createEvent → document.createEvent). 겹치는 이름 금지
