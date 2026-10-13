@@ -149,7 +149,7 @@
 ## v1.39 (블랙고스트마을 — 타투이스트 첫 화면)
 - 이름: '유령 마을' → **블랙고스트마을**(사용자 결정). 사용자가 써 보고 아니면 되돌릴 수 있게 함: ① 대장 설정 > 유령 키우기 맨 위 '🏘 블랙고스트마을' 켜기/끄기(`cfg.vil`, false면 예전 내현황 — 배포 없이 바로) ② 코드 전체 되돌리기는 커밋 `5df3c9e`(마을 넣기 직전 = v1.38 앱; 태그 push는 권한 없어 막힘).
 - `vilOn()` = 타투이스트(role artist)이고 `cfg.vil!==false`. 대장 첫 화면은 총괄 그대로, 더보기 '블랙고스트마을'(tab `vil`) 미리보기 — 거기서 건물로 들어가면(`vFrom`→`vAd`) 그 화면에도 건물 그림.
-- 그림은 저장소 `docs/village/`(village.jpg 지도, in_*.jpg 건물 안). 건물 `VB`(위치 % `r`, 탭 `t`): cream→`in`, toss→`toss`, supply→`sup`, pet→`pet`, lotto→`evt`, deco→`deco`(새 탭 `decoView`, 꾸미기 목록 `decoGrid()`는 petDeco와 공용), share→`share`, game→`game`(새 탭: gameCard + 이번 주 게임왕 `gkHtml()`), castle→`castle`(새 탭 `castleView`: 공지·📜 샵 규칙; 대장님 성 그림이 아직 없어 `studio.jpg` 임시 사용). `VT`=탭→건물.
+- 그림은 저장소 `docs/village/`(village.jpg 지도, in_*.jpg 건물 안). 건물 `VB`(위치 % `r`, 탭 `t`): cream→`in`, toss→`toss`, supply→`sup`, pet→`pet`, lotto→`evt`, deco→`deco`(새 탭 `decoView`, 꾸미기 목록 `decoGrid()`는 petDeco와 공용), share→`share`(이름 쉐어하우스), game→`game`(새 탭: gameCard + 이번 주 게임왕 `gkHtml()`), castle→`castle`(새 탭 `castleView`: 공지·📜 샵 규칙; 대장님 성 그림이 아직 없어 `studio.jpg` 임시 사용). `VT`=탭→건물.
 - 건물 탭(하단 탭으로 가도)은 위에 `vHero(k)`(건물 안 그림·천천히 확대·빛·먼지·내 유령 말풍선, '← 마을로'). 예전 홈 내용은 `myHome()` = tab `my`('📋 내현황' — 마을 위 버튼·크림하우스 그림 위 버튼·더보기).
 - 마을 화면 `VIL`(한 덩어리 코드): 처음 한 번 DOM(`.vwrap`)을 만들어 두고 `draw()` 끝의 `VIL.after()`가 `#vslot`에 다시 붙임(다시 그려도 움직임·스크롤·음악 유지). 화면 높이에 맞춤(`body.vmode`). 건물 말풍선(실제 데이터): 오늘 판매 개수, 받은 토스 승인 대기, 배고픔, 안 긁은 복권, 오늘 게임 포인트, 7일 안 공지. 쉐어비는 비밀이라 말풍선 없음. 다른 사람 유령(`pets`, 최대 6)이 돌아다님. 효과(낙엽·반딧불이·분수·반짝이)는 canvas, 마을이 화면에 없으면 멈춤. 밤은 19시~6시 자동 + 🌙 버튼. 배경 음악(WebAudio, 🔇 버튼, 마을·건물 밖 화면에선 잠시 멈춤).
 - 규칙 변경 없음(`cfg.vil`은 대장이 config에 저장).
