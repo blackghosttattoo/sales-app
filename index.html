@@ -73,10 +73,13 @@ label{font-size:13px;color:var(--mu);display:block;margin:10px 0 4px}.mu{color:v
 .clk{cursor:pointer}.clk:hover{outline:1px solid var(--ac)}
 #snack{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#000c;color:#fff;padding:10px 16px;border-radius:999px;font-size:13px;z-index:10;display:none;white-space:nowrap}
 /* 블랙고스트마을 (v1.39) */
-body.vmode main{padding-bottom:calc(70px + env(safe-area-inset-bottom))}
-.vwrap{position:relative;border-radius:16px;overflow:hidden;background:#120d10;border:1px solid var(--ln);color:#fff}
-.vsc{position:absolute;inset:0;padding-top:44px;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch}.vsc::-webkit-scrollbar{display:none}
-.vtop{position:absolute;left:0;right:0;top:0;z-index:8;display:flex;align-items:center;gap:6px;padding:9px 10px;background:linear-gradient(#000c,#0000);pointer-events:none}
+body.vmode{overflow:hidden}body.vmode main{padding-bottom:0}
+.vhdr{position:fixed;z-index:7;top:calc(8px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);width:min(calc(100% - 20px),700px);background:#140f18b8;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#fff;border:1px solid #ffffff26;border-radius:14px;padding:7px 10px;box-shadow:0 4px 14px #0006}
+.vht{font-size:14px;font-weight:700;line-height:1.35;word-break:keep-all;overflow-wrap:break-word}
+.vhs{display:flex;align-items:center;gap:6px;font-size:11.5px;color:#ddd8ea;margin-top:2px}.vhs button{padding:3px 8px;font-size:12px;background:#0006;color:#fff;border-color:#fff4}
+.vwrap{position:fixed;top:0;bottom:64px;left:50%;transform:translateX(-50%);width:min(100%,720px);z-index:1;overflow:hidden;background:#120d10;color:#fff}
+.vsc{position:absolute;inset:0;padding-top:calc(var(--vt,0px) + 40px);overflow-y:auto;overflow-x:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch}.vsc::-webkit-scrollbar{display:none}
+.vtop{position:absolute;left:0;right:0;top:var(--vt,0px);z-index:8;display:flex;align-items:center;gap:6px;padding:9px 10px;background:linear-gradient(#000c,#0000);pointer-events:none}
 .vtop b{font-size:17px;letter-spacing:.5px;text-shadow:0 2px 6px #000}.vtop button{pointer-events:auto}
 .vib{border:1px solid #fff5;background:#0008;color:#fff;border-radius:999px;padding:5px 9px;font-size:12px;backdrop-filter:blur(4px)}.vib.on{background:#ffcf6b;color:#3a2a00;border-color:#ffcf6b}
 .vmap{position:relative;width:100%;aspect-ratio:941/1672;transform-origin:50% 50%;transition:transform .75s cubic-bezier(.65,0,.35,1),filter .75s;cursor:pointer}
@@ -118,7 +121,7 @@ body.vmode main{padding-bottom:calc(70px + env(safe-area-inset-bottom))}
 .vtap{position:absolute;width:30px;height:12px;margin:-6px 0 0 -15px;border:2px solid #fffa;border-radius:50%;z-index:2;pointer-events:none;animation:vtap .7s ease-out forwards}
 @keyframes vtap{from{transform:scale(.3);opacity:1}to{transform:scale(1.6);opacity:0}}
 .vhint{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);z-index:7;font-size:11px;background:#000a;border-radius:999px;padding:4px 10px;pointer-events:none;white-space:nowrap;animation:vhf 4s 4s forwards}@keyframes vhf{to{opacity:0}}
-.vhero{position:relative;height:34vh;min-height:200px;margin:-2px -12px -22px;overflow:hidden;background:#000}
+.vhero{position:relative;height:calc(40vh + env(safe-area-inset-top));min-height:230px;margin:calc(-10px - env(safe-area-inset-top)) -12px -22px;overflow:hidden;background:#000}
 .vhero+*{position:relative;z-index:1;border-radius:20px 20px 14px 14px;box-shadow:0 -8px 20px #0005}
 .vhimg{position:absolute;inset:-6%;background:center 40%/cover no-repeat;animation:vkb 20s ease-in-out infinite alternate}
 @keyframes vkb{to{transform:scale(1.1) translate(-2%,-1%)}}
@@ -129,13 +132,13 @@ body.vmode main{padding-bottom:calc(70px + env(safe-area-inset-bottom))}
 .vdust{position:absolute;width:3px;height:3px;border-radius:50%;background:#fff1c9;box-shadow:0 0 6px 1px #ffd98aaa;animation:vdust linear infinite;opacity:0}
 @keyframes vdust{15%{opacity:.9}100%{transform:translate(30px,-140px);opacity:0}}
 .vshade{position:absolute;left:0;right:0;bottom:0;height:40%;background:linear-gradient(#0000,#000a)}
-.vhtop{position:absolute;left:0;right:0;top:0;display:flex;align-items:center;gap:8px;padding:10px 12px;background:linear-gradient(#000b,#0000);color:#fff}
+.vhtop{position:absolute;left:0;right:0;top:0;display:flex;align-items:center;gap:8px;padding:calc(10px + env(safe-area-inset-top)) 12px 10px;background:linear-gradient(#000b,#0000);color:#fff}
 .vhtop b{font-size:17px;text-shadow:0 2px 6px #000}.vbk{background:#0006;color:#fff;border-color:#fff4}
 .vhg{position:absolute;right:7%;bottom:22%;width:70px;animation:vfl 2.6s ease-in-out infinite}
 .vhg .vsay{position:absolute;bottom:100%;right:0;background:#fff;color:#222;font-size:12px;border-radius:10px;padding:4px 9px;white-space:nowrap;margin-bottom:4px;box-shadow:0 3px 8px #0008}
 @media (prefers-reduced-motion:reduce){.vwrap *,.vhero *{animation:none!important;transition:none!important}}
 </style></head><body><main id="app">불러오는 중…</main><div id="modal"><div class="card" id="mb"></div></div><div id="snack"></div>
-<script>window.APPV0='v1.39';
+<script>window.APPV0='v1.40';
 // ----- 새 버전 알림: ver.json(배포할 때 APPV와 같이 올림)을 캐시 없이 받아 다르면 위에 [업데이트] 버튼 (아이폰 홈화면 앱은 새로고침이 어려워서)
 let _vcT=0;
 function verChk(){if(typeof fetch!='function'||Date.now()-_vcT<60000)return;_vcT=Date.now();fetch('ver.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():null).then(j=>{if(j&&typeof j.v=='string'&&j.v!==window.APPV0)updBar(j.v)}).catch(()=>{})}
@@ -765,7 +768,7 @@ const m=$('#gmsg');if(m)m.innerHTML=`<b>끝! 점수 ${g.sc}${nb?' 🏆 내 최�
 if(get>0||nb)await petSave({gday:td,gtod:s.tod+get,gpt:s.tot+get,wkw:wkKey(td),wkp:s.wk+get,best})}
 // 대장 앱: 광장용 요약을 계산해 저장 (바뀐 사람만)
 async function petSync(){if(!adm())return;await loadPets();const b=db.batch();let n=0;Object.values(users).filter(u=>u.status=='active'&&u.role!='student'&&!u.del).forEach(u=>{const p=petCalc(u),o=pets[u.id]||{};if(o.st!==p.st||o.ex!==p.ex||o.full!==p.full||o.mood!==p.mood){b.set(db.doc('pets/'+u.id),{st:p.st,ex:p.ex,full:p.full,mood:p.mood,sAt:NOW()},{merge:true});n++}});if(n)await b.commit().catch(e=>console.log(e))}
-const APPV='v1.39',verLine=()=>`<p class="mu" style="text-align:center;margin:4px 0 12px">BLACKGHOST TATTOO STUDIO · ${APPV} <button class="s" style="margin-left:6px" onclick="goUpd()">🔄 새로고침</button></p>`;
+const APPV='v1.40',verLine=()=>`<p class="mu" style="text-align:center;margin:4px 0 12px">BLACKGHOST TATTOO STUDIO · ${APPV} <button class="s" style="margin-left:6px" onclick="goUpd()">🔄 새로고침</button></p>`;
 
 function sdraw(){const nv=`<nav class="nav">${[['home','내 수강','🎓'],['edu','기본교육','📚']].map(([k,l,i])=>`<button class="${tab==k?'on':''}" onclick="go('${k}')"><i>${i}</i>${l}</button>`).join('')}</nav>`;view(hdr()+(tab=='edu'?eduView():noticeBanner()+studentHome())+verLine()+nv)}
 async function saveCourse(id){const v=k=>$('#ac_'+k).value,c=crs[id],iu=instList().find(u=>u.id==v('inst')),o={phone:v('phone').trim(),insta:v('insta').trim(),start:v('start'),total:Math.max(1,+v('total')||25),inst:v('inst'),instName:iu?(iu.nick||iu.name):''};const fee=adm()?+v('fee')||0:null;await db.doc('courses/'+id).update(o).catch(err);Object.assign(c,o);if(fee!=null&&fee!==cpOf(id).fee){const cp=Object.assign({uid:id,pays:[]},cpOf(id),{fee});await db.doc('coursePay/'+id).set(cp).catch(err);cpay[id]=cp}draw()}
@@ -1057,6 +1060,8 @@ const vilOn=()=>!!me&&me.role=='artist'&&cfg.vil!==false;
 const vHeroOn=()=>!!VT[tab]&&(vilOn()||vAd);
 function vHero(k){const b=VB[k],p=petCalc(me);let du='';for(let i=0;i<12;i++)du+=`<span class="vdust" style="left:${5+Math.random()*85}%;top:${35+Math.random()*60}%;animation-duration:${5+Math.random()*5}s;animation-delay:${-Math.random()*10}s"></span>`;
 return `<div class="vhero"><div class="vhimg" style="background-image:url(${VD+b.bg})"></div><div class="vray"></div><div class="vwarm"></div>${du}<div class="vshade"></div><div class="vhtop"><button class="s vbk" onclick="go(adm()?'vil':'home')">← 마을로</button><b>${b.i} ${b.n}</b>${k=='cream'&&!adm()?`<button class="s vbk" style="margin-left:auto" onclick="go('my')">📋 내현황</button>`:''}</div><div class="vhg"><div class="vsay">${esc(b.hi)}</div>${ghostSvg(p.st,p.deco,p.sad,'')}</div></div>`}
+function vSlim(){const st=startOf(me),days=st?Math.floor((new Date(today())-new Date(st))/864e5)+1:0,sub=[days>0?'블랙고스트와 '+(adm()?days:workDays(me))+'일째':'',!adm()?'Lv.'+levelOf(me):''].filter(Boolean).join(' · ');
+return `<div class="vhdr"><div class="vht">${todayPh(false,me.nick||me.name)}</div><div class="vhs"><span>${esc(sub)}</span><span style="flex:1"></span><button class="s" onclick="shopRules()" title="샵 이용규칙 · 문신사법" aria-label="샵 이용규칙 · 문신사법">📜</button><button class="s" onclick="out()">로그아웃</button></div></div>`}
 function myHome(){return noticeBanner()+petCard()+rankCard()+eventBanner()+wsum()+`<div class="card"><h2>내역</h2>${feedView()}</div>`}
 function decoView(){const p=petCalc(me),bal=p.gp-(+myPet.gps||0);return `<div class="card"><h2>🎨 꾸미기 상점</h2><div class="row" style="flex-wrap:nowrap"><div style="width:80px;flex-shrink:0">${ghostSvg(p.st,p.deco,p.sad,'pfl')}</div><div><b>${esc(p.name||'내 유령')}</b> <span class="mu">${p.stName}</span><div class="mu">내 포인트 <b>${bal}</b> · 🎮 게임 동굴에서 모아요</div></div></div><p class="mu">단계가 오르면 열리는 꾸미기와, 게임 포인트로 사는 꾸미기가 있어요.</p>${decoGrid()}</div>`}
 function castleView(){return (noticeBanner()||'<div class="card"><h2>📢 공지</h2><p class="mu">지금은 공지가 없어요.</p></div>')+`<div class="card"><h2>📜 샵 규칙</h2><div class="grid"><button onclick="shopRules('rule')"><i>📜</i>샵 이용규칙</button><button onclick="shopRules('law')"><i>⚖️</i>문신사법 안내</button></div></div><div class="card"><h2>도움말</h2><a href="guide.html?v=39" style="color:var(--ac);font-weight:700">설치·사용 안내 · 자주 묻는 질문 →</a></div>`}
@@ -1075,7 +1080,7 @@ function build(){EL=document.createElement('div');EL.className='vwrap';
  q('.vsc').addEventListener('scroll',e=>{sc=e.target.scrollTop},{passive:true});
  EL.addEventListener('click',onClick);
  setInterval(tick,2000);addEventListener('resize',()=>{if(live2())fit()})}
-function fit(){const s=EL.parentNode;if(!s)return;const top=s.getBoundingClientRect().top+(window.scrollY||0),nv=document.querySelector('.nav'),h=innerHeight-top-(nv?nv.offsetHeight:64)-10;EL.style.height=Math.max(360,h)+'px';
+function fit(){if(!EL.parentNode)return;const nv=document.querySelector('.nav'),hd=document.querySelector('.vhdr');EL.style.bottom=(nv?nv.offsetHeight:64)+'px';EL.style.setProperty('--vt',(hd?hd.getBoundingClientRect().bottom+2:0)+'px');
  const r=MAP.getBoundingClientRect(),d=Math.min(2,window.devicePixelRatio||1);CW=r.width;CH=r.width*1672/941;CV.width=CW*d;CV.height=CH*d;CX.setTransform(d,0,0,d,0,0)}
 function spark(x,y,n,c){for(let i=0;i<n;i++)P.push({k:'sp',x,y,vx:rnd(-.7,.7),vy:rnd(-1.5,-.3),life:1,c:c||'#fff6c0'})}
 function loop(t){if(!live2()){raf=0;return}const dt=Math.min(50,t-(lastT||t))/16.7,N=EL.classList.contains('vnight');lastT=t;CX.clearRect(0,0,CW,CH);
@@ -1144,6 +1149,6 @@ function after(){if(!document.createElement||!document.body)return;try{const s=!
 return{after}})();
 function draw(){if(me.role=='student')return sdraw();const ad=adm(),V=vilOn(),main=[['home',ad?'총괄':V?'마을':'내현황',V?'🏘':'🏠'],['in','판매입력','🧾'],['toss','토스','🤝'],['share','쉐어비','💳']],
 more=ad?[['vil','블랙고스트마을','🏘'],['sup','비품·소모품','📦'],['acd','수강관리','🎓'],['pet','유령 키우기','👻'],['edu','기본교육','📚'],['conv','컨벤션 일정','🗓'],['set','정산','💰'],['inv','재고·마진','📊'],['evt','이벤트','🎁'],['conf','설정','⚙️']]:(V?[['my','내현황','📋']]:[]).concat([['pet','유령 키우기','👻'],['sup','비품·소모품','📦'],['evt','이벤트','🎁'],['edu','기본교육','📚'],['conv','컨벤션 일정','🗓']]).concat(isInst()?[['acd','수강관리','🎓']]:[]),inMore=tab=='more'||more.some(x=>x[0]==tab);
-const body0=tab=='vil'||(tab=='home'&&V)?'<div id="vslot"></div>':tab=='my'?myHome():tab=='deco'?decoView():tab=='game'?gameCard()+'<div class="card">'+(gkHtml()||'<p class="mu">이번 주 게임왕은 아직 없어요. 첫 번째가 되어 보세요! 👑</p>')+'</div>':tab=='castle'?castleView():tab=='in'?form():tab=='toss'?tossView():tab=='share'?(ad?share():shareMe()):tab=='sup'?supView():tab=='acd'&&isInst()?acdView():tab=='evt'?evtView():tab=='edu'?eduView():tab=='conv'?convView():tab=='pet'?petView():tab=='set'&&ad?settle():tab=='conf'&&ad?confView():tab=='inv'&&ad?inv():tab=='more'?moreView(more):home(),body=vHeroOn()?vHero(VT[tab])+body0:body0;
-view(hdr()+body+`<nav class="nav">${main.map(([k,l,i])=>`<button class="${tab==k?'on':''}" onclick="go('${k}')"><i>${i}</i>${l}</button>`).join('')}<button class="${inMore?'on':''}" onclick="go('more')"><i>☰</i>더보기</button></nav>`);VIL.after()}
+const vs=tab=='vil'||(tab=='home'&&V),body0=vs?'<div id="vslot"></div>':tab=='my'?myHome():tab=='deco'?decoView():tab=='game'?gameCard()+'<div class="card">'+(gkHtml()||'<p class="mu">이번 주 게임왕은 아직 없어요. 첫 번째가 되어 보세요! 👑</p>')+'</div>':tab=='castle'?castleView():tab=='in'?form():tab=='toss'?tossView():tab=='share'?(ad?share():shareMe()):tab=='sup'?supView():tab=='acd'&&isInst()?acdView():tab=='evt'?evtView():tab=='edu'?eduView():tab=='conv'?convView():tab=='pet'?petView():tab=='set'&&ad?settle():tab=='conf'&&ad?confView():tab=='inv'&&ad?inv():tab=='more'?moreView(more):home(),vh=vHeroOn(),body=vh?vHero(VT[tab])+body0:body0;
+view((vs?vSlim():vh?'':hdr())+body+`<nav class="nav">${main.map(([k,l,i])=>`<button class="${tab==k?'on':''}" onclick="go('${k}')"><i>${i}</i>${l}</button>`).join('')}<button class="${inMore?'on':''}" onclick="go('more')"><i>☰</i>더보기</button></nav>`);VIL.after()}
 </script></body></html>
