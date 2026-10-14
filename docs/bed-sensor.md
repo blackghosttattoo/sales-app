@@ -23,6 +23,10 @@
 - 케이스 v1 만듦 → 보드가 NodeMCU-32S(25.5×48.5, 핀 줄 22.86)로 확인돼 v2로 수정: `docs/bed-case/`(bed-case.3mf, 맞춤 시험 조각 fit-test.3mf, 설계 파이썬, README). 시험 조각 결과 받기.
 - 배선: VCC→5V, GND→GND, OUT→GPIO13.
 
+- 2026-10-14 부품 도착. 레이더 핀 순서 TX RX OUT GND VCC, 금색 안테나 면 = 케이스 바닥(아래) 쪽.
+- **1단계 동작 시험**: `bed/fw/bedtest/bedtest.ino`(OUT→P13 읽어 보드 파란 불 P2), 웹 설치 페이지 https://blackghosttattoo.github.io/sales-app/bed/ (`bed/index.html`, ESP Web Tools, `bed/bedtest.json`).
+- 빌드: 이 작업 환경은 Arduino·PlatformIO 서버가 막혀 있어서 GitHub Actions(`.github/workflows/bedfw.yml`)가 `bed/fw/*/`를 arduino-cli(esp32 3.0.7, fqbn nodemcu-32s)로 빌드해 `bed/<이름>.bin`(merged, 0x0부터)을 커밋. 소스만 push하면 자동.
+
 ## 다음 단계 (사용자 응답 대기)
 1. 부품 도착 후 사진(자 옆에서) + 실측 치수(mm) 받기 → 케이스 설계
 2. 케이스 붙일 위치 결정(베드 밑 / 벽 / 레일 근처) — 질문해둔 상태
