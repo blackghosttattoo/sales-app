@@ -188,7 +188,7 @@ service cloud.firestore {
     // 유령 키우기: 모두 읽기(광장), 본인은 이름·꾸미기·미션 날짜·게임 포인트만, 상태 요약(st·ex·full·mood)은 대장 앱이 계산해 저장
     match /pets/{u} {
       function petOk(d) {
-        return txt(d.get('name', ''), 10) && txt(d.get('deco', ''), 12)
+        return txt(d.get('name', ''), 10) && txt(d.get('deco', ''), 12) && txt(d.get('col', ''), 12)
           && d.get('mis', []) is list && d.get('mis', []).size() <= 60;
       }
       // 오늘 날짜(한국 시간) 'YYYY-MM-DD'
@@ -196,28 +196,28 @@ service cloud.firestore {
         let k = request.time + duration.value(9, 'h');
         return string(k.year()) + '-' + (k.month() < 10 ? '0' : '') + string(k.month()) + '-' + (k.day() < 10 ? '0' : '') + string(k.day());
       }
-      // 게임 포인트: 오늘 받은 양(gtod)은 하루 100 이하, 총 포인트(gpt)는 오늘 받은 만큼만 늘 수 있음, 쓴 포인트(gps)는 늘기만
+      // 게임 포인트(v1.43: 하루 제한 없앰, 대신 한 번 저장에 20 이하): 총 포인트(gpt)는 오늘 받은 만큼만 늘 수 있음, 쓴 포인트(gps)는 늘기만
       function gameOk(n, o) {
         let tod = n.get('gtod', 0);
         let oTod = o.get('gday', '') == n.get('gday', '') ? o.get('gtod', 0) : 0;
         let gain = n.get('gpt', 0) - o.get('gpt', 0);
-        return tod is int && tod >= 0 && tod <= 100
-          && n.get('gpt', 0) is int && gain >= 0 && gain == tod - oTod
+        return tod is int && tod >= 0 && tod <= 5000
+          && n.get('gpt', 0) is int && gain >= 0 && gain <= 20 && gain == tod - oTod
           && (gain == 0 || n.get('gday', '') == kday())
           && n.get('gps', 0) is int && n.get('gps', 0) >= o.get('gps', 0) && n.get('gps', 0) <= n.get('gpt', 0)
-          && n.get('own', []) is list && n.get('own', []).size() <= 30
-          && n.get('wkp', 0) is int && n.get('wkp', 0) >= 0 && n.get('wkp', 0) <= 700
+          && n.get('own', []) is list && n.get('own', []).size() <= 40
+          && n.get('wkp', 0) is int && n.get('wkp', 0) >= 0 && n.get('wkp', 0) <= 30000
           && txt(n.get('wkw', ''), 10) && txt(n.get('gday', ''), 10)
-          && n.get('best', {}) is map && n.get('best', {}).size() <= 4;
+          && n.get('best', {}) is map && n.get('best', {}).size() <= 10;
       }
       allow read: if active();
       allow create: if admin()
         || (active() && request.auth.uid == u
-            && request.resource.data.keys().hasOnly(['name', 'deco', 'mis', 'at', 'gday', 'gtod', 'gpt', 'gps', 'own', 'wkw', 'wkp', 'best'])
+            && request.resource.data.keys().hasOnly(['name', 'deco', 'col', 'mis', 'at', 'gday', 'gtod', 'gpt', 'gps', 'own', 'wkw', 'wkp', 'best'])
             && petOk(request.resource.data) && gameOk(request.resource.data, {}));
       allow update: if admin()
         || (active() && request.auth.uid == u
-            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name', 'deco', 'mis', 'at', 'gday', 'gtod', 'gpt', 'gps', 'own', 'wkw', 'wkp', 'best'])
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name', 'deco', 'col', 'mis', 'at', 'gday', 'gtod', 'gpt', 'gps', 'own', 'wkw', 'wkp', 'best'])
             && petOk(request.resource.data) && gameOk(request.resource.data, resource.data));
       allow delete: if admin();
     }

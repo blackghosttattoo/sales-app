@@ -88,10 +88,14 @@ ok('쉐어비 15일 전엔 입금 예정', (run(`me=users.a;tab='home';draw()`),
 ok('컨벤션 달력', (run(`me=users.a;tab='conv';draw()`), /Test Con/.test(out())));
 // 베드 현황 (v1.42): 사용 중·비어 있음·15분 넘게 신호 없으면 꺼짐
 run(`LS.beds={p:Promise.resolve()};beds={b1:{st:'on',at:new Date(Date.now()-5*60000),up:new Date()},b2:{st:'off',at:new Date(Date.now()-90*60000),up:new Date()},b3:{st:'on',at:new Date(),up:new Date(Date.now()-20*60000)}};me=users.a;tab='home';draw()`);
-ok('베드 현황: 사용 중 5분째 / 비어 있음 / 꺼짐', /1번 베드[\s\S]*사용 중[\s\S]*5분째/.test(out()) && /비어 있음/.test(out()) && (out().match(/꺼짐/g)||[]).length >= 2);
+ok('베드 현황 한 줄: 사용 중 5분 / 비어 있음 / 꺼짐', /1번<\/b> 🔴<span[^>]*> 5분/.test(out()) && /🟢/.test(out()) && (out().match(/⚪/g)||[]).length >= 2);
+run(`cfg.bedNames=['창가','','','']`);ok('베드 이름', (run(`draw()`), /<b>창가<\/b> 🔴/.test(out())));run(`delete cfg.bedNames`);
 run(`beds={b1:{st:'off',at:new Date(Date.now()-5*60000),up:new Date()},b2:{st:'off',at:new Date(Date.now()-25*60000),up:new Date()}};draw()`);
 ok('베드: 나간 지 20분 안 = 잠시 비움, 넘으면 비어 있음', /잠시 비움/.test(out()) && /비어 있음/.test(out()));
 run(`beds={}`);
+// v1.43 게임·꾸미기: 한 판 포인트 상한 20, 하루 제한 없음, 유령 색
+ok('게임 포인트 상한 20·조금씩', run(`gpOf('match',100000)`) === 20 && run(`gpOf('jump',30)`) === 5 && run(`gpOf('merge',399)`) === 0);
+ok('꾸미기 19개·유령 색 10개', run(`PSHOP.length`) >= 19 && run(`PCOL.length`) === 10 && /fill="#3a3846"/.test(run(`ghostSvg(2,'cape',false,'','ink')`)));
 // 블랙고스트마을 (v1.39): 타투이스트 첫 화면 = 마을, 건물 탭 위에 건물 안 그림, 대장이 끄면 예전 내현황
 run(`me=Object.assign({},users.w1);delete cfg.vil;tab='home';draw()`); ok('마을: 타투이스트 첫 화면', /id="vslot"/.test(out()) && /마을/.test(out()));
 run(`tab='in';draw()`); ok('마을: 판매입력 위 크림 가게 그림', /in_cream\.jpg/.test(out()) && /마을로/.test(out()));
