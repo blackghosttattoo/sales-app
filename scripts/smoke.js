@@ -86,6 +86,10 @@ run(`allSales=[];delete cfg.pet`);
 ok('레벨 기본 이름', run(`defLv().steps[9].name`) === '레전드 고스트');
 ok('쉐어비 15일 전엔 입금 예정', (run(`me=users.a;tab='home';draw()`), true));
 ok('컨벤션 달력', (run(`me=users.a;tab='conv';draw()`), /Test Con/.test(out())));
+// 베드 현황 (v1.42): 사용 중·비어 있음·15분 넘게 신호 없으면 꺼짐
+run(`LS.beds={p:Promise.resolve()};beds={b1:{st:'on',at:new Date(Date.now()-5*60000),up:new Date()},b2:{st:'off',at:new Date(Date.now()-90*60000),up:new Date()},b3:{st:'on',at:new Date(),up:new Date(Date.now()-20*60000)}};me=users.a;tab='home';draw()`);
+ok('베드 현황: 사용 중 5분째 / 비어 있음 / 꺼짐', /1번 베드[\s\S]*사용 중[\s\S]*5분째/.test(out()) && /비어 있음/.test(out()) && (out().match(/꺼짐/g)||[]).length >= 2);
+run(`beds={}`);
 // 블랙고스트마을 (v1.39): 타투이스트 첫 화면 = 마을, 건물 탭 위에 건물 안 그림, 대장이 끄면 예전 내현황
 run(`me=Object.assign({},users.w1);delete cfg.vil;tab='home';draw()`); ok('마을: 타투이스트 첫 화면', /id="vslot"/.test(out()) && /마을/.test(out()));
 run(`tab='in';draw()`); ok('마을: 판매입력 위 크림 가게 그림', /in_cream\.jpg/.test(out()) && /마을로/.test(out()));
