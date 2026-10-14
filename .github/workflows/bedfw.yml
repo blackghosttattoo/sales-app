@@ -19,18 +19,21 @@ jobs:
           arduino-cli config add board_manager.additional_urls https://github.com/espressif/arduino-esp32/releases/download/3.0.7/package_esp32_index.json
           arduino-cli core update-index
           arduino-cli core install esp32:esp32@3.0.7
+          arduino-cli lib install WiFiManager@2.0.17 ArduinoJson@7.2.1
       - name: 빌드
         run: |
           for d in bed/fw/*/; do
             n=$(basename "$d")
-            arduino-cli compile --fqbn esp32:esp32:nodemcu-32s --output-dir "build/$n" "$d"
+            arduino-cli compile --fqbn esp32:esp32:esp32:PartitionScheme=min_spiffs --output-dir "build/$n" "$d"
             # 뒤쪽 빈칸(0xFF)을 잘라서 4MB → 수백 KB (웹 설치 시간 단축)
             python3 -c "import sys;d=open(sys.argv[1],'rb').read().rstrip(b'\xff');d+=b'\xff'*(-len(d)%4096);open(sys.argv[2],'wb').write(d)" "build/$n/$n.ino.merged.bin" "bed/$n.bin"
+            cp "build/$n/$n.ino.bin" "bed/$n-app.bin"          # 와이파이 자동 업데이트(OTA)용
+            grep -oP '#define FWV "\K[^"]+' "$d/$n.ino" > "bed/$n.ver" || true
           done
           ls -la bed
       - name: 저장
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@users.noreply.github.com"
-          git add bed/*.bin
+          git add bed/*.bin bed/*.ver
           git diff --cached --quiet || (git commit -m "베드 센서 프로그램 빌드 결과 [skip ci]" && git push)
