@@ -49,8 +49,8 @@ a.btn{display:inline-block;background:var(--ac);color:#fff;text-decoration:none;
 <div class="card"><h2><span class="n">4</span>레이더 연결 (USB 빼고!)</h2>
 <p><b>3가닥만</b> 꽂아요. TX·RX는 안 써요.</p>
 <table><tr><th>레이더</th><th>보드 (뒷면 글씨, USB 쪽 줄)</th></tr>
-<tr><td>VCC</td><td><b>5V</b> (USB 쪽 맨 끝)</td></tr><tr><td>GND</td><td><b>GND</b> (5V 바로 다음)</td></tr><tr><td>OUT</td><td><b>P13</b> (GND 다음 SD3·SD2를 건너뛰고 그다음)</td></tr></table>
-<p class="no">⚠ SD3 · SD2 · P12 · 3V3 에는 절대 꽂지 않기 (보드가 안 켜져요)</p>
+<tr><td>VCC</td><td><b>5V</b> (USB 쪽 맨 끝, 1번째)</td></tr><tr><td>OUT</td><td><b>P13</b> (5번째)</td></tr><tr><td>GND</td><td><b>P13 바로 다음 GND</b> (6번째)</td></tr></table>
+<p class="no">⚠ 5V 바로 옆(2번째) "GND"라고 적힌 핀은 쓰지 마세요 — 이 보드는 그 자리가 실제로는 <b>CMD</b>(메모리 칩 선)라서, 꽂으면 보드가 안 켜져요(invalid header). SD3 · SD2 · P12 · 3V3 에도 꽂지 않기.</p>
 <p>꽂은 뒤 USB를 다시 꽂기 (이제부터는 폰 충전기에 꽂아 둬도 돼요).</p></div>
 
 <div class="card"><h2><span class="n">5</span>확인</h2>
