@@ -30,14 +30,14 @@ body -= box(rx0, ry0, -(FLOOR-WIN), rx0+RW+2*C, ry0+RL+2*C, 0.01)
 rim = box(rx0-1.2, ry0-1.2, 0, rx0+RW+2*C+1.2, ry0+RL+2*C+1.2, 1.5) - box(rx0, ry0, -1, rx0+RW+2*C, ry0+RL+2*C, 2)
 rim -= box(rx0+3, ry0+RL+2*C-0.5, -1, rx0+RW+2*C-3, ry0+RL+2*C+2, 3)   # ESP32 쪽 테두리는 터서 선 지나가게
 body += rim
-# ESP32 받침: 양쪽 벽에 홈 파인 레일(핀 줄이 홈에 들어가고 검은 플라스틱이 레일 위에 얹힘). 안테나 쪽 30mm만(USB 쪽은 점퍼선 자리)
+# ESP32 받침: 양쪽 벽에 홈 파인 레일(핀 줄이 홈에 들어가고 검은 플라스틱이 레일 위에 얹힘). 안테나 쪽 20mm만(v3: USB 쪽 28mm는 점퍼선 자리 — 5V·P13·GND, P16·P17)
 ey0 = RZ                       # 보드 안테나 쪽 끝
 RTOP = ZPCB - PLAST
 for side in (0, 1):
     xw = 0 if side == 0 else IW
     pc = (C + PINROW) if side == 0 else IW - (C + PINROW)       # 핀 줄 중심 x
     r0, r1 = (0, 4.2) if side == 0 else (IW-4.2, IW)
-    rail = box(r0, ey0, 0, r1, ey0+30, RTOP) - box(pc-0.8, ey0-1, RTOP-9.5, pc+0.8, ey0+31, RTOP+1)   # 핀이 길어서 홈 깊이 9.5
+    rail = box(r0, ey0, 0, r1, ey0+20, RTOP) - box(pc-0.8, ey0-1, RTOP-9.5, pc+0.8, ey0+21, RTOP+1)   # 핀이 길어서 홈 깊이 9.5
     body += rail
 # USB 쪽 끝: 보드 모서리 받침 턱 두 개 + USB 구멍(위가 열린 U자 — 케이블 꽂고 뚜껑 덮기)
 uc = IW/2; uw, ub = 13.0, ZPCB - 0.4
