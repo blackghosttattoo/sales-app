@@ -159,7 +159,7 @@ body.vmode{overflow:hidden}body.vmode main{padding-bottom:0}
 .gdot{position:absolute;top:-6px;right:-6px;min-width:19px;height:19px;padding:0 5px;border-radius:999px;background:#e0344c;color:#fff;font-size:11px;line-height:15px;border:2px solid var(--w2,#fff);box-shadow:0 2px 4px #0008}
 @media (prefers-reduced-motion:reduce){.gnav *{animation:none!important}}
 </style></head><body><main id="app">불러오는 중…</main><div id="modal"><div class="card" id="mb"></div></div><div id="snack"></div>
-<script>window.APPV0='v1.45';
+<script>window.APPV0='v1.46';
 // ----- 새 버전 알림: ver.json(배포할 때 APPV와 같이 올림)을 캐시 없이 받아 다르면 위에 [업데이트] 버튼 (아이폰 홈화면 앱은 새로고침이 어려워서)
 let _vcT=0;
 function verChk(){if(typeof fetch!='function'||Date.now()-_vcT<60000)return;_vcT=Date.now();fetch('ver.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():null).then(j=>{if(j&&typeof j.v=='string'&&j.v!==window.APPV0)updBar(j.v)}).catch(()=>{})}
@@ -706,9 +706,9 @@ $('#mb').innerHTML=`<h2>${id?'행사 수정':'행사 직접 추가'}</h2><label>
 async function cvSave(id){const d={name:$('#cv_n').value.trim().slice(0,120),s:$('#cv_s').value,e:$('#cv_e').value||$('#cv_s').value,city:$('#cv_c').value.trim().slice(0,60),country:$('#cv_k').value.trim().slice(0,30),url:$('#cv_u').value.trim().slice(0,300),big:true,void:false,at:NOW()};if(!d.name||!d.s)return toast('이름과 시작일을 입력하세요');
 const ok1=await(id?db.doc('conv/'+id).update(d):db.collection('conv').add(d)).then(()=>1).catch(err);if(ok1){closeM();cvM=d.s.slice(0,7);draw()}}
 async function cvDel(id){if(!confirm('이 행사를 삭제할까요?'))return;await db.doc('conv/'+id).delete().catch(err)}
-// ----- 유령 키우기: 상태는 기록으로 계산(판매·토스·미션·복권·쉐어비 기한 내 납부), pets/{uid}에는 이름·꾸미기·미션 날짜(본인)와 광장용 요약(대장 앱이 계산해 저장)
+// ----- 유령 키우기: 상태는 기록으로 계산(판매·토스·미션·복권·게임, 쉐어비 납부는 넣지 않음 v1.46), pets/{uid}에는 이름·꾸미기·미션 날짜(본인)와 광장용 요약(대장 앱이 계산해 저장)
 // 설정(cfg.pet): 시작일(유령 생일, 이날부터의 기록만 셈)·활동별 점수·단계별 필요 점수 — 대장이 설정 > 유령 키우기에서 바꿈
-const PETD={start:'2026-10-12',pts:{sale:10,toss:10,mis:15,sc:3,share:30,game:1},lv:[150,800,3000],gcap:30};
+const PETD={start:'2026-10-12',pts:{sale:10,toss:10,mis:15,sc:3,game:1},lv:[150,800,3000],gcap:30};
 const petc=()=>{const c=cfg.pet||{};return{start:c.start||PETD.start,pts:Object.assign({},PETD.pts,c.pts||{}),lv:(c.lv&&c.lv.length==3?c.lv:PETD.lv).map(Number),gcap:c.gcap!=null?+c.gcap:PETD.gcap}};
 const PSTN=['알','아기 유령','어른 유령','전설 유령'],pstT=()=>[0,...petc().lv];
 const PST=PSTN.map((n,i)=>[0,n]);
@@ -755,8 +755,8 @@ function loadPets(){return liveQ('pets',db.collection('pets'),sn=>{const o={};sn
 const dAgo=d=>d?Math.floor((new Date(today())-new Date(d))/864e5):99;
 function petCalc(u){const id=u.id,pd=(id==me.id?myPet:pets[id])||{},C=petc(),S=C.start,P=C.pts,T=pstT(),td=today(),mis=(pd.mis||[]).filter(d=>d>=S),
 sl=allSales.filter(x=>ok(x)&&x.uid==id&&x.d>=S),ts=tosses.filter(x=>!x.void&&x.st=='ok'&&(x.from==id||x.to==id)&&x.d>=S),sc=tix.filter(t=>t.uid==id&&t.scratched&&t.d>=S),
-on=(u.plan&&u.plan.length?rowsOf(u):[]).filter(r=>r.st=='done'&&r.pd&&r.pd>=S&&r.pd<=r.m+'-15'),
-gp=Math.max(0,+pd.gpt||0),ex=sl.length*(+P.sale||0)+ts.length*(+P.toss||0)+mis.length*(+P.mis||0)+sc.length*(+P.sc||0)+on.length*(+P.share||0)+gp*(+P.game||0),ds=[S,...sl.map(x=>x.d),...ts.map(x=>x.d),...mis,...sc.map(t=>t.d),pd.gday&&+pd.gtod>0&&pd.gday>=S?pd.gday:''].filter(Boolean).sort(),last=ds[ds.length-1],
+
+gp=Math.max(0,+pd.gpt||0),ex=sl.length*(+P.sale||0)+ts.length*(+P.toss||0)+mis.length*(+P.mis||0)+sc.length*(+P.sc||0)+gp*(+P.game||0),ds=[S,...sl.map(x=>x.d),...ts.map(x=>x.d),...mis,...sc.map(t=>t.d),pd.gday&&+pd.gtod>0&&pd.gday>=S?pd.gday:''].filter(Boolean).sort(),last=ds[ds.length-1],
 wk=ds.filter(d=>d!=S&&dAgo(d)<7).length,full=Math.max(0,100-25*dAgo(last)),mood=Math.min(100,wk*12),st=T.reduce((a,v,i)=>ex>=v?i:a,0),nx=T[st+1];
 return{name:pd.name||'',col:PCOL.some(c=>c[0]==pd.col)?pd.col:'',deco:decoOk(pd,pd.deco||'',st),gp,mis,ex,st,stName:PSTN[st],nx:nx!=null?nx:null,full,mood,sad:full<20,
 today:{sale:sl.filter(x=>x.d==td).length,toss:ts.filter(x=>x.d==td).length,mis:mis.includes(td),sc:sc.filter(t=>t.d==td).length}}}
@@ -771,7 +771,7 @@ return `<div class="card"><div class="row" style="justify-content:space-between"
 <div class="pst" onclick="petPoke(event)"><div class="psay on" id="psay">${esc(say)}</div><div class="psh"></div><div id="pg" class="pg ${p.sad?'sad':fx}">${ghostSvg(p.st,p.deco,p.sad,'',p.col)}</div><span class="ptag">${p.stName}</span></div>
 ${pBar('🍙 배부름 '+p.full+'%',p.full,'var(--ac)')}${pBar('💛 기분 '+p.mood+'%',p.mood,'#f3a6b8')}${pBar('⭐ 성장 '+p.ex+(p.nx?' / '+p.nx+' · 다음 단계까지 '+(p.nx-p.ex):' · 최고 단계!'),p.nx?p.ex/p.nx*100:100,'#d4af37')}
 <div class="row" style="margin-top:6px"><button class="s" onclick="petDeco()">🎨 꾸미기</button>${t.mis?'<span class="mu">✅ 오늘 미션 완료</span>':'<button class="s p" onclick="petMis()">⭐ 오늘의 문구 미션 했어요</button>'}</div></div>
-<div class="card"><h2>오늘 먹은 것</h2>${(P=>[t.sale?`🍙 크림 판매 ${t.sale}건 → 밥 +${t.sale*P.sale}`:'',t.toss?`💛 토스 ${t.toss}건 → 기분 +${t.toss*P.toss}`:'',t.mis?`⭐ 오늘의 미션 완료 → 경험치 +${P.mis}`:'',t.sc?`🎁 복권 긁기 ${t.sc}장 → 간식 +${t.sc*P.sc}`:''])(petc().pts).filter(Boolean).map(x=>`<div style="padding:6px 0;border-top:1px solid var(--ln)">${x}</div>`).join('')||'<p class="mu">아직 없어요. 판매 입력, 토스, 오늘의 문구 미션, 복권 긁기로 밥을 줄 수 있어요.</p>'}<p class="mu">쉐어비를 결제일(15일)까지 내면 특별 보상 +${petc().pts.share} ✨ · 오래 쉬면 시무룩해져요 (죽지는 않아요)</p></div>
+<div class="card"><h2>오늘 먹은 것</h2>${(P=>[t.sale?`🍙 크림 판매 ${t.sale}건 → 밥 +${t.sale*P.sale}`:'',t.toss?`💛 토스 ${t.toss}건 → 기분 +${t.toss*P.toss}`:'',t.mis?`⭐ 오늘의 미션 완료 → 경험치 +${P.mis}`:'',t.sc?`🎁 복권 긁기 ${t.sc}장 → 간식 +${t.sc*P.sc}`:''])(petc().pts).filter(Boolean).map(x=>`<div style="padding:6px 0;border-top:1px solid var(--ln)">${x}</div>`).join('')||'<p class="mu">아직 없어요. 판매 입력, 토스, 오늘의 문구 미션, 복권 긁기로 밥을 줄 수 있어요.</p>'}<p class="mu">오래 쉬면 시무룩해져요 (죽지는 않아요)</p></div>
 ${gameCard()}<div class="card"><h2>🏡 유령 광장</h2><p class="mu">모두의 유령을 구경해요. 금액·쉐어비는 보이지 않아요. (하루 한 번쯤 새로 고쳐져요)</p>${gkHtml()}<div class="pgrid">${others.map(([id,x])=>`<div class="pslot"><div style="width:62px;margin:0 auto${x.full<20?';opacity:.55':''}">${ghostSvg(+x.st||0,x.deco||'',x.full<20,'pfl',x.col)}</div><div>${esc(x.name||nm(id))}</div><span class="mu">${PSTN[+x.st||0]||PSTN[0]}${x.full<20?' · 😴':''}</span></div>`).join('')||'<p class="mu">아직 다른 유령이 없어요</p>'}</div></div>`}
 function petPoke(e){const g=$('#pg');if(!g)return;g.classList.remove('happy','eat');void g.offsetWidth;g.classList.add('happy');const s=$('#psay');if(s)s.textContent=['헤헤 간지러워!','오늘도 화이팅! 💪','같이 열일해요 🖤'][Math.floor(Math.random()*3)];const st=e.currentTarget,r=st.getBoundingClientRect(),f=document.createElement('div');f.className='pfx';f.textContent='💕';f.style.left=(e.clientX-r.left-12)+'px';f.style.top=(e.clientY-r.top-20)+'px';st.appendChild(f);setTimeout(()=>f.remove(),1200)}
 async function petSave(o){const ok1=await db.doc('pets/'+me.id).set(Object.assign(o,{at:NOW()}),{merge:true}).then(()=>1).catch(err);if(ok1){Object.assign(myPet,o);pets[me.id]=Object.assign({},pets[me.id]||{},myPet)}return ok1}
@@ -785,7 +785,7 @@ if(await petSave({gps:(+myPet.gps||0)+it[2],own:(myPet.own||[]).concat([k]).slic
 function decoDone(ok){if(ok===0)return;if($('#modal').style.display=='flex'&&$('#mb').querySelector('.pgrid'))return petDeco();_keep=true;try{draw()}finally{_keep=false}}
 function petSetView(){const C=petc(),num=(id,v)=>`<input id="${id}" type="number" inputmode="numeric" value="${v}" style="width:90px">`;
 return `<div class="card"><h2>🏘 블랙고스트마을</h2><p class="mu">타투이스트 첫 화면을 마을 그림으로 보여줘요. 건물을 누르면 판매입력·토스·쉐어비 같은 화면으로 들어가요. 끄면 예전 '내현황' 화면으로 바로 돌아가요.</p><div class="row"><button class="${cfg.vil!==false?'on':''}" onclick="vilSet(true)">켜기</button><button class="${cfg.vil===false?'on':''}" onclick="vilSet(false)">끄기</button><button onclick="go('vil')">마을 미리보기</button></div></div><div class="card"><h2>🛏 베드 현황</h2><label>사람이 나간 뒤 '🟡 잠시 비움'으로 보여 줄 시간 (분) — 담배·손님 배웅 등, 이 시간이 지나야 '🟢 비어 있음'</label><div class="row"><input id="bd_gap" type="number" inputmode="numeric" value="${bedGap()}" style="width:90px"><label style="margin:0">베드 수</label><input id="bd_n" type="number" inputmode="numeric" value="${bedN()}" style="width:70px"></div><label>베드 이름 (비우면 '1번'처럼)</label><div class="g2">${Array.from({length:bedN()},(_,k)=>`<input id="bd_nm${k+1}" placeholder="${k+1}번" maxlength="8" value="${esc(((cfg.bedNames||[])[k])||'')}">`).join('')}</div><button class="p" style="width:100%;margin-top:10px" onclick="bedSetSave()">저장</button></div><div class="card"><h2>👻 유령 키우기 설정</h2><label>시작일 (유령 생일 — 이날부터의 기록만 점수로 세요)</label><div class="row"><input id="pc_s" type="date" value="${C.start}" style="width:auto"><button class="s" onclick="$('#pc_s').value=today()">오늘로</button></div><p class="mu">시작일을 바꾸면 모든 유령이 그날부터 다시 알로 시작해요.</p>
-<label>활동별 점수</label><div class="row">${[['sale','판매 1건'],['toss','토스 1건'],['mis','오늘의 미션'],['sc','복권 1장'],['share','쉐어비 기한 내 납부'],['game','게임 포인트 1점당']].map(([k,l])=>`<div><span class="mu">${l}</span><br>${num('pc_'+k,C.pts[k])}</div>`).join('')}</div>
+<label>활동별 점수</label><div class="row">${[['sale','판매 1건'],['toss','토스 1건'],['mis','오늘의 미션'],['sc','복권 1장'],['game','게임 포인트 1점당']].map(([k,l])=>`<div><span class="mu">${l}</span><br>${num('pc_'+k,C.pts[k])}</div>`).join('')}</div>
 <label>단계별 필요 점수</label><div class="row">${['아기 유령','어른 유령','전설 유령'].map((l,i)=>`<div><span class="mu">${l}</span><br>${num('pc_l'+i,C.lv[i])}</div>`).join('')}</div>
 <p class="mu">게임 포인트(하루 제한 없음, 한 판 최대 20)는 유령 성장·꾸미기 상점에만 쓰여요 (레벨·복권·쉐어비와는 상관없음). 폰에서 도는 게임이라 점수 조작이 가능해서 돈이 걸린 곳엔 넣지 않아요.</p>
 <button class="p" style="width:100%;margin-top:12px" onclick="petSetSave()">저장</button></div>`}
@@ -793,7 +793,7 @@ async function bedSetSave(){const g=Math.round(+$('#bd_gap').value||20),n=Math.r
 async function vilSet(v){cfg.vil=v;const ok1=await db.doc('config/main').set(cfg).then(()=>1).catch(err);if(ok1){toast(v?'블랙고스트마을을 켰어요':'블랙고스트마을을 껐어요 (예전 내현황)');draw()}}
 async function petSetSave(){const g=id=>Math.max(0,Math.round(+$(id).value||0)),lv=[0,1,2].map(i=>g('#pc_l'+i));if(!(lv[0]<lv[1]&&lv[1]<lv[2]))return toast('단계 점수는 아기 < 어른 < 전설 순서로 커야 해요');
 const st=$('#pc_s').value||today(),o=cfg.pet||{};if(o.start&&st!=o.start&&!confirm('시작일을 바꾸면 모든 유령이 '+st+'부터 다시 알로 시작해요. 바꿀까요?'))return;
-cfg.pet={start:st,pts:{sale:g('#pc_sale'),toss:g('#pc_toss'),mis:g('#pc_mis'),sc:g('#pc_sc'),share:g('#pc_share'),game:g('#pc_game')},lv,gcap:petc().gcap};const ok1=await db.doc('config/main').set(cfg).then(()=>1).catch(err);if(ok1){toast('저장했어요');petSync();draw()}}
+cfg.pet={start:st,pts:{sale:g('#pc_sale'),toss:g('#pc_toss'),mis:g('#pc_mis'),sc:g('#pc_sc'),game:g('#pc_game')},lv,gcap:petc().gcap};const ok1=await db.doc('config/main').set(cfg).then(()=>1).catch(err);if(ok1){toast('저장했어요');petSync();draw()}}
 // ----- 유령 게임: 폰 안에서만 돌고, 끝날 때 포인트만 pets/{uid}에 저장. v1.43: 하루 제한 없음, 한 판 포인트는 조금(최대 20), 할수록 어려워짐. 유령 성장·꾸미기에만 씀.
 const GAMES=[['match','💥 유령 팡','같은 그림 3개 이상을 한 줄로! 칸을 밀어서 바꿔요 (60초, 연속으로 터지면 콤보)'],['merge','🔮 유령 합치기','밀어서 같은 그림끼리 합쳐요. 🕯️→🍬→🎃→🦇→👻→💀→🔮… 칸이 꽉 차면 끝'],['jump','👻 유령 점프','화면을 누르면 점프! 날아오는 ✝️·🧄를 피해요 (점점 빨라져요)'],['candy','🍬 사탕 받기','좌우로 밀어서 🍬는 받고 💣는 피해요 (목숨 3개, 점점 빨라져요)'],['mole','🪦 무덤 숨바꼭질','무덤에서 튀어나온 👻를 빨리 눌러요 (30초, 👹는 누르면 감점)'],['ink','🎯 잉크 찍기','움직이는 바늘이 가운데 올 때 눌러요 (10번, 점점 빨라져요)']];
 const wkKey=d=>{const dt=new Date(d+'T00:00:00');dt.setDate(dt.getDate()-(dt.getDay()+6)%7);return dt.toLocaleDateString('sv')};
@@ -869,7 +869,7 @@ const m=$('#gmsg');if(m)m.innerHTML=`<b>끝! 점수 ${g.sc}${nb?' 🏆 내 최�
 if(get>0||nb)await petSave({gday:td,gtod:s.tod+get,gpt:s.tot+get,wkw:wkKey(td),wkp:s.wk+get,best})}
 // 대장 앱: 광장용 요약을 계산해 저장 (바뀐 사람만)
 async function petSync(){if(!adm())return;await loadPets();const b=db.batch();let n=0;Object.values(users).filter(u=>u.status=='active'&&u.role!='student'&&!u.del).forEach(u=>{const p=petCalc(u),o=pets[u.id]||{};if(o.st!==p.st||o.ex!==p.ex||o.full!==p.full||o.mood!==p.mood){b.set(db.doc('pets/'+u.id),{st:p.st,ex:p.ex,full:p.full,mood:p.mood,sAt:NOW()},{merge:true});n++}});if(n)await b.commit().catch(e=>console.log(e))}
-const APPV='v1.45',verLine=()=>`<p class="mu" style="text-align:center;margin:4px 0 12px">BLACKGHOST TATTOO STUDIO · ${APPV} <button class="s" style="margin-left:6px" onclick="goUpd()">🔄 새로고침</button></p>`;
+const APPV='v1.46',verLine=()=>`<p class="mu" style="text-align:center;margin:4px 0 12px">BLACKGHOST TATTOO STUDIO · ${APPV} <button class="s" style="margin-left:6px" onclick="goUpd()">🔄 새로고침</button></p>`;
 
 function sdraw(){const nv=`<nav class="nav">${[['home','내 수강','🎓'],['edu','기본교육','📚']].map(([k,l,i])=>`<button class="${tab==k?'on':''}" onclick="go('${k}')"><i>${i}</i>${l}</button>`).join('')}</nav>`;view(hdr()+(tab=='edu'?eduView():noticeBanner()+studentHome())+verLine()+nv)}
 async function saveCourse(id){const v=k=>$('#ac_'+k).value,c=crs[id],iu=instList().find(u=>u.id==v('inst')),o={phone:v('phone').trim(),insta:v('insta').trim(),start:v('start'),total:Math.max(1,+v('total')||25),inst:v('inst'),instName:iu?(iu.nick||iu.name):''};const fee=adm()?+v('fee')||0:null;await db.doc('courses/'+id).update(o).catch(err);Object.assign(c,o);if(fee!=null&&fee!==cpOf(id).fee){const cp=Object.assign({uid:id,pays:[]},cpOf(id),{fee});await db.doc('coursePay/'+id).set(cp).catch(err);cpay[id]=cp}draw()}
@@ -899,7 +899,7 @@ let rnds={},tix=[],evd=[],_evm=null,_evT=0,evf={t:'',kind:'ticket',rep:'none',st
 let lvCur={},lvRk=null,lvb=[],lvd=null,lvbf={u:'',a:'',w:''};
 const SALE_T=[['normal','정상판매'],['review','리뷰이벤트'],['service','서비스'],['sample','샘플']];
 const LVN=['새싹 유령','꼬마 유령','떠돌이 유령','밤의 유령','그림자','검은 유령','유령 기사','유령 군주','블랙고스트','레전드 고스트'];
-const defLv=()=>({day:15,from:today(),start:'',sale:{by:'qty',pts:10,per:10000,types:['normal','review']},toss:{send:20,recv:10},share:{ok:30,late:0,rest:0},year:0,steps:[0,100,200,300,400,500,600,700,800,900].map((m,i)=>({min:m,name:LVN[i]}))});
+const defLv=()=>({day:15,from:today(),start:'',sale:{by:'qty',pts:10,per:10000,types:['normal','review']},toss:{send:20,recv:10},year:0,steps:[0,100,200,300,400,500,600,700,800,900].map((m,i)=>({min:m,name:LVN[i]}))});
 const lvc=()=>cfg.lv||defLv(),lvSteps=()=>(lvc().steps&&lvc().steps.length?lvc().steps:[{min:0,name:''}]);
 const dd=n=>String(n).padStart(2,'0'),prevM=m=>{let[y,mo]=m.split('-').map(Number);if(--mo<1){mo=12;y--}return y+'-'+dd(mo)};
 const lvDay=()=>Math.min(28,Math.max(1,+lvc().day||15)),pDate=m=>m+'-'+dd(lvDay());
@@ -907,14 +907,14 @@ const curP=()=>{const t=today();return +t.slice(8)>=lvDay()?t.slice(0,7):prevM(t
 function pWin(P){const c=lvc();let a=pDate(prevM(P));if(c.from&&c.from>a)a=c.from;return[a,pDate(P)]}
 const lvOfPts=pts=>{let l=0;lvSteps().forEach((t,i)=>{if(pts>=(+t.min||0))l=i});return l};
 const lvName=i=>{const t=lvSteps()[i];return 'Lv.'+i+(t&&t.name?' '+esc(t.name):'')};
-function lvScore(u,P){const c=lvc(),[a,b]=pWin(P),inW=d=>d>=a&&d<b,br={sale:0,toss:0,share:0,year:0,bonus:0},sc=c.sale||{};
+function lvScore(u,P){const c=lvc(),[a,b]=pWin(P),inW=d=>d>=a&&d<b,br={sale:0,toss:0,year:0,bonus:0},sc=c.sale||{};
 const sl=allSales.filter(x=>ok(x)&&x.uid==u.id&&x.d&&inW(x.d)&&(sc.types||[]).includes(x.t));
 br.sale=sc.by=='amt'?Math.floor(sl.reduce((t,x)=>t+(x.a||0),0)/(+sc.per||10000))*(+sc.pts||0):sl.reduce((t,x)=>t+(x.qty||1),0)*(+sc.pts||0);
 tosses.filter(x=>!x.void&&x.st=='ok'&&x.d&&inW(x.d)).forEach(x=>{if(x.from==u.id)br.toss+=+(c.toss||{}).send||0;if(x.to==u.id)br.toss+=+(c.toss||{}).recv||0});
-const ms=monthsOf(u),sh=c.share||{};[prevM(P),P].forEach(M=>{const due=M+'-15';if(due<a||due>=b||!ms.includes(M))return;const r=rowOf(u,M);if(r.st=='rest')br.share+=+sh.rest||0;else if(r.st=='done')br.share+=(!r.pd||r.pd<=due)?(+sh.ok||0):(+sh.late||0)});
+// 쉐어비 납부는 레벨 점수에 넣지 않음(v1.46, 사용자 결정: 재촉하는 느낌)
 if(+c.year)br.year=Math.floor(workDays(u,b)/365)*(+c.year);
 br.bonus=lvb.filter(x=>!x.void&&x.uid==u.id&&x.p==P).reduce((t,x)=>t+(+x.a||0),0);return br}
-const brSum=br=>Object.values(br).reduce((a,b)=>a+b,0),brTx=br=>`판매 ${br.sale} · 토스 ${br.toss} · 쉐어비 ${br.share}${br.year?' · 함께한 해 '+br.year:''}${br.bonus?' · 가산점 '+br.bonus:''}`;
+const brSum=br=>Object.values(br).reduce((a,b)=>a+b,0),brTx=br=>`판매 ${br.sale} · 토스 ${br.toss} ${br.year?' · 함께한 해 '+br.year:''}${br.bonus?' · 가산점 '+br.bonus:''}`;
 const levelOf=u=>{if(!u)return 0;const mx=lvSteps().length-1;if(u.lvFix!=null&&u.lvFix!=='')return Math.min(mx,+u.lvFix);const x=lvCur[u.id];return x?Math.min(mx,x.lv||0):0};
 const lvArtists=()=>Object.values(users).filter(u=>u.role=='artist'&&u.status=='active');
 function calcLevels(P){const rows=lvArtists().map(u=>{const br=lvScore(u,P),pts=brSum(br);return{uid:u.id,p:P,pts,br,lv:lvOfPts(pts)}}),sc=rows.map(r=>r.pts).sort((a,b)=>b-a);rows.forEach(r=>r.rank=sc.indexOf(r.pts)+1);return{rows,sc}}
@@ -935,7 +935,7 @@ if(!full)return `<div class="card clk" onclick="go('evt')"><h2>🏆 ${lvName(lv)
 return `<div class="card"><h2>🏆 내 레벨 · 랭킹</h2><div class="kpi">${kb('현재 레벨',lvName(lv)+(fix?' <span class="mu">(고정)</span>':''),started?pDate(curP())+' 레벨업':'첫 레벨업 전')}${kb('다음 레벨업',pDate(nextP()).slice(5).replace('-','/'),'지금까지 '+lp+'점 → 예상 '+lvName(lvOfPts(lp)))}</div>
 <p class="mu" style="margin-top:8px">이번 기간 내 점수 (진행 중, 가산점 제외): ${brTx(live)}</p>${my?`<p class="mu">지난 기간 점수 <b>${my.pts}점</b> = ${brTx(my.br||{})}</p>`:''}
 ${sc.length?`<h2 style="margin-top:14px">랭킹 <span class="mu">(누구인지는 비밀 🤫)</span></h2>${sc.map((v,i)=>`<div class="row" style="justify-content:space-between;padding:6px 8px;border-radius:8px;${rk==i+1&&sc.indexOf(my.pts)==i?'background:var(--soft);font-weight:700':''}"><span>${i+1}위${rk==i+1&&sc.indexOf(my.pts)==i?' ← 나':''}</span><span>${v}점 · ${lvName(lvOfPts(v))}</span></div>`).join('')}`:'<p class="mu">첫 레벨업 날짜가 지나면 랭킹이 나와요.</p>'}
-<h2 style="margin-top:14px">레벨 기준</h2><div class="mu">${lvSteps().map((t,i)=>lvName(i)+' '+(+t.min||0)+'점~').join(' · ')}</div><p class="mu">점수: 판매 ${c.sale.by=='amt'?(+c.sale.per||10000).toLocaleString()+'원당':'1개당'} ${c.sale.pts}점 · 토스 보냄 ${c.toss.send}점 / 받음 ${c.toss.recv}점 · 쉐어비 기한 내 납부 ${c.share.ok}점${+c.year?' · 함께한 1년당 '+c.year+'점':''}</p></div>`}
+<h2 style="margin-top:14px">레벨 기준</h2><div class="mu">${lvSteps().map((t,i)=>lvName(i)+' '+(+t.min||0)+'점~').join(' · ')}</div><p class="mu">점수: 판매 ${c.sale.by=='amt'?(+c.sale.per||10000).toLocaleString()+'원당':'1개당'} ${c.sale.pts}점 · 토스 보냄 ${c.toss.send}점 / 받음 ${c.toss.recv}점${+c.year?' · 함께한 1년당 '+c.year+'점':''}</p></div>`}
 // 대장 설정: 레벨
 function lvSetView(){if(!lvd)lvd=JSON.parse(JSON.stringify(lvc()));const d=lvd,P=curP(),nP=nextP(),started=cfg.lv&&cfg.lv.start&&P>cfg.lv.start,us=lvArtists();
 const num=(path,v,ph)=>`<input type="number" value="${v}" placeholder="${ph||''}" oninput="lvdSet('${path}',this.value)">`;
@@ -945,14 +945,13 @@ const set=`<div class="card"><h2>레벨 설정</h2><p class="mu">기간 동안 �
 <div class="g2">${d.sale.by=='amt'?`<div><label>기준 금액(원)</label>${num('sale.per',d.sale.per)}</div>`:''}<div><label>${d.sale.by=='amt'?'기준 금액당 점수':'1개당 점수'}</label>${num('sale.pts',d.sale.pts)}</div></div>
 <label>점수에 넣을 판매 유형</label><div class="row">${SALE_T.map(([k,l])=>`<button class="${d.sale.types.includes(k)?'on':''}" onclick="lvdType('${k}')">${l}</button>`).join('')}</div>
 <div class="g2"><div><label>토스 보낸 사람 (1건당)</label>${num('toss.send',d.toss.send)}</div><div><label>토스 받은 사람 (1건당)</label>${num('toss.recv',d.toss.recv)}</div></div>
-<div class="g4"><div><label>쉐어비 기한 내 납부</label>${num('share.ok',d.share.ok)}</div><div><label>늦게 납부</label>${num('share.late',d.share.late)}</div><div><label>휴무 달</label>${num('share.rest',d.share.rest)}</div></div>
 <label style="margin-top:14px">레벨 단계 (필요 점수 · 이름)</label>${d.steps.map((t,i)=>`<div class="row" style="margin-bottom:6px"><span style="width:44px">Lv.${i}</span><input type="number" style="flex:1;min-width:70px" value="${t.min}" ${i==0?'disabled':''} oninput="lvdSet('steps.${i}.min',this.value)"><span class="mu">점~</span><input style="flex:2;min-width:90px" placeholder="이름 (선택)" value="${esc(t.name)}" oninput="lvd.steps[${i}].name=this.value">${i>0&&i==d.steps.length-1?`<button class="d s" onclick="lvd.steps.pop();draw()">✕</button>`:''}</div>`).join('')}<button class="s" onclick="const l=lvd.steps;l.push({min:(+l[l.length-1].min||0)+100,name:''});draw()">+ 단계 추가</button>
 <button class="p" style="width:100%;margin-top:14px" onclick="lvSave()">레벨 설정 저장</button><p class="mu">점수는 저장한 뒤 다음 레벨업부터 반영돼요. ${started?'':'아직 첫 레벨업 전이라 모두 Lv.0이에요 (고정한 사람 제외).'}</p></div>`;
 const bl2=lvb.filter(x=>!x.void&&x.p==nP);
 const bonus=`<div class="card"><h2>가산점 <span class="mu">(${pDate(nP)} 레벨업에 반영)</span></h2><p class="mu">특정 사람에게 점수를 더하거나 빼요 (빼기는 마이너스). 지난 기록을 직접 넣을 때도 써요.</p><div class="row"><select style="flex:2;min-width:110px" onchange="lvbf.u=this.value"><option value="">회원 선택</option>${us.map(u=>`<option value="${u.id}" ${lvbf.u==u.id?'selected':''}>${nm(u.id)}</option>`).join('')}</select><input type="number" style="flex:1;min-width:70px" placeholder="점수" value="${lvbf.a}" oninput="lvbf.a=this.value"></div><input style="margin-top:6px" placeholder="사유" value="${esc(lvbf.w)}" oninput="lvbf.w=this.value"><button class="p" style="width:100%;margin-top:8px" onclick="addBonus()">가산점 추가</button>
 ${bl2.map(x=>`<div class="row" style="justify-content:space-between;margin-top:6px"><span>${nm(x.uid)} <b>${x.a>0?'+':''}${x.a}점</b> <span class="mu">${esc(x.why)}</span></span><button class="s d" onclick="voidBonus('${x.id}')">삭제</button></div>`).join('')}</div>`;
 const pv=calcLevels(nP).rows.sort((a,b)=>b.pts-a.pts);
-const prev=`<div class="card"><h2>미리보기 · 다음 레벨업 ${pDate(nP)}</h2><p class="mu">${pWin(nP)[0]} ~ 지금까지 기록으로 계산한 예상 점수예요.</p><div class="tbl"><table><tr><th>이름</th><th>판매</th><th>토스</th><th>쉐어비</th><th>함께한 해</th><th>가산점</th><th>합계</th><th>예상</th></tr>${pv.map(r=>`<tr><td>${nm(r.uid)}</td><td>${r.br.sale}</td><td>${r.br.toss}</td><td>${r.br.share}</td><td>${r.br.year}</td><td>${r.br.bonus}</td><td><b>${r.pts}</b></td><td>${lvName(r.lv)}${users[r.uid].lvFix!=null?' <span class="mu">(고정 Lv.'+users[r.uid].lvFix+')</span>':''}</td></tr>`).join('')||'<tr><td>활성 타투이스트가 없어요</td></tr>'}</table></div></div>`;
+const prev=`<div class="card"><h2>미리보기 · 다음 레벨업 ${pDate(nP)}</h2><p class="mu">${pWin(nP)[0]} ~ 지금까지 기록으로 계산한 예상 점수예요.</p><div class="tbl"><table><tr><th>이름</th><th>판매</th><th>토스</th><th>함께한 해</th><th>가산점</th><th>합계</th><th>예상</th></tr>${pv.map(r=>`<tr><td>${nm(r.uid)}</td><td>${r.br.sale}</td><td>${r.br.toss}</td><td>${r.br.year}</td><td>${r.br.bonus}</td><td><b>${r.pts}</b></td><td>${lvName(r.lv)}${users[r.uid].lvFix!=null?' <span class="mu">(고정 Lv.'+users[r.uid].lvFix+')</span>':''}</td></tr>`).join('')||'<tr><td>활성 타투이스트가 없어요</td></tr>'}</table></div></div>`;
 const cur=`<div class="card"><h2>현재 레벨 <span class="mu">(${started?pDate(P)+' 레벨업':'첫 레벨업 전'})</span></h2><div class="tbl"><table><tr><th>이름</th><th>레벨</th><th>점수</th><th>순위</th></tr>${us.map(u=>{const x=lvCur[u.id];return `<tr><td>${nm(u.id)}</td><td>${lvName(levelOf(u))}${u.lvFix!=null?' (고정)':''}</td><td>${x?x.pts+'점':'-'}</td><td>${x?x.rank+'위':'-'}</td></tr>`}).join('')}</table></div>${started?`<button class="s" style="margin-top:8px" onclick="lvRecalc()">현재 기간 레벨 다시 계산</button>`:''}</div>`;
 return set+bonus+prev+cur}
 function lvdSet(path,v,re){const ks=path.split('.');let o=lvd;ks.slice(0,-1).forEach(k=>o=o[k]);o[ks.at(-1)]=ks.at(-1)=='by'?v:(+v||0);if(re)draw()}
