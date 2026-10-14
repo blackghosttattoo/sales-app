@@ -158,7 +158,7 @@
 
 ## v1.41~v1.42
 - v1.41: 배경 음악 켜 두면 앱 어느 화면에서든 계속(사용자 요청), `vMus` 기억 → 다시 열면 첫 터치 때 이어서, 앱 복귀 시 resume.
-- v1.42 **베드 현황**: 베드 센서 보드가 `beds/b1~b8`(st 'on'|'off', at 바뀐 시간, up 마지막 신호, v 프로그램 버전, rssi)에 기록. `bedSt(i)`: up 15분 넘으면 ⚪꺼짐, on 🔴사용 중 N분째, off 🟢비어 있음. `bedCard()` 대장 총괄·작업자 홈/내현황 맨 위, 마을 슬림 인사말에 `bedMini()`. 베드 수 `cfg.beds`(기본 4). 1분마다 홈이면 다시 그림. `loadBeds()` liveQ(처음 bedCard 때).
+- v1.42 **베드 현황**: 베드 센서 보드가 `beds/b1~b8`(st 'on'|'off', at 바뀐 시간, up 마지막 신호, v 프로그램 버전, rssi)에 기록. `bedSt(i)`: up 15분 넘으면 ⚪꺼짐, on 🔴사용 중 N분째, off 후 `cfg.bedGap`분(기본 20, 담배·배웅) 안이면 🟡잠시 비움(사용 중으로 셈), 넘으면 🟢비어 있음. 설정 > 유령 키우기 아래 '베드 현황'에서 시간·베드 수(`bedSetSave`). `bedCard()` 대장 총괄·작업자 홈/내현황 맨 위, 마을 슬림 인사말에 `bedMini()`. 베드 수 `cfg.beds`(기본 4). 1분마다 홈이면 다시 그림. `loadBeds()` liveQ(처음 bedCard 때).
 - 규칙 `beds`: 쓰기는 보드 전용 계정 `bed@blackghost.app`(토큰 email)만, 필드·서버 시간 검사, 읽기 active(). 보드 프로그램·설치는 `docs/bed-sensor.md`.
 
 ## 임시 보관 (차근차근 만들 프로젝트 — 대기 목록과 별개)
