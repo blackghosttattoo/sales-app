@@ -34,7 +34,10 @@ esp-web-install-button button{font:inherit;font-size:18px;font-weight:700;paddin
 <ol><li>창이 뜨면 목록에서 <b>CP2102</b> 또는 <b>USB to UART</b> 같은 이름을 골라 [연결].</li>
 <li>[INSTALL / 설치] → 지우고 설치 확인 → 1~2분 기다리기.</li>
 <li>목록에 아무것도 안 뜨면: 케이블을 바꿔 보거나, 윈도우라면 <a href="https://www.silabs.com/developer-tools/usb-to-uart-bridge-vcp-drivers" target="_blank" rel="noopener">CP210x 드라이버</a>를 설치해요.</li>
-<li>설치가 멈추면: 보드의 <b>IO0(BOOT)</b> 버튼을 누른 채로 다시 시도.</li></ol></div>
+<li><b>'Preparing installation'에서 멈추면</b>(이 보드는 자주 그래요): 창 닫기 → 레이더 선 빼기 → 보드의 <b>IO0 버튼을 누른 채 EN 버튼을 눌렀다 떼고 IO0도 떼기</b> → 다시 설치.</li>
+<li>그래도 안 되면 <a href="https://espressif.github.io/esptool-js/" target="_blank" rel="noopener">에스프레시프 공식 설치 페이지</a>: Baudrate 115200 → Connect → 주소 <code>0x0</code>, 파일 <a href="bedtest.bin" download>bedtest.bin</a> → Program (대장님 첫 설치는 이 방법으로 성공).</li>
+<li>'Failed to open serial port'가 나오면 이 보드를 쓰는 다른 탭을 닫고 USB를 뺐다 꽂기.</li>
+<li>설치가 끝나면 <b>EN 버튼</b>을 한 번 눌러 다시 켜기.</li></ol></div>
 
 <div class="card"><h2>④ 시험해 보기</h2>
 <ol><li>설치가 끝나면 보드의 <b>파란 불이 3번 깜빡</b>여요 = 잘 들어감.</li>

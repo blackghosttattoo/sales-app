@@ -27,6 +27,8 @@
 - **1단계 동작 시험**: `bed/fw/bedtest/bedtest.ino`(OUT→P13 읽어 보드 파란 불 P2), 웹 설치 페이지 https://blackghosttattoo.github.io/sales-app/bed/ (`bed/index.html`, ESP Web Tools, `bed/bedtest.json`).
 - 빌드: 이 작업 환경은 Arduino·PlatformIO 서버가 막혀 있어서 GitHub Actions(`.github/workflows/bedfw.yml`)가 `bed/fw/*/`를 arduino-cli(esp32 3.0.7, fqbn nodemcu-32s)로 빌드해 `bed/<이름>.bin`(merged, 0x0부터)을 커밋. 소스만 push하면 자동.
 
+- 2026-10-14 **첫 설치 성공**(espressif.github.io/esptool-js, 115200, 0x0, bedtest.bin, 16초). 겪은 문제: ESP Web Tools가 'Preparing installation'에서 멈춤 → 이 보드는 자동 받기 모드 전환이 잘 안 됨. 해결: 다른 탭 닫기(포트 점유 'Failed to open'), CP210x 드라이버(v6.7.6 설치 파일), **IO0 누른 채 EN 눌렀다 떼고 IO0 떼기** 후 Connect, 설치 땐 레이더 선 빼기(Flash ID ffffff 오류). 칩 ESP32-D0WD-V3, Flash ID 1640c8.
+
 ## 다음 단계 (사용자 응답 대기)
 1. 부품 도착 후 사진(자 옆에서) + 실측 치수(mm) 받기 → 케이스 설계
 2. 케이스 붙일 위치 결정(베드 밑 / 벽 / 레일 근처) — 질문해둔 상태
