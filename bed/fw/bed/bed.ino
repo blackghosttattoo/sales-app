@@ -2,7 +2,8 @@
 // 연결: 레이더 VCC→5V, GND→GND, OUT→P13, TX→P16, RX→P17
 // 처음 켜면(또는 IO0 버튼 5초) 임시 와이파이 "BG-BED-SETUP"이 생김 → 폰으로 접속해서 가게 와이파이·베드 번호·보드 비밀번호 입력
 // 동작: 사람 있음/없음이 바뀌면 Firestore beds/b<번호>에 기록(st, at), 10분마다 생존 신호(up). 6시간마다 새 프로그램 확인(OTA).
-// 보드 비밀번호 = 대장님이 Firebase 콘솔에서 만든 bed@blackghost.app 계정의 비밀번호 (이 파일엔 없음 — 공개 저장소라서)
+// 보드 비밀번호 = bed@blackghost.app 계정 비밀번호 (이 파일엔 없음 — 공개 저장소라서).
+// 계정이 아직 없으면 첫 보드가 설정 화면에서 넣은 비밀번호로 스스로 만듦(v3). 나머지 보드는 같은 비밀번호를 넣으면 됨.
 #include <WiFi.h>
 #include <WiFiManager.h>
 #include <WiFiClientSecure.h>
@@ -11,7 +12,7 @@
 #include <Preferences.h>
 #include <ArduinoJson.h>
 
-#define FWV "2"
+#define FWV "3"
 const char* API_KEY = "AIzaSyBTqRIfhUzlsO2YOfaEBlMHWGlLW-R44Z4";   // 앱(index.html)과 같은 공개 값
 const char* PROJECT = "tattoo-cream-ecacc";
 const char* BED_EMAIL = "bed@blackghost.app";
@@ -59,6 +60,12 @@ bool login() {
   }
   int code = post(String("https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=") + API_KEY,
       "{\"email\":\"" + String(BED_EMAIL) + "\",\"password\":\"" + jesc(bedPw) + "\",\"returnSecureToken\":true}", out);
+  if (code == 400 && (out.indexOf("EMAIL_NOT_FOUND") >= 0 || out.indexOf("INVALID_LOGIN_CREDENTIALS") >= 0 && !pr.getBool("made", false))) {
+    // 계정이 없으면 한 번 만들어 봄 (이미 있으면 EMAIL_EXISTS로 실패 → 비밀번호가 틀린 것)
+    int c2 = post(String("https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=") + API_KEY,
+        "{\"email\":\"" + String(BED_EMAIL) + "\",\"password\":\"" + jesc(bedPw) + "\",\"returnSecureToken\":true}", out);
+    if (c2 == 200) { Serial.println("board account created"); pr.putBool("made", true); code = 200; }
+  }
   if (code != 200) { Serial.printf("login fail %d %s\n", code, out.substring(0, 160).c_str()); return false; }
   deserializeJson(d, out); idTok = d["idToken"].as<String>(); refTok = d["refreshToken"].as<String>(); tokAt = millis();
   Serial.println("login ok"); return true;
