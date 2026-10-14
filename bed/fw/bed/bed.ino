@@ -12,7 +12,7 @@
 #include <Preferences.h>
 #include <ArduinoJson.h>
 
-#define FWV "3"
+#define FWV "4"
 const char* API_KEY = "AIzaSyBTqRIfhUzlsO2YOfaEBlMHWGlLW-R44Z4";   // 앱(index.html)과 같은 공개 값
 const char* PROJECT = "tattoo-cream-ecacc";
 const char* BED_EMAIL = "bed@blackghost.app";

@@ -24,7 +24,7 @@ jobs:
         run: |
           for d in bed/fw/*/; do
             n=$(basename "$d")
-            arduino-cli compile --fqbn esp32:esp32:esp32:PartitionScheme=min_spiffs --output-dir "build/$n" "$d"
+            arduino-cli compile --fqbn esp32:esp32:esp32:PartitionScheme=min_spiffs,FlashMode=dio --output-dir "build/$n" "$d"
             # 뒤쪽 빈칸(0xFF)을 잘라서 4MB → 수백 KB (웹 설치 시간 단축)
             python3 -c "import sys;d=open(sys.argv[1],'rb').read().rstrip(b'\xff');d+=b'\xff'*(-len(d)%4096);open(sys.argv[2],'wb').write(d)" "build/$n/$n.ino.merged.bin" "bed/$n.bin"
             cp "build/$n/$n.ino.bin" "bed/$n-app.bin"          # 와이파이 자동 업데이트(OTA)용
