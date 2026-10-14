@@ -1,0 +1,35 @@
+# 베드 센서 프로그램(ESP32) 자동 빌드 → bed/ 폴더에 .bin 저장 (웹 설치 페이지가 이걸 씀)
+name: 베드 센서 프로그램 빌드
+on:
+  push:
+    branches: [main]
+    paths: ['bed/fw/**', '.github/workflows/bedfw.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: arduino/setup-arduino-cli@v2
+      - name: ESP32 도구 설치
+        run: |
+          arduino-cli config init
+          arduino-cli config add board_manager.additional_urls https://github.com/espressif/arduino-esp32/releases/download/3.0.7/package_esp32_index.json
+          arduino-cli core update-index
+          arduino-cli core install esp32:esp32@3.0.7
+      - name: 빌드
+        run: |
+          for d in bed/fw/*/; do
+            n=$(basename "$d")
+            arduino-cli compile --fqbn esp32:esp32:nodemcu-32s --output-dir "build/$n" "$d"
+            cp "build/$n/$n.ino.merged.bin" "bed/$n.bin"
+          done
+          ls -la bed
+      - name: 저장
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add bed/*.bin
+          git diff --cached --quiet || (git commit -m "베드 센서 프로그램 빌드 결과 [skip ci]" && git push)
