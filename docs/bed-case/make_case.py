@@ -12,7 +12,7 @@ RW, RL = 22.0, 16.0          # LD2410C 폭·길이
 # 케이스
 WALL, FLOOR, WIN = 2.0, 1.6, 1.2   # 벽, 바닥(=레이더가 보는 면), 레이더 밑 바닥
 IW = EW + 2*C + 0.3               # 안쪽 폭
-RZ = RL + 2*C + 1.0 + 2.0         # 레이더 칸 길이
+RZ = RL + 2*C + 1.0 + 5.0         # 레이더 칸 길이 (v4: 보드 끝 멈춤 기둥 자리 +3)
 IL = RZ + EL + 2*C                # 안쪽 길이
 IH = 30.0                         # 안쪽 높이
 ZPCB = 22.0                       # 바닥 윗면 ~ ESP32 보드 밑면 (아래로 꽂는 점퍼선 공간)
@@ -27,28 +27,31 @@ body = box(OX0, OY0, OZ0, IW+WALL, IL+WALL, IH) - box(0, 0, 0, IW, IL, IH+1)
 # 레이더 자리: 바닥을 얇게(WIN) 파서 자리 잡기 + 낮은 테두리
 rx0, ry0 = (IW-(RW+2*C))/2, 1.0
 body -= box(rx0, ry0, -(FLOOR-WIN), rx0+RW+2*C, ry0+RL+2*C, 0.01)
-rim = box(rx0-1.2, ry0-1.2, 0, rx0+RW+2*C+1.2, ry0+RL+2*C+1.2, 1.5) - box(rx0, ry0, -1, rx0+RW+2*C, ry0+RL+2*C, 2)
-rim -= box(rx0+3, ry0+RL+2*C-0.5, -1, rx0+RW+2*C-3, ry0+RL+2*C+2, 3)   # ESP32 쪽 테두리는 터서 선 지나가게
+rim = box(rx0-1.2, ry0-1.2, 0, rx0+RW+2*C+1.2, ry0+RL+2*C+1.2, 2.6) - box(rx0, ry0, -1, rx0+RW+2*C, ry0+RL+2*C, 3)
+ym = ry0 + (RL+2*C)/2   # v4: 양옆 가운데 작은 걸쇠(0.5mm)가 레이더 기판 가장자리를 눌러 들뜨지 않게 — 눌러 넣으면 딸깍
+rim += box(rx0-0.1, ym-3, 0.95, rx0+0.5, ym+3, 1.9) + box(rx0+RW+2*C-0.5, ym-3, 0.95, rx0+RW+2*C+0.1, ym+3, 1.9)
+rim -= box(rx0+3, ry0+RL+2*C-0.5, -1, rx0+RW+2*C-3, ry0+RL+2*C+2, 4)   # ESP32 쪽 테두리는 터서 선 지나가게
 body += rim
-# ESP32 받침: 양쪽 벽에 홈 파인 레일(핀 줄이 홈에 들어가고 검은 플라스틱이 레일 위에 얹힘). 안테나 쪽 20mm만(v3: USB 쪽 28mm는 점퍼선 자리 — 5V·P13·GND, P16·P17)
+# ESP32 받침 v4: 레일 없앰(점퍼선과 걸려서 사용자가 잘라냄). 대신 네 모서리 받침 턱 + 안테나 쪽 'ㄴ'자 멈춤 기둥
+# (USB 케이블을 꽂을 때 보드가 뒤로 밀리지 않게). 위는 뚜껑 기둥이 은색 모듈을 눌러 줌.
 ey0 = RZ                       # 보드 안테나 쪽 끝
-RTOP = ZPCB - PLAST
-for side in (0, 1):
-    xw = 0 if side == 0 else IW
-    pc = (C + PINROW) if side == 0 else IW - (C + PINROW)       # 핀 줄 중심 x
-    r0, r1 = (0, 4.2) if side == 0 else (IW-4.2, IW)
-    rail = box(r0, ey0, 0, r1, ey0+20, RTOP) - box(pc-0.8, ey0-1, RTOP-9.5, pc+0.8, ey0+21, RTOP+1)   # 핀이 길어서 홈 깊이 9.5
-    body += rail
+for x0 in (3.2, IW-7.0):
+    body += box(x0, ey0-2.2, 0, x0+3.8, ey0+0.1, ZPCB+PCB+1.5)      # 멈춤 기둥(보드 끝이 닿음)
+    body += box(x0, ey0, ZPCB-3, x0+3.8, ey0+2.3, ZPCB)            # 보드 밑 받침 턱
 # USB 쪽 끝: 보드 모서리 받침 턱 두 개 + USB 구멍(위가 열린 U자 — 케이블 꽂고 뚜껑 덮기)
 uc = IW/2; uw, ub = 13.0, ZPCB - 0.4
-for x0 in (2.8, IW-6.6):
-    body += box(x0, IL-1.5, ZPCB-3, x0+3.8, IL, ZPCB)
+for x0 in (3.2, IW-7.0):
+    body += box(x0, IL-2.3, ZPCB-3, x0+3.8, IL, ZPCB)
 body -= box(uc-uw/2, IL-1, ub, uc+uw/2, IL+WALL+1, IH+1)
-# 통풍구: 긴 벽에 가로 슬롯
+# 통풍구 v4(레이더·보드 열): 긴 벽 아래줄(바깥 공기 들어옴)·위줄(더운 공기 나감) + 레이더 쪽 끝 벽
 for x in (OX0-1, IW-0.5):
-    for i in range(5):
-        y = RZ + 8 + i*8
-        body -= box(x, y, 6, x+WALL+1.5, y+4, 16)
+    for i in range(int((IL-8)//7)):
+        y = 4 + i*7
+        body -= box(x, y, 4, x+WALL+1.5, y+3.5, 10)
+        body -= box(x, y, 15, x+WALL+1.5, y+3.5, 23)
+for i in range(4):
+    x = 3 + i*5.6
+    body -= box(x, OY0-1, 4, x+3, 0.5, 23)
 # 뚜껑 고정용 작은 구멍(뚜껑 턱의 돌기가 딸깍 들어감)
 for y in (IL*0.25, IL*0.75):
     for x in (OX0-1, IW-0.5):
