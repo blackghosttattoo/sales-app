@@ -137,20 +137,29 @@ body.vmode{overflow:hidden}body.vmode main{padding-bottom:0}
 .vhg{position:absolute;right:7%;bottom:22%;width:70px;animation:vfl 2.6s ease-in-out infinite}
 .vhg .vsay{position:absolute;bottom:100%;right:0;background:#fff;color:#222;font-size:12px;border-radius:10px;padding:4px 9px;white-space:nowrap;margin-bottom:4px;box-shadow:0 3px 8px #0008}
 @media (prefers-reduced-motion:reduce){.vwrap *,.vhero *{animation:none!important;transition:none!important}}
-.gnav{background:linear-gradient(#2a1d33,#140d18);border-top:2px solid #d4af37;box-shadow:0 -4px 18px #000a,inset 0 1px 0 #fff2;padding-top:8px;gap:4px}
-.gnav button{background:none!important;color:#e9dcc0;padding:0 0 2px;gap:3px;overflow:visible}
-.gnav .gt{position:relative;width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 30% 25%,#fff6,#fff0 45%),linear-gradient(160deg,var(--g1),var(--g2));border:2px solid #d4af37;box-shadow:0 3px 0 #6b5310,0 5px 10px #000a,inset 0 -4px 0 #0003;transition:transform .25s cubic-bezier(.3,1.6,.5,1),box-shadow .25s}
-.gnav .gt i{font-size:24px;filter:drop-shadow(0 2px 1px #0007)}
-.gnav .bedbar{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);max-width:94%;overflow-x:auto;white-space:nowrap;scrollbar-width:none;padding:4px 12px;border-radius:12px;background:#1d1424e6;border:1.5px solid #d4af37;box-shadow:0 3px 10px #0008;color:#f3e7c9;font-size:12px;font-weight:700}
-.gnav .gl{font-size:11px;font-weight:700;text-shadow:0 1px 2px #000;color:#e9dcc0}
-.gnav button.on .gt{transform:translateY(-10px) scale(1.12);box-shadow:0 3px 0 #6b5310,0 0 16px 4px #ffd34d99,inset 0 -4px 0 #0003;animation:gbob 1.6s ease-in-out infinite}
-.gnav button.on .gl{color:#ffd34d}
+.gnav{background:linear-gradient(var(--w1),var(--w2));border-top:3px solid var(--trim);box-shadow:0 -5px 16px #000a,inset 0 2px 0 #fff2;padding-top:10px;gap:2px}
+/* 마을 메뉴 = 등불 나무 간판(v1.45). 계절은 아래 토큰 묶음만 갈아 끼움(GSEA, vSeason). 지금은 가을 그림뿐이라 autumn */
+.gnav.s-autumn{--w1:#4a2c1c;--w2:#22130c;--trim:#c98b3a;--rim:#6b3d12;--grain:#7a4a2a;--lbl:#f4dcb2;--lon:#ffc15e;--glow:#ff9d3c99;--lsh:0 1px 2px #000}
+.gnav.s-spring{--w1:#f3e3d3;--w2:#d8bc9d;--trim:#e79bb4;--rim:#b56b85;--grain:#c9a27e;--lbl:#5b3a2c;--lon:#c2416d;--glow:#ffb3cf;--lsh:0 1px 0 #fff8}
+.gnav.s-summer{--w1:#21402e;--w2:#0e2017;--trim:#d9c56a;--rim:#6b5d1c;--grain:#3f6a4a;--lbl:#e6f6cf;--lon:#f6ff8a;--glow:#d9ff5c88;--lsh:0 1px 2px #000}
+.gnav.s-winter{--w1:#2c3d57;--w2:#131c2b;--trim:#cfe2f4;--rim:#6e88a6;--grain:#4a6080;--lbl:#eaf4ff;--lon:#fff;--glow:#bfe4ff99;--lsh:0 1px 2px #000}
+.gnav::after{content:"";position:absolute;left:0;right:0;top:6px;height:1px;background:repeating-linear-gradient(90deg,var(--grain) 0 14px,transparent 14px 22px);opacity:.5;pointer-events:none}
+.gnav button{background:none!important;color:var(--lbl);padding:0 0 2px;gap:3px;overflow:visible;position:relative;z-index:1}
+.gnav .gt{position:relative;width:46px;height:46px;border-radius:50% 50% 15px 15px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 35% 28%,#fff5,#fff0 42%),linear-gradient(165deg,var(--g1),var(--g2));border:2px solid var(--trim);box-shadow:0 3px 0 var(--rim),0 5px 9px #0009,inset 0 -4px 0 #0003;transition:transform .25s cubic-bezier(.3,1.6,.5,1),box-shadow .25s}
+.gnav .gt::before{content:"";position:absolute;top:-7px;left:50%;margin-left:-5px;width:10px;height:6px;border-radius:3px 3px 0 0;background:var(--trim)}
+.gnav .gt i{font-size:23px;filter:drop-shadow(0 2px 1px #0007)}
+.gnav .bedbar{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);max-width:94%;overflow-x:auto;white-space:nowrap;scrollbar-width:none;padding:4px 12px;border-radius:11px;background:linear-gradient(var(--w1),var(--w2));border:1.5px solid var(--trim);box-shadow:0 3px 8px #0009;color:var(--lbl);font-size:12px;font-weight:700}
+.gnav .gdeco{position:absolute;left:0;right:0;top:-12px;height:16px;display:flex;justify-content:space-around;font-size:13px;pointer-events:none;z-index:0}
+.gnav .gdeco.cap{left:-2px;right:-2px;top:-10px;height:12px;background:radial-gradient(circle at 10px 12px,#fff 9px,transparent 10px) 0 0/22px 12px repeat-x;filter:drop-shadow(0 1px 1px #8fb4d8)}
+.gnav .gl{font-size:11px;font-weight:700;text-shadow:var(--lsh);color:var(--lbl)}
+.gnav button.on .gt{transform:translateY(-10px) scale(1.1);box-shadow:0 3px 0 var(--rim),0 0 18px 5px var(--glow),inset 0 -4px 0 #0003;animation:gbob 1.6s ease-in-out infinite}
+.gnav button.on .gl{color:var(--lon)}
 .gnav button:active .gt{transform:translateY(2px) scale(.95)}
-@keyframes gbob{50%{transform:translateY(-13px) scale(1.12)}}
-.gdot{position:absolute;top:-6px;right:-6px;min-width:19px;height:19px;padding:0 5px;border-radius:999px;background:#ff3b5c;color:#fff;font-size:11px;line-height:17px;border:2px solid #fff;box-shadow:0 2px 4px #0008}
+@keyframes gbob{50%{transform:translateY(-13px) scale(1.1)}}
+.gdot{position:absolute;top:-6px;right:-6px;min-width:19px;height:19px;padding:0 5px;border-radius:999px;background:#e0344c;color:#fff;font-size:11px;line-height:15px;border:2px solid var(--w2,#fff);box-shadow:0 2px 4px #0008}
 @media (prefers-reduced-motion:reduce){.gnav *{animation:none!important}}
 </style></head><body><main id="app">불러오는 중…</main><div id="modal"><div class="card" id="mb"></div></div><div id="snack"></div>
-<script>window.APPV0='v1.44';
+<script>window.APPV0='v1.45';
 // ----- 새 버전 알림: ver.json(배포할 때 APPV와 같이 올림)을 캐시 없이 받아 다르면 위에 [업데이트] 버튼 (아이폰 홈화면 앱은 새로고침이 어려워서)
 let _vcT=0;
 function verChk(){if(typeof fetch!='function'||Date.now()-_vcT<60000)return;_vcT=Date.now();fetch('ver.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():null).then(j=>{if(j&&typeof j.v=='string'&&j.v!==window.APPV0)updBar(j.v)}).catch(()=>{})}
@@ -860,7 +869,7 @@ const m=$('#gmsg');if(m)m.innerHTML=`<b>끝! 점수 ${g.sc}${nb?' 🏆 내 최�
 if(get>0||nb)await petSave({gday:td,gtod:s.tod+get,gpt:s.tot+get,wkw:wkKey(td),wkp:s.wk+get,best})}
 // 대장 앱: 광장용 요약을 계산해 저장 (바뀐 사람만)
 async function petSync(){if(!adm())return;await loadPets();const b=db.batch();let n=0;Object.values(users).filter(u=>u.status=='active'&&u.role!='student'&&!u.del).forEach(u=>{const p=petCalc(u),o=pets[u.id]||{};if(o.st!==p.st||o.ex!==p.ex||o.full!==p.full||o.mood!==p.mood){b.set(db.doc('pets/'+u.id),{st:p.st,ex:p.ex,full:p.full,mood:p.mood,sAt:NOW()},{merge:true});n++}});if(n)await b.commit().catch(e=>console.log(e))}
-const APPV='v1.44',verLine=()=>`<p class="mu" style="text-align:center;margin:4px 0 12px">BLACKGHOST TATTOO STUDIO · ${APPV} <button class="s" style="margin-left:6px" onclick="goUpd()">🔄 새로고침</button></p>`;
+const APPV='v1.45',verLine=()=>`<p class="mu" style="text-align:center;margin:4px 0 12px">BLACKGHOST TATTOO STUDIO · ${APPV} <button class="s" style="margin-left:6px" onclick="goUpd()">🔄 새로고침</button></p>`;
 
 function sdraw(){const nv=`<nav class="nav">${[['home','내 수강','🎓'],['edu','기본교육','📚']].map(([k,l,i])=>`<button class="${tab==k?'on':''}" onclick="go('${k}')"><i>${i}</i>${l}</button>`).join('')}</nav>`;view(hdr()+(tab=='edu'?eduView():noticeBanner()+studentHome())+verLine()+nv)}
 async function saveCourse(id){const v=k=>$('#ac_'+k).value,c=crs[id],iu=instList().find(u=>u.id==v('inst')),o={phone:v('phone').trim(),insta:v('insta').trim(),start:v('start'),total:Math.max(1,+v('total')||25),inst:v('inst'),instName:iu?(iu.nick||iu.name):''};const fee=adm()?+v('fee')||0:null;await db.doc('courses/'+id).update(o).catch(err);Object.assign(c,o);if(fee!=null&&fee!==cpOf(id).fee){const cp=Object.assign({uid:id,pays:[]},cpOf(id),{fee});await db.doc('coursePay/'+id).set(cp).catch(err);cpay[id]=cp}draw()}
@@ -1307,9 +1316,17 @@ function after(){if(!document.createElement||!document.body)return;try{const s=!
  if(EL){const b=q('[data-a="snd"]');b.textContent=mus?'🔊':'🔇';b.classList.toggle('on',mus)}}catch(e){console.error(e)}}
 return{after,gs:gsfx,gm:gstart,ge:gend}})();
 // 게임 아이콘 하단 메뉴 (마을 켜졌을 때): 색 보석 타일 + 금테, 누른 칸은 위로 튀어 오름, 토스 승인 대기 숫자
-const GNI={home:['🏘','#7b4fd6','#3d1f7a'],in:['🧴','#ff5fa2','#a3175a'],toss:['🤝','#ff9a3c','#a34a0c'],share:['📖','#2fb59a','#0f5f50'],more:['🎒','#8a8fa3','#3c3f4f']};
+const GNI={home:'🏘',in:'🧴',toss:'🤝',share:'📖',more:'🎒'};
+// 계절별 메뉴 색(등불 유리 [밝은, 어두운]) + 위쪽 장식. 계절 그림이 생기면 VSEA에 넣으면 날짜로 자동 전환(봄 3~5·여름 6~8·가을 9~11·겨울 12~2월)
+const GSEA={autumn:{c:{home:['#8a52c9','#3a1a63'],in:['#e8673a','#7c2a0f'],toss:['#e3a83f','#7a4e10'],share:['#4f9a6c','#18402c'],more:['#8c6649','#3a281c']},d:'🍁🍂🎃🍂🍁'},
+ spring:{c:{home:['#c9a7f2','#8a62c9'],in:['#ffa6c6','#e0628f'],toss:['#ffd88a','#e6a43a'],share:['#9fe3c2','#46b088'],more:['#a9d4f5','#5f9bd0']},d:'🌸🌷🌸🌷🌸'},
+ summer:{c:{home:['#4fc0d9','#14607a'],in:['#ff8a6b','#b73a24'],toss:['#ffd24a','#b98510'],share:['#7ad65a','#2f7a1f'],more:['#5aa0a0','#1f4a4f']},d:'🌿🍃🌻🍃🌿'},
+ winter:{c:{home:['#8fb8ff','#3a5aa8'],in:['#e8506a','#8a1830'],toss:['#f0c27a','#9a6a2a'],share:['#3f9a7a','#164a3a'],more:['#b9c6d6','#5a6a80']},d:''}};
+const VSEA={autumn:1};
+function vSeason(){const m=new Date().getMonth()+1,k=m>=3&&m<=5?'spring':m<=8&&m>=6?'summer':m>=9&&m<=11?'autumn':'winter';return VSEA[k]?k:'autumn'}
 function gNav(main,inMore,bb){const tp=tosses.filter(x=>x.to==me.id&&x.st=='pending'&&!x.void).length,it=main.map(([k,l])=>[k,adm()&&k=='home'&&!vilOn()?'총괄':l,tab==k]).concat([['more','더보기',inMore]]);
-return `<nav class="nav gnav">${bb||''}${it.map(([k,l,on])=>{const g=GNI[k]||GNI.more;return `<button class="${on?'on':''}" onclick="go('${k}')"><span class="gt" style="--g1:${g[1]};--g2:${g[2]}"><i>${adm()&&k=='home'&&!vilOn()?'👑':g[0]}</i>${k=='toss'&&tp?`<b class="gdot">${tp}</b>`:''}</span><span class="gl">${l}</span></button>`}).join('')}</nav>`}
+const se=vSeason(),S=GSEA[se],dc=se=='winter'?'<div class="gdeco cap"></div>':`<div class="gdeco">${[...S.d].map(x=>`<span>${x}</span>`).join('')}</div>`;
+return `<nav class="nav gnav s-${se}">${dc}${bb||''}${it.map(([k,l,on])=>{const g=S.c[k]||S.c.more;return `<button class="${on?'on':''}" onclick="go('${k}')"><span class="gt" style="--g1:${g[0]};--g2:${g[1]}"><i>${adm()&&k=='home'&&!vilOn()?'👑':GNI[k]||GNI.more}</i>${k=='toss'&&tp?`<b class="gdot">${tp}</b>`:''}</span><span class="gl">${l}</span></button>`}).join('')}</nav>`}
 function draw(){if(me.role=='student')return sdraw();const ad=adm(),V=vilOn(),main=[['home',V?'마을':ad?'총괄':'내현황',V?'🏘':'🏠'],['in','판매입력','🧾'],['toss','토스','🤝'],['share','쉐어비','💳']],
 more=ad?[V?['my','총괄','👑']:['vil','블랙고스트마을','🏘'],['sup','비품·소모품','📦'],['acd','수강관리','🎓'],['pet','유령 키우기','👻'],['edu','기본교육','📚'],['conv','컨벤션 일정','🗓'],['set','정산','💰'],['inv','재고·마진','📊'],['evt','이벤트','🎁'],['conf','설정','⚙️']]:(V?[['my','내현황','📋']]:[]).concat([['pet','유령 키우기','👻'],['sup','비품·소모품','📦'],['evt','이벤트','🎁'],['edu','기본교육','📚'],['conv','컨벤션 일정','🗓']]).concat(isInst()?[['acd','수강관리','🎓']]:[]),inMore=tab=='more'||more.some(x=>x[0]==tab);
 const vs=tab=='vil'||(tab=='home'&&V),body0=vs?'<div id="vslot"></div>':tab=='my'?(ad?home():myHome()):tab=='deco'?decoView():tab=='game'?gameCard()+'<div class="card">'+(gkHtml()||'<p class="mu">이번 주 게임왕은 아직 없어요. 첫 번째가 되어 보세요! 👑</p>')+'</div>':tab=='castle'?castleView():tab=='in'?form():tab=='toss'?tossView():tab=='share'?(ad?share():shareMe()):tab=='sup'?supView():tab=='acd'&&isInst()?acdView():tab=='evt'?evtView():tab=='edu'?eduView():tab=='conv'?convView():tab=='pet'?petView():tab=='set'&&ad?settle():tab=='conf'&&ad?confView():tab=='inv'&&ad?inv():tab=='more'?moreView(more):home(),vh=vHeroOn(),body=vh?vHero(VT[tab])+body0:body0;
