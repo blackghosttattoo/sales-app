@@ -173,6 +173,7 @@
 - 꾸미기 착용 오류 수정: `decoDone()` — 팝업(`petDeco`)에서 착용하면 팝업을 다시 그림(유령 키우기 첫 화면으로 튕기지 않음), 꾸미기 탭이면 스크롤 유지.
 - 배경 음악: 앱 열 때마다 `TR` 4곡 중 무작위(🎵 버튼·`vTrk` 없앰). 낮/밤은 폰 시계 그대로(사용자 결정).
 - 게임 소리: VIL 소리 엔진에 게임별 음악 `GT`(match·jump·candy·mole·merge·ink, `gk`=지금 게임 → `sch`가 GT 우선) + 효과음 `gsfx`(jump·pt·eat·gold·bad·hit·miss·pop(콤보)·nope·shuffle·swipe·merge·great·start·over, `fx` 노드로 배경 음악 볼륨과 별개). 게임 쪽은 `GS(n,x)`·`GE()`, 게임 창 🔊/🔇 `gSndT()`(localStorage `gSnd`). 게임 끝·닫기 → 마을 음악으로(꺼져 있었으면 조용히).
+- 베드 현황(마을 화면): 인사말 박스 안 → 하단 메뉴 바로 위 작은 탭 박스(`bedMini()` → `.gnav .bedbar`, `gNav(main,inMore,bb)` — 마을 첫 화면에서만). 버전 그대로 v1.44로 올림(사용자 요청).
 - 대장도 마을 켜기/끄기: `vilOn()`에 대장은 localStorage `vilAd`==='1'(기본 꺼짐, `cfg.vil`과 상관없음). 헤더 '🏘 마을'/마을 '🏘 끄기'(`vilMe`가 대장이면 vilAd에 저장). 켜면 대장 첫 화면=마을, 하단 '마을', 더보기 맨 앞 '총괄'(tab `my` = 대장이면 `home()` 총괄), 마을 위 '🏠 총괄' 버튼. 타투이스트 `vilMe`처럼 다음에 바꿀 때까지 그 폰에 유지.
 - 규칙 변경 없음.
 
