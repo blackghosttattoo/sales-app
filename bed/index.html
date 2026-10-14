@@ -1,58 +1,65 @@
 <!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>베드 센서 설치</title>
-<script type="module" src="https://unpkg.com/esp-web-tools@10.1.1/dist/web/install-button.js?module"></script>
 <style>
-:root{color-scheme:light;--bg:#f4f3ef;--card:#fff;--tx:#1d1d1b;--mu:#6f6d67;--ac:#1f6f5c;--ln:#e2dfd7}
-@media (prefers-color-scheme:dark){:root{color-scheme:dark;--bg:#141413;--card:#1f1f1d;--tx:#efede7;--mu:#a3a19a;--ac:#58c2a6;--ln:#363633}}
-body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.6 -apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif}
+:root{color-scheme:light;--bg:#f4f3ef;--card:#fff;--tx:#1d1d1b;--mu:#6f6d67;--ac:#1f6f5c;--ln:#e2dfd7;--wa:#b4531a}
+@media (prefers-color-scheme:dark){:root{color-scheme:dark;--bg:#141413;--card:#1f1f1d;--tx:#efede7;--mu:#a3a19a;--ac:#58c2a6;--ln:#363633;--wa:#f0955a}}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.65 -apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif}
 main{max-width:640px;margin:0 auto;padding:20px 16px 60px}
 h1{font-size:22px;margin:0 0 4px}.mu{color:var(--mu);font-size:14px}
 .card{background:var(--card);border:1px solid var(--ln);border-radius:14px;padding:16px;margin:14px 0}
-h2{font-size:17px;margin:0 0 8px}ol{padding-left:22px;margin:6px 0}li{margin:4px 0}
+h2{font-size:18px;margin:0 0 8px}h2 .n{display:inline-block;width:28px;height:28px;border-radius:50%;background:var(--ac);color:#fff;text-align:center;line-height:28px;font-size:15px;margin-right:6px}
+ol{padding-left:22px;margin:6px 0}li{margin:5px 0}
 table{border-collapse:collapse;width:100%}td,th{border-bottom:1px solid var(--ln);padding:6px;text-align:left}
-.big{display:flex;justify-content:center;padding:10px 0}
-esp-web-install-button button{font:inherit;font-size:18px;font-weight:700;padding:14px 28px;border-radius:12px;border:0;background:var(--ac);color:#fff;cursor:pointer}
-.warn{border-color:#d49a2a}
+code{background:var(--bg);padding:1px 6px;border-radius:6px;font-size:15px}
+.ok{color:var(--ac);font-weight:700}.no{color:var(--wa);font-weight:700}
+a.btn{display:inline-block;background:var(--ac);color:#fff;text-decoration:none;font-weight:700;padding:10px 18px;border-radius:10px;margin:4px 0}
+.tip{border-left:4px solid var(--wa);padding:6px 10px;background:var(--bg);border-radius:8px;font-size:14px}
 </style></head><body><main>
-<h1>👻 베드 센서 설치</h1>
-<p class="mu">BLACKGHOST TATTOO STUDIO · 보드에 프로그램 넣기. 처음 한 번만 하면 돼요.</p>
+<h1>👻 베드 센서 설치 — 처음부터</h1>
+<p class="mu">BLACKGHOST TATTOO STUDIO · 보드 1개당 한 번. 순서대로만 하면 돼요. (프로그램 v5)</p>
 
-<div class="card warn"><h2>⭐ 2단계: 와이파이 버전 (앱에 베드 현황)</h2>
-<ol>
-<li><b>보드 비밀번호 정하기</b>: 8자 이상(따옴표 " 와 \ 는 빼기)으로 하나 정해서 적어 두세요. Firebase 콘솔에서 따로 만들 필요 없어요 — <b>첫 보드가 설정할 때 보드 계정(bed@blackghost.app)을 스스로 만들어요.</b> 4개 보드 모두 같은 비밀번호를 넣어요.</li>
-<li><b>선 2가닥 추가 (USB 빼고)</b>: 레이더 <b>TX → P16</b>, 레이더 <b>RX → P17</b> (보드 왼쪽 줄). 기존 VCC→5V, GND→GND, OUT→P13은 그대로.</li>
-<li><b>프로그램 넣기</b>: 레이더 선 5가닥 빼고 → <a href="bed.bin" download>bed.bin 받기</a> → <a href="https://espressif.github.io/esptool-js/" target="_blank" rel="noopener">ESP Tool</a>에서 115200 → (IO0 누른 채 EN 눌렀다 떼고 IO0 떼기) → Connect → 주소 <code>0x0</code> + bed.bin → Program → 끝나면 Disconnect → 선 다시 꽂고 EN.</li>
-<li><b>폰으로 와이파이 설정</b>: 보드가 켜지면 파란 불이 계속 켜져 있어요(설정 기다리는 중). 폰 와이파이 목록에서 <b>BG-BED-SETUP</b> 접속 → 설정 화면이 자동으로 뜨면(안 뜨면 주소창에 <code>192.168.4.1</code>) <b>Configure WiFi</b> → 가게 와이파이(2.4GHz) 고르고 비밀번호, <b>베드 번호</b>(1~4), <b>보드 비밀번호</b>(1번에서 정한 것), 감지 거리 칸 <code>2</code>(=1.5m) → <b>Save</b>.</li>
-<li>보드가 가게 와이파이에 붙으면 BG-BED-SETUP이 사라지고, 사람 있으면 파란 불이 켜져요. 앱의 <b>🛏 베드 현황</b>에 그 베드가 나타나요(1~2초).</li>
-<li>설정을 다시 하려면: 보드의 <b>IO0 버튼을 5초</b> 누르면 BG-BED-SETUP이 다시 생겨요.</li>
-<li>프로그램이 새로 나오면 보드가 6시간마다 확인해서 와이파이로 스스로 업데이트해요(다시 꽂을 필요 없음).</li>
-</ol></div>
-<h2 style="margin-top:24px">1단계: 동작 시험 (참고)</h2>
-<div class="card"><h2>① 선 연결 (USB 빼고)</h2>
-<table><tr><th>레이더</th><th>보드</th></tr><tr><td>VCC</td><td>5V</td></tr><tr><td>GND</td><td>GND</td></tr><tr><td>OUT</td><td>P13</td></tr></table>
-<p class="mu">TX·RX는 안 써요. 3V3 말고 꼭 5V.</p></div>
+<div class="card"><h2><span class="n">0</span>준비물</h2>
+<ul><li>ESP32 보드(NodeMCU-32S) + 레이더(LD2410C) + 점퍼선 <b>3가닥</b></li>
+<li>윈도우 컴퓨터(크롬) + 데이터용 USB-C 케이블 (처음 한 번만 컴퓨터 필요)</li>
+<li>폰 (와이파이 설정용)</li>
+<li><b>보드 비밀번호</b> 하나 정하기: 8자 이상, 따옴표 " 와 \ 빼기. 4개 보드 모두 같은 것. 채팅에 보내지 말고 따로 적어 두기.</li></ul></div>
 
-<div class="card"><h2>② 컴퓨터에 USB로 연결</h2>
-<ol><li><b>크롬</b>이나 <b>엣지</b>로 이 페이지를 열어요 (폰·사파리는 안 돼요).</li>
-<li>데이터용 USB-C 케이블로 보드를 컴퓨터에 꽂아요. (충전 전용 케이블은 안 잡혀요)</li></ol></div>
+<div class="card"><h2><span class="n">1</span>컴퓨터 준비 (처음 한 번)</h2>
+<ol><li><a href="https://www.silabs.com/developer-tools/usb-to-uart-bridge-vcp-drivers" target="_blank" rel="noopener">CP210x 드라이버</a> → <b>CP210x Windows Drivers</b> 받기 → 압축 풀기 → <code>CP210xVCPInstaller_x64.exe</code> 실행 → 다음·마침.</li>
+<li>프로그램 파일 받기: <a class="btn" href="bed.bin" download>⬇ bed.bin 받기</a><br><span class="mu">다운로드 폴더에 "bed"로 보이면 맞아요(약 1.2MB). 예전 것이 있으면 지우고 새로 받기.</span></li></ol></div>
 
-<div class="card"><h2>③ 설치 버튼 누르기</h2>
-<div class="big"><esp-web-install-button manifest="bedtest.json">
-<button slot="activate">🔌 보드에 설치하기</button>
-<span slot="unsupported">이 브라우저는 안 돼요. 컴퓨터의 크롬이나 엣지로 열어 주세요.</span>
-<span slot="not-allowed">https 주소로 열어 주세요.</span>
-</esp-web-install-button></div>
-<ol><li>창이 뜨면 목록에서 <b>CP2102</b> 또는 <b>USB to UART</b> 같은 이름을 골라 [연결].</li>
-<li>[INSTALL / 설치] → 지우고 설치 확인 → 1~2분 기다리기.</li>
-<li>목록에 아무것도 안 뜨면: 케이블을 바꿔 보거나, 윈도우라면 <a href="https://www.silabs.com/developer-tools/usb-to-uart-bridge-vcp-drivers" target="_blank" rel="noopener">CP210x 드라이버</a>를 설치해요.</li>
-<li><b>'Preparing installation'에서 멈추면</b>(이 보드는 자주 그래요): 창 닫기 → 레이더 선 빼기 → 보드의 <b>IO0 버튼을 누른 채 EN 버튼을 눌렀다 떼고 IO0도 떼기</b> → 다시 설치.</li>
-<li>그래도 안 되면 <a href="https://espressif.github.io/esptool-js/" target="_blank" rel="noopener">에스프레시프 공식 설치 페이지</a>: Baudrate 115200 → Connect → 주소 <code>0x0</code>, 파일 <a href="bedtest.bin" download>bedtest.bin</a> → Program (대장님 첫 설치는 이 방법으로 성공).</li>
-<li>'Failed to open serial port'가 나오면 이 보드를 쓰는 다른 탭을 닫고 USB를 뺐다 꽂기.</li>
-<li>설치가 끝나면 <b>EN 버튼</b>을 한 번 눌러 다시 켜기.</li></ol></div>
+<div class="card"><h2><span class="n">2</span>보드에 프로그램 넣기 (레이더 선 모두 빼고!)</h2>
+<ol><li>레이더 선을 보드에서 <b>모두 뺀 상태</b>로 USB를 컴퓨터 <b>본체 뒤쪽</b>에 꽂기.</li>
+<li><a href="https://espressif.github.io/esptool-js/" target="_blank" rel="noopener">ESP Tool</a> 열기 (다른 ESP 탭은 모두 닫기).</li>
+<li><b>받기 모드</b>: 보드의 <b>IO0</b>(USB 오른쪽 버튼)를 누른 채 → <b>EN</b>(왼쪽 버튼)을 눌렀다 떼고 → IO0 떼기.</li>
+<li>Baudrate <code>115200</code> → <b>Connect</b> → <b>CP210x</b> 선택 → 연결. 검은 창에 <i>Chip is ESP32</i>가 나오면 성공.</li>
+<li>(처음 쓰는 보드거나 문제가 있었던 보드만) 빨간 <b>Erase Flash</b> → 끝날 때까지 기다리기.</li>
+<li>Flash Address <code>0x0</code> + 파일 선택에서 <b>bed</b> → <b>Program</b> → 약 1분 → <i>Hash of data verified</i>가 나오면 끝.</li>
+<li><b>Disconnect</b> → 보드의 <b>EN</b> 한 번.</li></ol>
+<p class="tip">오류 'Failed to open' = 다른 탭 닫고 USB 뺐다 꽂기 · 'Failed to connect' = 3번(받기 모드) 다시 · 중간에 끊김 = 레이더 선 빠졌는지 확인하고 다시</p></div>
 
-<div class="card"><h2>④ 시험해 보기</h2>
-<ol><li>설치가 끝나면 보드의 <b>파란 불이 3번 깜빡</b>여요 = 잘 들어감.</li>
-<li>레이더 앞에서 움직이면 <b>파란 불이 켜지고</b>, 멀리 가거나 방을 나가면 잠시 뒤 <b>꺼져요</b>.</li>
-<li>컴퓨터 없이 폰 충전기에 꽂아도 똑같이 동작해요.</li></ol>
-<p class="mu">지금은 레이더 기본 설정이라 꽤 멀리(최대 약 6m)까지 감지해요. 1.5m로 줄이는 건 2단계(와이파이 연결)에서 같이 해요.</p></div>
+<div class="card"><h2><span class="n">3</span>폰으로 와이파이 설정 (USB 꽂아 둔 채, 레이더 선은 아직 빼 둔 채)</h2>
+<ol><li>보드 파란 불이 <b>계속 켜져</b> 있으면 설정 기다리는 중.</li>
+<li>폰 와이파이에서 <b>BG-BED-SETUP</b> 연결 ("인터넷 없음" → 연결 유지).</li>
+<li>크롬/삼성 인터넷 주소창에 <code>192.168.4.1</code> (안 열리면 모바일 데이터 잠깐 끄기).</li>
+<li><b>Configure WiFi</b> → 가게 와이파이(2.4GHz, _5G 아닌 것) 누르기 → 칸 채우기:
+<table><tr><td>Password</td><td>가게 와이파이 비밀번호</td></tr><tr><td>베드 번호</td><td><code>1</code> ~ <code>4</code></td></tr><tr><td>보드 비밀번호</td><td>0번에서 정한 것</td></tr></table></li>
+<li><b>Save</b> → BG-BED-SETUP이 목록에서 사라지면 성공 (파란 불 꺼짐).</li></ol></div>
+
+<div class="card"><h2><span class="n">4</span>레이더 연결 (USB 빼고!)</h2>
+<p><b>3가닥만</b> 꽂아요. TX·RX는 안 써요.</p>
+<table><tr><th>레이더</th><th>보드 (뒷면 글씨, USB 쪽 줄)</th></tr>
+<tr><td>VCC</td><td><b>5V</b> (USB 쪽 맨 끝)</td></tr><tr><td>GND</td><td><b>GND</b> (5V 바로 다음)</td></tr><tr><td>OUT</td><td><b>P13</b> (GND 다음 SD3·SD2를 건너뛰고 그다음)</td></tr></table>
+<p class="no">⚠ SD3 · SD2 · P12 · 3V3 에는 절대 꽂지 않기 (보드가 안 켜져요)</p>
+<p>꽂은 뒤 USB를 다시 꽂기 (이제부터는 폰 충전기에 꽂아 둬도 돼요).</p></div>
+
+<div class="card"><h2><span class="n">5</span>확인</h2>
+<table><tr><th>파란 불</th><th>뜻</th></tr>
+<tr><td>켜질 때 3번 깜빡</td><td>프로그램 시작</td></tr>
+<tr><td>계속 켜짐 (BG-BED-SETUP 보임)</td><td>와이파이 설정 기다림 → 3번 다시</td></tr>
+<tr><td>빠르게 깜빡깜빡</td><td>와이파이 연결 중/끊김 (가게 와이파이 확인)</td></tr>
+<tr><td>2초마다 짧게 두 번</td><td>앱 기록 실패 (보드 비밀번호 확인 → IO0 5초로 다시 설정)</td></tr>
+<tr><td>사람 있으면 켜짐 · 없으면 10초쯤 뒤 꺼짐</td><td class="ok">정상 ✅ 앱 '🛏 베드 현황'에 표시</td></tr></table>
+<p class="mu">설정을 다시 하려면 보드의 <b>IO0 버튼 5초</b> → BG-BED-SETUP이 다시 생겨요. 프로그램이 새로 나오면 보드가 와이파이로 스스로 업데이트해요.</p>
+<p class="mu">감지 거리를 1.5m로 줄이기(옆 베드 안 잡히게)는 레이더를 단 뒤 폰 앱 <b>HLKRadarTool</b>(블루투스)로 해요 — 나중에 같이.</p></div>
 </main></body></html>
