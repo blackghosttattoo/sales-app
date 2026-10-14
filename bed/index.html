@@ -14,9 +14,20 @@ table{border-collapse:collapse;width:100%}td,th{border-bottom:1px solid var(--ln
 esp-web-install-button button{font:inherit;font-size:18px;font-weight:700;padding:14px 28px;border-radius:12px;border:0;background:var(--ac);color:#fff;cursor:pointer}
 .warn{border-color:#d49a2a}
 </style></head><body><main>
-<h1>👻 베드 센서 설치 (1단계 시험)</h1>
+<h1>👻 베드 센서 설치</h1>
 <p class="mu">BLACKGHOST TATTOO STUDIO · 보드에 프로그램 넣기. 처음 한 번만 하면 돼요.</p>
 
+<div class="card warn"><h2>⭐ 2단계: 와이파이 버전 (앱에 베드 현황)</h2>
+<ol>
+<li><b>보드 계정 만들기 (처음 한 번, 대장님)</b>: <a href="https://console.firebase.google.com/project/tattoo-cream-ecacc/authentication/users" target="_blank" rel="noopener">Firebase 콘솔 → Authentication → 사용자</a> → [사용자 추가] → 이메일 <code>bed@blackghost.app</code>, 비밀번호 8자 이상(따옴표 " 와 \ 는 빼기). 이 비밀번호를 보드 설정 때 넣어요. 4개 보드 모두 같은 계정.</li>
+<li><b>선 2가닥 추가 (USB 빼고)</b>: 레이더 <b>TX → P16</b>, 레이더 <b>RX → P17</b> (보드 왼쪽 줄). 기존 VCC→5V, GND→GND, OUT→P13은 그대로.</li>
+<li><b>프로그램 넣기</b>: 레이더 선 5가닥 빼고 → <a href="bed.bin" download>bed.bin 받기</a> → <a href="https://espressif.github.io/esptool-js/" target="_blank" rel="noopener">ESP Tool</a>에서 115200 → (IO0 누른 채 EN 눌렀다 떼고 IO0 떼기) → Connect → 주소 <code>0x0</code> + bed.bin → Program → 끝나면 Disconnect → 선 다시 꽂고 EN.</li>
+<li><b>폰으로 와이파이 설정</b>: 보드가 켜지면 파란 불이 계속 켜져 있어요(설정 기다리는 중). 폰 와이파이 목록에서 <b>BG-BED-SETUP</b> 접속 → 설정 화면이 자동으로 뜨면(안 뜨면 주소창에 <code>192.168.4.1</code>) <b>Configure WiFi</b> → 가게 와이파이(2.4GHz) 고르고 비밀번호, <b>베드 번호</b>(1~4), <b>보드 비밀번호</b>(1번에서 만든 것), 감지 거리 칸 <code>2</code>(=1.5m) → <b>Save</b>.</li>
+<li>보드가 가게 와이파이에 붙으면 BG-BED-SETUP이 사라지고, 사람 있으면 파란 불이 켜져요. 앱의 <b>🛏 베드 현황</b>에 그 베드가 나타나요(1~2초).</li>
+<li>설정을 다시 하려면: 보드의 <b>IO0 버튼을 5초</b> 누르면 BG-BED-SETUP이 다시 생겨요.</li>
+<li>프로그램이 새로 나오면 보드가 6시간마다 확인해서 와이파이로 스스로 업데이트해요(다시 꽂을 필요 없음).</li>
+</ol></div>
+<h2 style="margin-top:24px">1단계: 동작 시험 (참고)</h2>
 <div class="card"><h2>① 선 연결 (USB 빼고)</h2>
 <table><tr><th>레이더</th><th>보드</th></tr><tr><td>VCC</td><td>5V</td></tr><tr><td>GND</td><td>GND</td></tr><tr><td>OUT</td><td>P13</td></tr></table>
 <p class="mu">TX·RX는 안 써요. 3V3 말고 꼭 5V.</p></div>
