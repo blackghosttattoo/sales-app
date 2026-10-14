@@ -229,6 +229,21 @@ service cloud.firestore {
         && request.resource.data.keys().hasOnly(['at']) && request.resource.data.at == request.time;
     }
 
+    // 베드 센서(보드): 보드 전용 계정(bed@blackghost.app, 대장님이 Firebase 콘솔에서 만듦)만 beds/b1~b8 상태 기록.
+    // st = 'on'(사용 중) | 'off'(비어 있음), up = 마지막 신호(서버 시간만), at = 상태가 바뀐 시간(서버 시간 또는 그대로)
+    function bedDev() { return request.auth != null && request.auth.token.email == 'bed@blackghost.app'; }
+    match /beds/{b} {
+      allow read: if active();
+      allow delete: if admin();
+      allow create, update: if bedDev() && b.matches('^b[1-8]$')
+        && request.resource.data.keys().hasOnly(['st', 'at', 'up', 'v', 'rssi'])
+        && request.resource.data.st in ['on', 'off']
+        && request.resource.data.up == request.time
+        && (request.resource.data.at == request.time || (resource != null && request.resource.data.at == resource.data.at))
+        && request.resource.data.v is string && request.resource.data.v.size() <= 20
+        && request.resource.data.rssi is int;
+    }
+
     // 작업자 명단(이름·닉네임만, 쉐어비 정보 없음)
     match /roster/{id} {
       allow read: if active();
