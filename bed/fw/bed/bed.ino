@@ -1,8 +1,11 @@
 // 블랙고스트 베드 센서 — 2단계 (와이파이 + 앱 연결)
-// 연결: 레이더 VCC→5V, GND→GND, OUT→P13, TX→P16, RX→P17
-// 처음 켜면(또는 IO0 버튼 5초) 임시 와이파이 "BG-BED-SETUP"이 생김 → 폰으로 접속해서 가게 와이파이·베드 번호·보드 비밀번호 입력
+// 연결: 레이더 VCC→5V(1번째), OUT→P13(5번째), GND→P13 다음 GND(6번째) — 5V 옆 "GND" 인쇄 핀은 실제 CMD라 금지.
+// (선택) 감지 거리 1.5m 설정용: 레이더 TX→P16, RX→P17 — 켤 때마다 보드가 레이더에 거리 설정을 보냄(선 없으면 그냥 넘어감)
+// 처음 켜면(또는 IO0 버튼 5초) 임시 와이파이 "BG-BED-SETUP"이 생김 → 폰으로 접속(192.168.4.1)해서 가게 와이파이·베드 번호·보드 비밀번호 입력
+// 파란 불: 시작 3번 깜빡 / 설정 기다림 = 계속 켜짐 / 와이파이 연결 중 = 빠르게 깜빡 / 정상 = 사람 있으면 켜짐·없으면 꺼짐 / 앱 기록 실패 = 2초마다 짧게 2번
 // 동작: 사람 있음/없음이 바뀌면 Firestore beds/b<번호>에 기록(st, at), 10분마다 생존 신호(up). 6시간마다 새 프로그램 확인(OTA).
-// 보드 비밀번호 = 대장님이 Firebase 콘솔에서 만든 bed@blackghost.app 계정의 비밀번호 (이 파일엔 없음 — 공개 저장소라서)
+// 보드 비밀번호 = bed@blackghost.app 계정 비밀번호 (이 파일엔 없음 — 공개 저장소라서).
+// 계정이 아직 없으면 첫 보드가 설정 화면에서 넣은 비밀번호로 스스로 만듦(v3). 나머지 보드는 같은 비밀번호를 넣으면 됨.
 #include <WiFi.h>
 #include <WiFiManager.h>
 #include <WiFiClientSecure.h>
@@ -11,7 +14,7 @@
 #include <Preferences.h>
 #include <ArduinoJson.h>
 
-#define FWV "2"
+#define FWV "6"
 const char* API_KEY = "AIzaSyBTqRIfhUzlsO2YOfaEBlMHWGlLW-R44Z4";   // 앱(index.html)과 같은 공개 값
 const char* PROJECT = "tattoo-cream-ecacc";
 const char* BED_EMAIL = "bed@blackghost.app";
@@ -30,7 +33,8 @@ int sent = -1, raw = -1, failN = 0;
 void ldCmd(const uint8_t* d, uint8_t n) {
   const uint8_t H[] = {0xFD, 0xFC, 0xFB, 0xFA}, T[] = {0x04, 0x03, 0x02, 0x01}, L[] = {n, 0};
   Serial2.write(H, 4); Serial2.write(L, 2); Serial2.write(d, n); Serial2.write(T, 4);
-  delay(200); while (Serial2.available()) Serial2.read();
+  delay(200); String a; while (Serial2.available()) { char b[4]; snprintf(b, 4, "%02X ", Serial2.read()); a += b; }
+  Serial.println("radar ack: " + (a.length() ? a.substring(0, 90) : String("(없음 — TX/RX 선 확인)")));
 }
 void ldSetup() {
   Serial2.begin(256000, SERIAL_8N1, RX2PIN, TX2PIN); delay(300);
@@ -59,6 +63,12 @@ bool login() {
   }
   int code = post(String("https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=") + API_KEY,
       "{\"email\":\"" + String(BED_EMAIL) + "\",\"password\":\"" + jesc(bedPw) + "\",\"returnSecureToken\":true}", out);
+  if (code == 400 && (out.indexOf("EMAIL_NOT_FOUND") >= 0 || out.indexOf("INVALID_LOGIN_CREDENTIALS") >= 0 && !pr.getBool("made", false))) {
+    // 계정이 없으면 한 번 만들어 봄 (이미 있으면 EMAIL_EXISTS로 실패 → 비밀번호가 틀린 것)
+    int c2 = post(String("https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=") + API_KEY,
+        "{\"email\":\"" + String(BED_EMAIL) + "\",\"password\":\"" + jesc(bedPw) + "\",\"returnSecureToken\":true}", out);
+    if (c2 == 200) { Serial.println("board account created"); pr.putBool("made", true); code = 200; }
+  }
   if (code != 200) { Serial.printf("login fail %d %s\n", code, out.substring(0, 160).c_str()); return false; }
   deserializeJson(d, out); idTok = d["idToken"].as<String>(); refTok = d["refreshToken"].as<String>(); tokAt = millis();
   Serial.println("login ok"); return true;
@@ -93,20 +103,18 @@ void otaCheck() {
 // ---------- 와이파이 설정 화면 ----------
 void portal(bool force) {
   WiFiManager wm;
-  char g[3]; snprintf(g, sizeof g, "%d", gate);
   WiFiManagerParameter pBed("bed", "베드 번호 (1~8)", bedNo.c_str(), 1);
   WiFiManagerParameter pPw("pw", "보드 비밀번호 (bed@blackghost.app)", bedPw.c_str(), 64, "type='password'");
-  WiFiManagerParameter pGate("gate", "감지 거리 칸 (2=1.5m, 3=2.25m … 8=6m)", g, 1);
-  wm.addParameter(&pBed); wm.addParameter(&pPw); wm.addParameter(&pGate);
+  wm.addParameter(&pBed); wm.addParameter(&pPw);
   wm.setTitle("BLACKGHOST 베드 센서");
   wm.setConfigPortalTimeout(600);
   wm.setSaveParamsCallback([&]() {
     String b = pBed.getValue(); int n = b.toInt(); if (n >= 1 && n <= 8) bedNo = String(n);
     if (strlen(pPw.getValue())) bedPw = pPw.getValue();
-    int gg = String(pGate.getValue()).toInt(); if (gg >= 2 && gg <= 8) gate = gg;
     pr.putString("bed", bedNo); pr.putString("pw", bedPw); pr.putInt("gate", gate);
   });
   digitalWrite(LED, HIGH);
+  wm.setConnectTimeout(20);
   bool ok = force ? wm.startConfigPortal("BG-BED-SETUP") : wm.autoConnect("BG-BED-SETUP");
   digitalWrite(LED, LOW);
   if (!ok) ESP.restart();
@@ -122,14 +130,16 @@ void setup() {
   ldSetup();
   WiFi.setHostname(("bg-bed-" + bedNo).c_str());
   portal(bedPw.length() == 0);
-  ldSetup();   // 설정에서 거리를 바꿨을 수 있어서 한 번 더
   WiFi.setAutoReconnect(true);
   lastOta = millis() - 6UL * 3600 * 1000 + 60000;   // 켜고 1분 뒤 첫 확인
 }
 
 void loop() {
   int p = digitalRead(RADAR_OUT);
-  digitalWrite(LED, p);
+  unsigned long t0 = millis() % 2000;
+  if (WiFi.status() != WL_CONNECTED) digitalWrite(LED, (millis() / 150) % 2);          // 와이파이 끊김: 빠르게 깜빡
+  else if (failN && t0 < 400) digitalWrite(LED, (t0 / 100) % 2 == 0);              // 앱 기록 실패: 짧게 2번
+  else digitalWrite(LED, p);
   if (p != raw) { raw = p; stableAt = millis(); }
   unsigned long now = millis();
   bool due = raw != sent && now - stableAt > 2000;                 // 2초 이상 같은 상태면 바뀐 걸로

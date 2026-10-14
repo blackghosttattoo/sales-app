@@ -32,6 +32,17 @@
 - 1단계 결과: 프로그램 동작(빨간 전원 불 + 사람 감지 시 파란 불 P2). 가게 와이파이 2.4GHz 있음. **베드 총 4개**.
 - 2단계 계획(사용자 확인 대기): 레이더 TX→P16·RX→P17 추가(감지 거리 1.5m 설정용), 폰으로 'BG-BED-설정' 임시 와이파이에서 가게 와이파이·베드 번호 입력, 보드 전용 계정으로 상태 바뀔 때 + 10분마다 생존 신호 기록, 15분 없으면 '꺼짐', 규칙 추가, 앱 '베드 현황'(총괄·마을), OTA.
 
+- **2단계 만듦(10-14)**: `bed/fw/bed/bed.ino`(FWV "2") — WiFiManager 설정 화면 'BG-BED-SETUP'(가게 와이파이, 베드 번호, 보드 비밀번호, 감지 거리 칸; Preferences 'bg' 저장, IO0 5초=다시 설정), LD2410C 시리얼(256000, P16/P17) 설정 명령으로 최대 거리 칸·무인 시간(10초), OUT 2초 이상 유지되면 Firestore REST `documents:commit`으로 beds/b<번호> st·v·rssi + up(서버 시간) + 바뀌면 at, 10분 생존 신호, 실패 시 30초 뒤 재시도, Firebase Auth REST(signInWithPassword → refresh). OTA: 6시간마다 bed/bed.ver ≠ FWV면 bed/bed-app.bin으로 httpUpdate. 빌드 fqbn esp32:esp32:esp32:PartitionScheme=min_spiffs, 라이브러리 WiFiManager 2.0.17·ArduinoJson 7.2.1. **프로그램 고칠 땐 FWV를 올리면 4개 보드가 자동 업데이트.**
+- 보드 계정: Firebase Auth `bed@blackghost.app`(v3부터 첫 보드가 accounts:signUp으로 스스로 생성 — 사용자가 콘솔 접속 불가해서, 비밀번호는 보드 설정 화면에만 — 공개 저장소에 넣지 않음). 규칙 `beds` 이 이메일만 쓰기.
+- 앱 v1.42 '베드 현황'(브랜치에 준비, 배포 확인 대기).
+
+- 10-14 오후: v2~v4 설치 후 레이더 5가닥 연결 상태에서 부팅 실패(invalid header 0xffffffff 반복)·파란 불 안 들어옴. 주황(OUT)이 SD2에 꽂혔던 적 있음(플래시 핀). Erase Flash 후 v4 다시 넣고 레이더 없이 켜니 BG-BED-SETUP 정상. 레이더 연결 후 다시 불 안 들어옴(원인 미확인 — TX/RX 선이거나 레이더 설정 명령 의심). 사용자 "처음부터 다시, 정리해놔".
+- **v5 단순화**: TX·RX 안 씀(3가닥만), 레이더 설정 명령·감지 거리 칸 입력 제거(거리는 HLKRadarTool 블루투스 앱으로), 파란 불 상태 표시(설정 대기=켜짐, 와이파이 끊김=빠른 깜빡, 기록 실패=2번 깜빡). `bed/index.html`을 '처음부터' 0~5단계 한 장 안내로 새로 씀.
+
+- **원인 찾음(10-14 저녁)**: 레이더 연결 시 'invalid header 0xffffffff' 부팅 실패는 **보드 실크 인쇄 오류** — 5V 옆 핀이 'GND'로 적혀 있지만 표준 38핀 배치상 **CMD(GPIO11, 플래시 명령선)**. 레이더 GND를 거기 꽂아서 플래시 통신이 막힘. 배선 확정: VCC→5V(1번째), OUT→P13(5번째), **GND→P13 다음 GND(6번째)**. (v5는 3가닥, 레이더 없이 설정 화면까지 정상 확인)
+
+- 🎉 **1번 보드 성공(10-14 20시경)**: GND 핀 옮긴 뒤 로그 'BG bed sensor v5, bed 1 → AutoConnect SUCCESS → login ok(보드 계정 자동 생성됨) → sent b1 on'. Firestore beds/b1 기록 확인. 남은 것: 앱 v1.42 배포, 감지 거리 1.5m(HLKRadarTool), 케이스 출력, 나머지 3세트.
+
 ## 다음 단계 (사용자 응답 대기)
 1. 부품 도착 후 사진(자 옆에서) + 실측 치수(mm) 받기 → 케이스 설계
 2. 케이스 붙일 위치 결정(베드 밑 / 벽 / 레일 근처) — 질문해둔 상태
