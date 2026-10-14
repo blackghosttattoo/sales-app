@@ -1,5 +1,6 @@
 // 블랙고스트 베드 센서 — 2단계 (와이파이 + 앱 연결)
-// 연결(v5부터 3가닥만): 레이더 VCC→5V, GND→GND, OUT→P13. (TX·RX 안 씀 — 감지 거리는 폰 앱 HLKRadarTool로 블루투스 설정)
+// 연결: 레이더 VCC→5V(1번째), OUT→P13(5번째), GND→P13 다음 GND(6번째) — 5V 옆 "GND" 인쇄 핀은 실제 CMD라 금지.
+// (선택) 감지 거리 1.5m 설정용: 레이더 TX→P16, RX→P17 — 켤 때마다 보드가 레이더에 거리 설정을 보냄(선 없으면 그냥 넘어감)
 // 처음 켜면(또는 IO0 버튼 5초) 임시 와이파이 "BG-BED-SETUP"이 생김 → 폰으로 접속(192.168.4.1)해서 가게 와이파이·베드 번호·보드 비밀번호 입력
 // 파란 불: 시작 3번 깜빡 / 설정 기다림 = 계속 켜짐 / 와이파이 연결 중 = 빠르게 깜빡 / 정상 = 사람 있으면 켜짐·없으면 꺼짐 / 앱 기록 실패 = 2초마다 짧게 2번
 // 동작: 사람 있음/없음이 바뀌면 Firestore beds/b<번호>에 기록(st, at), 10분마다 생존 신호(up). 6시간마다 새 프로그램 확인(OTA).
@@ -13,7 +14,7 @@
 #include <Preferences.h>
 #include <ArduinoJson.h>
 
-#define FWV "5"
+#define FWV "6"
 const char* API_KEY = "AIzaSyBTqRIfhUzlsO2YOfaEBlMHWGlLW-R44Z4";   // 앱(index.html)과 같은 공개 값
 const char* PROJECT = "tattoo-cream-ecacc";
 const char* BED_EMAIL = "bed@blackghost.app";
@@ -32,7 +33,8 @@ int sent = -1, raw = -1, failN = 0;
 void ldCmd(const uint8_t* d, uint8_t n) {
   const uint8_t H[] = {0xFD, 0xFC, 0xFB, 0xFA}, T[] = {0x04, 0x03, 0x02, 0x01}, L[] = {n, 0};
   Serial2.write(H, 4); Serial2.write(L, 2); Serial2.write(d, n); Serial2.write(T, 4);
-  delay(200); while (Serial2.available()) Serial2.read();
+  delay(200); String a; while (Serial2.available()) { char b[4]; snprintf(b, 4, "%02X ", Serial2.read()); a += b; }
+  Serial.println("radar ack: " + (a.length() ? a.substring(0, 90) : String("(없음 — TX/RX 선 확인)")));
 }
 void ldSetup() {
   Serial2.begin(256000, SERIAL_8N1, RX2PIN, TX2PIN); delay(300);
@@ -125,6 +127,7 @@ void setup() {
   pr.begin("bg", false);
   bedNo = pr.getString("bed", "1"); bedPw = pr.getString("pw", ""); gate = pr.getInt("gate", 2);
   Serial.printf("BG bed sensor v%s, bed %s\n", FWV, bedNo.c_str());
+  ldSetup();
   WiFi.setHostname(("bg-bed-" + bedNo).c_str());
   portal(bedPw.length() == 0);
   WiFi.setAutoReconnect(true);
