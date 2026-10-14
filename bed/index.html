@@ -19,7 +19,7 @@ esp-web-install-button button{font:inherit;font-size:18px;font-weight:700;paddin
 
 <div class="card warn"><h2>⭐ 2단계: 와이파이 버전 (앱에 베드 현황)</h2>
 <ol>
-<li><b>보드 비밀번호 정하기</b>: 8자 이상(따옴표 " 와 \\ 는 빼기)으로 하나 정해서 적어 두세요. Firebase 콘솔에서 따로 만들 필요 없어요 — <b>첫 보드가 설정할 때 보드 계정(bed@blackghost.app)을 스스로 만들어요.</b> 4개 보드 모두 같은 비밀번호를 넣어요.</li>
+<li><b>보드 비밀번호 정하기</b>: 8자 이상(따옴표 " 와 \ 는 빼기)으로 하나 정해서 적어 두세요. Firebase 콘솔에서 따로 만들 필요 없어요 — <b>첫 보드가 설정할 때 보드 계정(bed@blackghost.app)을 스스로 만들어요.</b> 4개 보드 모두 같은 비밀번호를 넣어요.</li>
 <li><b>선 2가닥 추가 (USB 빼고)</b>: 레이더 <b>TX → P16</b>, 레이더 <b>RX → P17</b> (보드 왼쪽 줄). 기존 VCC→5V, GND→GND, OUT→P13은 그대로.</li>
 <li><b>프로그램 넣기</b>: 레이더 선 5가닥 빼고 → <a href="bed.bin" download>bed.bin 받기</a> → <a href="https://espressif.github.io/esptool-js/" target="_blank" rel="noopener">ESP Tool</a>에서 115200 → (IO0 누른 채 EN 눌렀다 떼고 IO0 떼기) → Connect → 주소 <code>0x0</code> + bed.bin → Program → 끝나면 Disconnect → 선 다시 꽂고 EN.</li>
 <li><b>폰으로 와이파이 설정</b>: 보드가 켜지면 파란 불이 계속 켜져 있어요(설정 기다리는 중). 폰 와이파이 목록에서 <b>BG-BED-SETUP</b> 접속 → 설정 화면이 자동으로 뜨면(안 뜨면 주소창에 <code>192.168.4.1</code>) <b>Configure WiFi</b> → 가게 와이파이(2.4GHz) 고르고 비밀번호, <b>베드 번호</b>(1~4), <b>보드 비밀번호</b>(1번에서 정한 것), 감지 거리 칸 <code>2</code>(=1.5m) → <b>Save</b>.</li>

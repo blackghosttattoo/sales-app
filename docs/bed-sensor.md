@@ -33,7 +33,7 @@
 - 2단계 계획(사용자 확인 대기): 레이더 TX→P16·RX→P17 추가(감지 거리 1.5m 설정용), 폰으로 'BG-BED-설정' 임시 와이파이에서 가게 와이파이·베드 번호 입력, 보드 전용 계정으로 상태 바뀔 때 + 10분마다 생존 신호 기록, 15분 없으면 '꺼짐', 규칙 추가, 앱 '베드 현황'(총괄·마을), OTA.
 
 - **2단계 만듦(10-14)**: `bed/fw/bed/bed.ino`(FWV "2") — WiFiManager 설정 화면 'BG-BED-SETUP'(가게 와이파이, 베드 번호, 보드 비밀번호, 감지 거리 칸; Preferences 'bg' 저장, IO0 5초=다시 설정), LD2410C 시리얼(256000, P16/P17) 설정 명령으로 최대 거리 칸·무인 시간(10초), OUT 2초 이상 유지되면 Firestore REST `documents:commit`으로 beds/b<번호> st·v·rssi + up(서버 시간) + 바뀌면 at, 10분 생존 신호, 실패 시 30초 뒤 재시도, Firebase Auth REST(signInWithPassword → refresh). OTA: 6시간마다 bed/bed.ver ≠ FWV면 bed/bed-app.bin으로 httpUpdate. 빌드 fqbn esp32:esp32:esp32:PartitionScheme=min_spiffs, 라이브러리 WiFiManager 2.0.17·ArduinoJson 7.2.1. **프로그램 고칠 땐 FWV를 올리면 4개 보드가 자동 업데이트.**
-- 보드 계정: Firebase Auth `bed@blackghost.app`(대장님이 콘솔에서 생성, 비밀번호는 보드 설정 화면에만 — 공개 저장소에 넣지 않음). 규칙 `beds` 이 이메일만 쓰기.
+- 보드 계정: Firebase Auth `bed@blackghost.app`(v3부터 첫 보드가 accounts:signUp으로 스스로 생성 — 사용자가 콘솔 접속 불가해서, 비밀번호는 보드 설정 화면에만 — 공개 저장소에 넣지 않음). 규칙 `beds` 이 이메일만 쓰기.
 - 앱 v1.42 '베드 현황'(브랜치에 준비, 배포 확인 대기).
 
 ## 다음 단계 (사용자 응답 대기)
