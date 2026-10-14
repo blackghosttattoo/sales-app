@@ -1,1 +1,1 @@
-{"name":"블랙고스트 베드 센서 (1단계 시험)","version":"1","new_install_prompt_erase":true,"builds":[{"chipFamily":"ESP32","parts":[{"path":"bedtest.bin","offset":0}]}]}
+{"name":"블랙고스트 베드 센서 (1단계 시험)","version":"1","new_install_prompt_erase":false,"builds":[{"chipFamily":"ESP32","parts":[{"path":"bedtest.bin","offset":0}]}]}
