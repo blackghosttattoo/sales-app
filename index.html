@@ -170,7 +170,7 @@ body.vmode{overflow:hidden}body.vmode main{padding-bottom:0}
 <div class="ldc"><b>🍎 아이폰</b><ol><li>카카오톡·인스타그램 안에서 열었다면 → 아래(또는 위) <b>⋯</b> 버튼 → <b>'Safari로 열기'</b></li><li>Safari에서도 멈추면 → 설정 → Safari → <b>방문 기록 및 웹사이트 데이터 지우기</b>, <b>콘텐츠 차단기(광고 차단) 끄기</b>, 비공개 모드 끄기</li><li><b>iOS 14 이상</b>이어야 해요 (설정 → 일반 → 정보)</li><li>열리면 Safari <b>공유 □↑ → '홈 화면에 추가'</b></li></ol></div>
 <div class="ldc"><b>🤖 갤럭시 (안드로이드)</b><ol><li>카카오톡·인스타그램 안에서 열었다면 → 오른쪽 위(또는 아래) <b>⋮</b> 버튼 → <b>'다른 브라우저로 열기'</b> → <b>크롬(Chrome)</b></li><li>크롬에서도 멈추면 → 크롬 <b>⋮ → 설정 → 개인정보 보호 → 인터넷 사용 기록 삭제</b>(쿠키·캐시) 후 다시 열기. 삼성 인터넷은 광고 차단 끄기, 안 되면 크롬으로</li><li>열리면 크롬 <b>⋮ → '홈 화면에 추가'</b>(또는 '앱 설치')</li></ol></div>
 <p>주소: <b style="word-break:break-all">blackghosttattoo.github.io/sales-app</b></p><p><a class="ldr" href="?r=1">🔄 다시 시도</a></p><p class="ldm">그래도 안 되면 이 화면을 캡처해서 대장님께 보내 주세요.</p></div></div></main><div id="modal"><div class="card" id="mb"></div></div><div id="snack"></div>
-<script>window.APPV0='v1.47';
+<script>window.APPV0='v1.48';
 // ----- 새 버전 알림: ver.json(배포할 때 APPV와 같이 올림)을 캐시 없이 받아 다르면 위에 [업데이트] 버튼 (아이폰 홈화면 앱은 새로고침이 어려워서)
 let _vcT=0;
 function verChk(){if(typeof fetch!='function'||Date.now()-_vcT<60000)return;_vcT=Date.now();fetch('ver.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():null).then(j=>{if(j&&typeof j.v=='string'&&j.v!==window.APPV0)updBar(j.v)}).catch(()=>{})}
@@ -934,7 +934,7 @@ const m=$('#gmsg');if(m)m.innerHTML=`<b>끝! 점수 ${g.sc}${nb?' 🏆 내 최�
 if(get>0||nb)await petSave({gday:td,gtod:s.tod+get,gpt:s.tot+get,wkw:wkKey(td),wkp:s.wk+get,best})}
 // 대장 앱: 광장용 요약을 계산해 저장 (바뀐 사람만)
 async function petSync(){if(!adm())return;await loadPets();const b=db.batch();let n=0;Object.values(users).filter(u=>u.status=='active'&&u.role!='student'&&!u.del).forEach(u=>{const p=petCalc(u),o=pets[u.id]||{};if(o.st!==p.st||o.ex!==p.ex||o.full!==p.full||o.mood!==p.mood){b.set(db.doc('pets/'+u.id),{st:p.st,ex:p.ex,full:p.full,mood:p.mood,sAt:NOW()},{merge:true});n++}});if(n)await b.commit().catch(e=>console.log(e))}
-const APPV='v1.47',verLine=()=>`<p class="mu" style="text-align:center;margin:4px 0 12px">BLACKGHOST TATTOO STUDIO · ${APPV} <button class="s" style="margin-left:6px" onclick="goUpd()">🔄 새로고침</button></p>`;
+const APPV='v1.48',verLine=()=>`<p class="mu" style="text-align:center;margin:4px 0 12px">BLACKGHOST TATTOO STUDIO · ${APPV} <button class="s" style="margin-left:6px" onclick="goUpd()">🔄 새로고침</button></p>`;
 
 function sdraw(){const nv=`<nav class="nav">${[['home','내 수강','🎓'],['edu','기본교육','📚']].map(([k,l,i])=>`<button class="${tab==k?'on':''}" onclick="go('${k}')"><i>${i}</i>${l}</button>`).join('')}</nav>`;view(hdr()+(tab=='edu'?eduView():noticeBanner()+studentHome())+verLine()+nv)}
 async function saveCourse(id){const v=k=>$('#ac_'+k).value,c=crs[id],iu=instList().find(u=>u.id==v('inst')),o={phone:v('phone').trim(),insta:v('insta').trim(),start:v('start'),total:Math.max(1,+v('total')||25),inst:v('inst'),instName:iu?(iu.nick||iu.name):''};const fee=adm()?+v('fee')||0:null;await db.doc('courses/'+id).update(o).catch(err);Object.assign(c,o);if(fee!=null&&fee!==cpOf(id).fee){const cp=Object.assign({uid:id,pays:[]},cpOf(id),{fee});await db.doc('coursePay/'+id).set(cp).catch(err);cpay[id]=cp}draw()}
