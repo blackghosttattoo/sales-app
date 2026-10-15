@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko"><head><meta charset="utf-8">
 <meta name="color-scheme" content="light dark">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>블랙고스트타투(전용)</title>
 <link rel="manifest" href="manifest.json?v=26"><link rel="icon" type="image/png" href="icons/favicon-48.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="theme-color" content="#000000"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="블랙고스트타투(전용)"><meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -52,6 +52,21 @@ label{font-size:13px;color:var(--mu);display:block;margin:10px 0 4px}.mu{color:v
 .pg.sad{animation:psd 4s ease-in-out infinite;filter:saturate(.3) brightness(.75)}@keyframes psd{0%,100%{transform:translateY(28px) rotate(-3deg)}50%{transform:translateY(32px) rotate(3deg)}}
 .psay{position:absolute;left:50%;top:10px;transform:translateX(-50%);background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:3px 10px;font-size:13px;font-weight:700;white-space:nowrap}
 .ptag{position:absolute;left:10px;bottom:10px;font-size:12px;padding:2px 8px;border-radius:999px;background:var(--card);border:1px solid var(--ln)}
+html{touch-action:manipulation}
+.sup0{position:relative;height:210px;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:16px;background:radial-gradient(circle,#3a2a1a,#15131c 72%);margin-bottom:10px}
+.supr{position:absolute;inset:-60%;background:repeating-conic-gradient(from 0deg,#ffd76a40 0 9deg,transparent 9deg 20deg);animation:supr 14s linear infinite;opacity:.45}
+.sup0.boom .supr{opacity:1;animation-duration:5s}@keyframes supr{to{transform:rotate(360deg)}}
+.supg{width:120px;position:relative;z-index:1;filter:drop-shadow(0 0 12px #ffd76aaa)}
+.sup0:not(.boom) .supg{animation:supw .5s ease-in-out infinite}@keyframes supw{25%{transform:rotate(-7deg) scale(.96)}75%{transform:rotate(7deg) scale(1.04)}}
+.sup0.boom .supg{animation:supp 1s cubic-bezier(.2,1.7,.4,1) both}@keyframes supp{0%{transform:scale(.2)}100%{transform:scale(1)}}
+.supf{position:absolute;inset:0;background:radial-gradient(circle,#fff 0,#fff3c4 25%,#ffd76a55 45%,transparent 70%);opacity:0;pointer-events:none;z-index:2}
+.sup0.boom .supf{animation:supf 1.2s ease-out}@keyframes supf{0%{opacity:0;transform:scale(.2)}12%{opacity:1}100%{opacity:0;transform:scale(2.4)}}
+.sups{position:absolute;left:50%;top:50%;font-size:20px;z-index:3;pointer-events:none;animation:sups 1.5s ease-out forwards}@keyframes sups{from{transform:translate(-50%,-50%) scale(.3);opacity:1}to{transform:translate(calc(-50% + var(--x)),calc(-50% + var(--y))) scale(1.3);opacity:0}}
+.sutx{text-align:center}.sup0.boom~.sutx h2{animation:supp .8s cubic-bezier(.2,1.7,.4,1) both}
+.tixw{position:relative;width:280px;height:150px;margin:8px auto;border-radius:14px;overflow:hidden;background:linear-gradient(135deg,#fff7d6,#ffe08a);box-shadow:0 0 0 3px #d4af37}
+.tixw .tixp{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#3a2a10;font-weight:700}
+.tixw canvas{position:absolute;inset:0;touch-action:none;cursor:pointer}
+@media (prefers-reduced-motion:reduce){.supr,.supg,.sups,.sup0.boom~.sutx h2{animation:none!important}}
 .pfx{position:absolute;font-size:24px;pointer-events:none;animation:pup 1.2s ease-out forwards}@keyframes pup{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-60px)}}
 .pbar{height:9px;background:var(--bg);border-radius:8px;overflow:hidden;margin:2px 0 8px}.pbar i{display:block;height:100%;border-radius:8px}
 .pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.pslot{background:var(--bg);border:1px solid var(--ln);border-radius:12px;padding:8px 4px;text-align:center;font-size:12px;color:var(--tx)}.pslot.on{border-color:var(--ac)}
@@ -170,7 +185,10 @@ body.vmode{overflow:hidden}body.vmode main{padding-bottom:0}
 <div class="ldc"><b>🍎 아이폰</b><ol><li>카카오톡·인스타그램 안에서 열었다면 → 아래(또는 위) <b>⋯</b> 버튼 → <b>'Safari로 열기'</b></li><li>Safari에서도 멈추면 → 설정 → Safari → <b>방문 기록 및 웹사이트 데이터 지우기</b>, <b>콘텐츠 차단기(광고 차단) 끄기</b>, 비공개 모드 끄기</li><li><b>iOS 14 이상</b>이어야 해요 (설정 → 일반 → 정보)</li><li>열리면 Safari <b>공유 □↑ → '홈 화면에 추가'</b></li></ol></div>
 <div class="ldc"><b>🤖 갤럭시 (안드로이드)</b><ol><li>카카오톡·인스타그램 안에서 열었다면 → 오른쪽 위(또는 아래) <b>⋮</b> 버튼 → <b>'다른 브라우저로 열기'</b> → <b>크롬(Chrome)</b></li><li>크롬에서도 멈추면 → 크롬 <b>⋮ → 설정 → 개인정보 보호 → 인터넷 사용 기록 삭제</b>(쿠키·캐시) 후 다시 열기. 삼성 인터넷은 광고 차단 끄기, 안 되면 크롬으로</li><li>열리면 크롬 <b>⋮ → '홈 화면에 추가'</b>(또는 '앱 설치')</li></ol></div>
 <p>주소: <b style="word-break:break-all">blackghosttattoo.github.io/sales-app</b></p><p><a class="ldr" href="?r=1">🔄 다시 시도</a></p><p class="ldm">그래도 안 되면 이 화면을 캡처해서 대장님께 보내 주세요.</p></div></div></main><div id="modal"><div class="card" id="mb"></div></div><div id="snack"></div>
-<script>window.APPV0='v1.48';
+<script>window.APPV0='v1.49';
+// 화면 확대 막기 (v1.49 사용자 요청): 두 손가락 벌리기(아이폰은 설정만으론 안 막혀서 동작 자체를 막음)·두 번 톡톡 확대·입력칸 자동 확대
+try{document.addEventListener('gesturestart',e=>e.preventDefault());document.addEventListener('touchmove',e=>{if(e.touches&&e.touches.length>1)e.preventDefault()},{passive:false})}catch(e){}
+
 // ----- 새 버전 알림: ver.json(배포할 때 APPV와 같이 올림)을 캐시 없이 받아 다르면 위에 [업데이트] 버튼 (아이폰 홈화면 앱은 새로고침이 어려워서)
 let _vcT=0;
 function verChk(){if(typeof fetch!='function'||Date.now()-_vcT<60000)return;_vcT=Date.now();fetch('ver.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():null).then(j=>{if(j&&typeof j.v=='string'&&j.v!==window.APPV0)updBar(j.v)}).catch(()=>{})}
@@ -292,7 +310,7 @@ const cfgP=liveQ('cfg',db.doc('config/main'),d=>{if(d.exists)cfg=d.data()}),A=[c
 if(adm())A.push(Promise.all([cfgP,loadUsers()]).then(migrate),loadBuys());else A.push(loadMySP());
 await Promise.all(A);tab='home';draw();showNotice();startAuto();
 // 첫 화면을 띄운 뒤에 받아도 되는 것 (레벨·이벤트·수강·명단 정리)
-(async()=>{try{if(adm())migImg();await loadLevels();await loadEvents();if(isInst())await loadAcad();if(adm()){await syncRoster();await petSync()}}catch(e){console.log(e)}redraw()})()}
+(async()=>{try{if(adm())migImg();await loadLevels();await loadEvents();petReady=true;if(isInst())await loadAcad();if(adm()){await syncRoster();await petSync()}}catch(e){console.log(e)}petReady=true;redraw()})()}
 function mkProfile(id,email){db.doc('users/'+id).set({name:$('#nn').value.trim(),nick:$('#nk').value.trim(),want:$('#kd').value,cohort:$('#ch').value.trim(),email,role:'artist',status:'pending',code:$('#cd').value.trim()}).then(()=>location.reload()).catch(()=>toast('가입코드가 맞지 않아요'))}
 async function loadSales(){return liveQ('sales',adm()?db.collection('sales'):db.collection('sales').where('uid','==',me.id),sn=>{allSales=byTk(docsOf(sn));sales=allSales.filter(x=>inP(x.d))})}
 async function loadBuys(){await Promise.all([liveQ('buys',db.collection('purchases'),sn=>buys=byTk(docsOf(sn))),liveQ('cnts',db.collection('counts'),sn=>cnts=byTk(docsOf(sn))),liveQ('cash',db.collection('cash'),sn=>cashs=byTk(docsOf(sn))),loadLedger(),loadGuests()])}
@@ -848,6 +866,15 @@ async function petBuy(k){const fc=PFACE.find(d=>d[0]==k&&d[2]),it=fc||PSHOP.find
 const pr=petSave({gps:(+myPet.gps||0)+it[2],own:(myPet.own||[]).concat([k]).slice(-40),[fc?'face':'deco']:k});petFx='happy';petSay='새 '+it[1]+' 고마워! 💕';decoBack();if(!await pr)decoBack()}
 // 꾸미기 착용 후 보던 화면 그대로(팝업이면 팝업 다시 그림, 화면이면 스크롤 유지) — v1.44
 function decoDone(ok){if(ok===0)return;if($('#modal').style.display=='flex'&&$('#mb').querySelector('.pgrid')){_pd=true;const m=$('#modal'),b=$('#mb'),y1=m.scrollTop,y2=b.scrollTop;petDeco();m.scrollTop=y1;b.scrollTop=y2;return}_keep=true;try{draw()}finally{_keep=false}}
+// 단계가 오르면 '짠!' (v1.49): 이 폰에서 마지막으로 본 단계(localStorage pStg_uid)보다 높아지면 축하 창 → [열어보기]를 누르면 빛이 터지고 팡파레, 새로 열린 단계 보상을 보여줌
+let petReady=false;
+function stageChk(){if(!petReady||!me||me.role=='student'||$('#modal').style.display=='flex')return;const p=petCalc(me),k='pStg_'+me.id,v=lsGet(k),put=x=>{try{localStorage.setItem(k,x)}catch(e){}};
+ if(v==null||v===''||isNaN(+v))return put(p.st);if(p.st>+v){put(p.st);stageUp(+v,p.st)}else if(p.st<+v)put(p.st)}
+function stageUp(a,b){const p=petCalc(me);$('#mb').innerHTML=`<div class="sup0" id="sup0"><div class="supr"></div><div class="supf"></div><div class="supg" id="supg">${ghostSvg(a,'',false,'',p.col,p.face)}</div></div><div class="sutx" id="sutx"><h2>✨ 내 유령에게 무슨 일이…?!</h2><p class="mu">유령이 빛나기 시작했어요!</p><button class="p" style="width:100%;font-size:17px;padding:12px" onclick="stageOpen(${a},${b})">🎁 짠! 열어보기</button></div>`;$('#modal').style.display='flex'}
+function stageOpen(a,b){const p=petCalc(me),box=$('#sup0'),g=$('#supg');if(!box||!g)return;GS('fanfare');box.classList.add('boom');g.innerHTML=ghostSvg(b,'',false,'',p.col,p.face);
+ for(let i=0;i<22;i++){const e=document.createElement('span'),an=Math.random()*6.283,r=70+Math.random()*90;e.className='sups';e.textContent=['✨','⭐','💫','🌟'][i%4];e.style.setProperty('--x',Math.cos(an)*r+'px');e.style.setProperty('--y',Math.sin(an)*r+'px');e.style.animationDelay=(Math.random()*.25)+'s';box.appendChild(e);setTimeout(()=>e.remove(),2000)}
+ const nw=PDECO.filter(d=>d[0]&&d[2]>a&&d[2]<=b);
+ $('#sutx').innerHTML=`<h2>짠! ${PSTN[b]}이 되었어요 🎉</h2>${nw.length?`<p class="mu">🔓 새 단계 보상이 열렸어요!</p><div class="pgrid" style="margin:6px 0 10px">${nw.map(([k,l])=>`<div class="pslot"><div style="width:56px;margin:0 auto">${ghostSvg(b,k,false,'pfl',p.col,p.face)}</div>${l}</div>`).join('')}</div>`:'<p class="mu">계속 키우면 다음 보상이 열려요!</p>'}<div class="row"><button class="p" style="flex:1" onclick="closeM();${nw.length?'petDeco()':"go('pet')"}">${nw.length?'🎨 바로 입어보기':'👻 유령 보러 가기'}</button><button style="flex:1" onclick="closeM()">닫기</button></div>`}
 function petSetView(){const C=petc(),num=(id,v)=>`<input id="${id}" type="number" inputmode="numeric" value="${v}" style="width:90px">`;
 return `<div class="card"><h2>🏘 블랙고스트마을</h2><p class="mu">타투이스트 첫 화면을 마을 그림으로 보여줘요. 건물을 누르면 판매입력·토스·쉐어비 같은 화면으로 들어가요. 끄면 예전 '내현황' 화면으로 바로 돌아가요.</p><div class="row"><button class="${cfg.vil!==false?'on':''}" onclick="vilSet(true)">켜기</button><button class="${cfg.vil===false?'on':''}" onclick="vilSet(false)">끄기</button><button onclick="go('vil')">마을 미리보기</button></div></div><div class="card"><h2>🛏 베드 현황</h2><label>사람이 나간 뒤 '🟡 잠시 비움'으로 보여 줄 시간 (분) — 담배·손님 배웅 등, 이 시간이 지나야 '🟢 비어 있음'</label><div class="row"><input id="bd_gap" type="number" inputmode="numeric" value="${bedGap()}" style="width:90px"><label style="margin:0">베드 수</label><input id="bd_n" type="number" inputmode="numeric" value="${bedN()}" style="width:70px"></div><label>베드 이름 (비우면 '1번'처럼)</label><div class="g2">${Array.from({length:bedN()},(_,k)=>`<input id="bd_nm${k+1}" placeholder="${k+1}번" maxlength="8" value="${esc(((cfg.bedNames||[])[k])||'')}">`).join('')}</div><button class="p" style="width:100%;margin-top:10px" onclick="bedSetSave()">저장</button></div><div class="card"><h2>👻 유령 키우기 설정</h2><label>시작일 (유령 생일 — 이날부터의 기록만 점수로 세요)</label><div class="row"><input id="pc_s" type="date" value="${C.start}" style="width:auto"><button class="s" onclick="$('#pc_s').value=today()">오늘로</button></div><p class="mu">시작일을 바꾸면 모든 유령이 그날부터 다시 알로 시작해요.</p>
 <label>활동별 점수</label><div class="row">${[['sale','판매 1건'],['toss','토스 1건'],['mis','오늘의 미션'],['sc','복권 1장'],['game','게임 포인트 1점당']].map(([k,l])=>`<div><span class="mu">${l}</span><br>${num('pc_'+k,C.pts[k])}</div>`).join('')}</div>
@@ -860,35 +887,75 @@ async function petSetSave(){const g=id=>Math.max(0,Math.round(+$(id).value||0)),
 const st=$('#pc_s').value||today(),o=cfg.pet||{};if(o.start&&st!=o.start&&!confirm('시작일을 바꾸면 모든 유령이 '+st+'부터 다시 알로 시작해요. 바꿀까요?'))return;
 cfg.pet={start:st,pts:{sale:g('#pc_sale'),toss:g('#pc_toss'),mis:g('#pc_mis'),sc:g('#pc_sc'),game:g('#pc_game')},lv,gcap:petc().gcap};const ok1=await db.doc('config/main').set(cfg).then(()=>1).catch(err);if(ok1){toast('저장했어요');petSync();draw()}}
 // ----- 유령 게임: 폰 안에서만 돌고, 끝날 때 포인트만 pets/{uid}에 저장. v1.43: 하루 제한 없음, 한 판 포인트는 조금(최대 20), 할수록 어려워짐. 유령 성장·꾸미기에만 씀.
-const GAMES=[['match','💥 유령 팡','같은 그림 3개 이상을 한 줄로! 칸을 밀어서 바꿔요 (60초, 연속으로 터지면 콤보)'],['merge','🔮 유령 합치기','밀어서 같은 그림끼리 합쳐요. 🕯️→🍬→🎃→🦇→👻→💀→🔮… 칸이 꽉 차면 끝'],['jump','👻 유령 점프','화면을 누르면 점프! 날아오는 ✝️·🧄를 피해요 (점점 빨라져요)'],['candy','🍬 사탕 받기','좌우로 밀어서 🍬는 받고 💣는 피해요 (목숨 3개, 점점 빨라져요)'],['mole','🪦 무덤 숨바꼭질','무덤에서 튀어나온 👻를 빨리 눌러요 (30초, 👹는 누르면 감점)'],['ink','🎯 잉크 찍기','움직이는 바늘이 가운데 올 때 눌러요 (10번, 점점 빨라져요)']];
+const GAMES=[['match','💥 유령 팡','같은 그림 3개 이상을 한 줄로! 칸을 밀어서 바꿔요 (60초, 연속으로 터지면 콤보)'],['merge','🔮 유령 합치기','밀어서 같은 그림끼리 합쳐요. 🕯️→🍬→🎃→🦇→👻→💀→🔮… 칸이 꽉 차면 끝'],['jump','👻 유령 점프','화면을 누르면 점프! 날아오는 ✝️·🧄를 피해요 (점점 빨라져요)'],['candy','🍬 사탕 받기','좌우로 밀어서 🍬는 받고 💣는 피해요 (목숨 3개, 점점 빨라져요)'],['mole','🪦 무덤 숨바꼭질','무덤에서 튀어나온 👻를 빨리 눌러요 (30초, 👹는 누르면 감점)'],['ink','🎯 잉크 찍기','움직이는 바늘이 가운데 올 때 눌러요 (10번, 점점 빨라져요)'],['fly','🦇 유령 날기','화면을 누를 때마다 내 유령이 날아올라요. 비석 사이 틈으로 빠져나가요!'],['stack','🎃 호박 탑 쌓기','움직이는 호박 상자가 아래 칸과 겹칠 때 눌러요. 딱 맞추면 보너스! 맨 위엔 내 유령이 올라타요'],['memory','🃏 유령 짝 맞추기','카드 두 장씩 뒤집어서 같은 그림을 찾아요 (60초, 빨리 끝내면 보너스)']];
 const wkKey=d=>{const dt=new Date(d+'T00:00:00');dt.setDate(dt.getDate()-(dt.getDay()+6)%7);return dt.toLocaleDateString('sv')};
-const GPDIV={match:350,merge:400,jump:6,candy:6,mole:5,ink:20};
+const GPDIV={match:350,merge:400,jump:6,candy:6,mole:5,ink:20,fly:3,stack:2,memory:8};
 const gpOf=(k,sc)=>Math.max(0,Math.min(20,Math.floor(sc/(GPDIV[k]||10))));
 function gState(){const p=myPet||{},td=today();return{tod:p.gday==td?(+p.gtod||0):0,tot:+p.gpt||0,wk:p.wkw==wkKey(td)?(+p.wkp||0):0,best:p.best||{}}}
 function gkHtml(){const wk=wkKey(today()),l=Object.entries(pets).filter(([id,x])=>x.wkw==wk&&+x.wkp>0&&(id==me.id||users[id]||roster[id])).sort((a,b)=>b[1].wkp-a[1].wkp).slice(0,5);return l.length?`<div style="margin-bottom:10px"><b>🎮 이번 주 게임왕</b>${l.map(([id,x],i)=>`<div class="row" style="justify-content:space-between;padding:4px 0;${id==me.id?'font-weight:700':''}"><span>${['🥇','🥈','🥉','4위','5위'][i]} ${esc(x.name||nm(id))}${id==me.id?' (나)':''}</span><span>${x.wkp}포인트</span></div>`).join('')}</div>`:''}
-function gameCard(){const s=gState(),bal=s.tot-(+myPet.gps||0);return `<div class="card"><h2>🎮 유령 게임</h2><p class="mu">오늘 받은 포인트 <b>${s.tod}</b> · 모은 포인트 <b>${bal}</b> · 포인트로 유령이 자라고 🎨 꾸미기를 살 수 있어요 (한 판 최대 20)</p><div class="grid">${GAMES.map(([k,l])=>`<button onclick="gameOpen('${k}')">${l}<span class="mu">최고 ${+(s.best||{})[k]||0}점</span></button>`).join('')}</div></div>`}
+function gameCard(){const s=gState(),bal=s.tot-(+myPet.gps||0);return `<div class="card"><h2>🎮 유령 게임</h2><p class="mu">오늘 받은 포인트 <b>${s.tod}</b> · 모은 포인트 <b>${bal}</b> · 포인트로 유령이 자라고 🎨 꾸미기를 살 수 있어요 (한 판 최대 20). 게임 주인공은 내 유령! 아주 가끔 🎟️ 복권도 나와요</p>${gTixN()?`<button class="p" style="width:100%;margin-bottom:8px" onclick="gTixOpen()">🎟️ 게임 복권 ${gTixN()}장 · 긁으러 가기</button>`:''}<div class="grid">${GAMES.map(([k,l])=>`<button onclick="gameOpen('${k}')">${l}<span class="mu">최고 ${+(s.best||{})[k]||0}점</span></button>`).join('')}</div></div>`}
 let G=null;
-function gameOpen(k){const g=GAMES.find(x=>x[0]==k);if(!g)return;if(G)G.stop=true;const W=Math.min(420,(window.innerWidth||400)-56),H=k=='mole'?W:k=='match'||k=='merge'?W+28:340;
+function gameOpen(k){const g=GAMES.find(x=>x[0]==k);if(!g)return;if(G)G.stop=true;const W=Math.min(420,(window.innerWidth||400)-56),H=k=='mole'?W:k=='match'||k=='merge'||k=='memory'?W+28:k=='fly'||k=='stack'?400:340;
 $('#mb').innerHTML=`<h2>${g[1]}</h2><p class="mu" id="gmsg">${g[2]}</p><div style="position:relative">${k=='mole'?`<div id="gmole" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:${W}px;max-width:100%">${Array.from({length:9},(_,i)=>`<button id="gh${i}" style="height:${Math.floor(W/3)-8}px;font-size:34px;padding:0" onpointerdown="gameHit(${i})">🪦</button>`).join('')}</div>`:`<canvas id="gcv" width="${W}" height="${H}" style="width:${W}px;max-width:100%;height:${H}px;border-radius:12px;background:#15131c;touch-action:none;display:block"></canvas>`}</div><div class="row" style="justify-content:space-between;margin-top:8px"><b id="gsc">점수 0</b><span><button class="s" id="gsnd" onclick="gSndT()" aria-label="게임 소리">${lsGet('gSnd')==='0'?'🔇':'🔊'}</button> <button class="p" id="gst" onclick="gameStart('${k}')">시작</button> <button onclick="gameClose()">닫기</button></span></div>`;$('#modal').style.display='flex'}
 function gameClose(){if(G)G.stop=true;G=null;GE();closeM();draw()}
 // 게임 소리 (v1.44): VIL 안의 소리 엔진을 부름. 🔊/🔇 = localStorage gSnd
 const GS=(n,x)=>{try{VIL.gs(n,x)}catch(e){}},GE=()=>{try{VIL.ge()}catch(e){}};
 function gSndT(){const on=lsGet('gSnd')==='0';try{localStorage.setItem('gSnd',on?'1':'0')}catch(e){}const b=$('#gsnd');if(b)b.textContent=on?'🔊':'🔇';if(on){if(G&&!G.stop)try{VIL.gm(G.k)}catch(e){}}else GE()}
 const gLv=g=>1+Math.floor(g.sc/(g.k=='mole'?8:10));
-function gameStart(k){if(G)G.stop=true;const b=$('#gst');if(b)b.style.display='none';G={k,sc:0,stop:false,t0:performance.now()};GS('start');try{VIL.gm(k)}catch(e){}const g=G,sc=()=>{const e=$('#gsc');if(e)e.textContent='점수 '+g.sc+(['jump','candy','mole'].includes(g.k)?' · Lv.'+gLv(g):'')+(g.k=='candy'?' · '+'❤️'.repeat(g.life||0):'')+(g.combo>1?' · 🔥콤보 x'+g.combo:'')},alive=()=>!g.stop&&$('#modal').style.display=='flex';
+// 게임 주인공 = 내가 키우는 유령 (v1.49): 지금 단계·색·표정·꾸미기 그대로 그림으로 만들어 캔버스에 그림(날개 등이 잘리지 않게 여백 둠). 그림이 아직 안 됐으면 👻
+let gImg=null,gImgK='';
+function gMeImg(){const p=petCalc(me),k=[p.st,p.deco,p.col,p.face].join('|');if(gImg&&gImgK==k)return gImg;gImgK=k;let sv=ghostSvg(p.st,p.deco,false,'',p.col,p.face).replace(/^<svg[^>]*viewBox="0 0 120 130"[^>]*>/,'<svg xmlns="http://www.w3.org/2000/svg" viewBox="-30 -25 180 180" width="180" height="180">');
+ const im=new Image();im.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(sv);gImg=im;return im}
+function gDrawMe(c,x,y,s,rot){const im=gImg;if(im&&im.complete&&im.naturalWidth){const S=s*1.5;c.save();c.translate(x,y);if(rot)c.rotate(rot);c.drawImage(im,-S/2,-S/2,S,S);c.restore()}else{c.save();c.font=Math.round(s)+'px sans-serif';c.textAlign='center';c.textBaseline='middle';c.fillText('👻',x,y);c.restore()}}
+function gameStart(k){gMeImg();if(G)G.stop=true;const b=$('#gst');if(b)b.style.display='none';G={k,sc:0,stop:false,t0:performance.now()};GS('start');try{VIL.gm(k)}catch(e){}const g=G,sc=()=>{const e=$('#gsc');if(e)e.textContent='점수 '+g.sc+(['jump','candy','mole'].includes(g.k)?' · Lv.'+gLv(g):'')+(g.k=='candy'?' · '+'❤️'.repeat(g.life||0):'')+(g.combo>1?' · 🔥콤보 x'+g.combo:'')},alive=()=>!g.stop&&$('#modal').style.display=='flex';
 if(k=='mole'){g.left=30;g.cur=-1;g.bad=-1;const tick=()=>{if(!alive())return;const el=performance.now()-g.t0;g.left=Math.max(0,30-Math.floor(el/1000));const m=$('#gmsg');if(m)m.textContent='남은 시간 '+g.left+'초 · Lv.'+gLv(g);if(g.left<=0)return gameOver(g);if(!g.nx||el>g.nx){for(let i=0;i<9;i++){const b=$('#gh'+i);if(b)b.textContent='🪦'}g.cur=Math.floor(Math.random()*9);g.bad=gLv(g)>=3&&Math.random()<Math.min(.45,.12*gLv(g))?(g.cur+1+Math.floor(Math.random()*8))%9:-1;const b=$('#gh'+g.cur);if(b)b.textContent='👻';if(g.bad>=0){const d=$('#gh'+g.bad);if(d)d.textContent='👹'}g.nx=el+Math.max(330,950-g.sc*30)}requestAnimationFrame(tick)};sc();return requestAnimationFrame(tick)}
 const cv=$('#gcv'),c=cv.getContext('2d'),W=cv.width,H=cv.height,px=e=>{const r=cv.getBoundingClientRect();return(e.clientX-r.left)*W/r.width},py=e=>{const r=cv.getBoundingClientRect();return(e.clientY-r.top)*H/r.height};c.textAlign='center';c.textBaseline='middle';
 if(k=='jump'){g.y=0;g.vy=0;g.ob=[];g.sp=4;g.nx=60;cv.onpointerdown=()=>{if(g.y<=0.5){g.vy=11.5;GS('jump')}};
 const loop=()=>{if(!alive())return;g.vy-=0.6;g.y=Math.max(0,g.y+g.vy);if(g.y==0)g.vy=Math.max(0,g.vy);const lv=gLv(g);if(--g.nx<=0){const fly=lv>=3&&Math.random()<.3;g.ob.push({x:W+20,e:fly?'🦇':Math.random()<.5?'✝️':'🧄',h:fly?70:0});g.nx=Math.floor(Math.max(34,60+Math.random()*60-g.sc*1.2))}g.sp=4+g.sc*0.22;
-c.fillStyle='#15131c';c.fillRect(0,0,W,H);c.fillStyle='#2a2635';c.fillRect(0,H-40,W,40);c.font='38px sans-serif';c.fillText('👻',60,H-62-g.y);c.font='32px sans-serif';
+c.fillStyle='#15131c';c.fillRect(0,0,W,H);c.fillStyle='#2a2635';c.fillRect(0,H-40,W,40);gDrawMe(c,60,H-62-g.y,40);c.font='32px sans-serif';
 for(const o of g.ob){o.x-=g.sp;c.fillText(o.e,o.x,H-58-o.h);if(!o.p&&o.x<40){o.p=1;g.sc++;sc();if(g.sc%10==0)GS('great');else GS('pt')}if(Math.abs(o.x-60)<26&&(o.h?g.y>40&&g.y<100:g.y<34))return gameOver(g)}g.ob=g.ob.filter(o=>o.x>-30);requestAnimationFrame(loop)};sc();return requestAnimationFrame(loop)}
 if(k=='candy'){g.x=W/2;g.it=[];g.life=3;g.nx=30;const mv=e=>{g.x=Math.max(20,Math.min(W-20,px(e)))};cv.onpointerdown=mv;cv.onpointermove=e=>{if(e.buttons||e.pointerType=='touch')mv(e)};
 const loop=()=>{if(!alive())return;if(--g.nx<=0){const r=Math.random(),b=r<Math.min(.45,.15+g.sc*.012),gold=!b&&r>.94;g.it.push({x:20+Math.random()*(W-40),y:-20,b,gold,v:2.2+Math.random()*1.5+g.sc*0.07,w:gLv(g)>=4?(Math.random()-.5)*2:0});g.nx=Math.max(10,34-g.sc)}
-c.fillStyle='#15131c';c.fillRect(0,0,W,H);c.font='40px sans-serif';c.fillText('👻',g.x,H-30);c.font='28px sans-serif';
+c.fillStyle='#15131c';c.fillRect(0,0,W,H);gDrawMe(c,g.x,H-32,42);c.font='28px sans-serif';
 for(const o of g.it){o.y+=o.v;o.x=Math.max(14,Math.min(W-14,o.x+o.w));c.fillText(o.b?'💣':o.gold?'🍭':'🍬',o.x,o.y);if(!o.d&&o.y>H-55&&o.y<H-10&&Math.abs(o.x-g.x)<30){o.d=1;if(o.b){g.life--;GS('bad');if(g.life<=0){sc();return gameOver(g)}}else{g.sc+=o.gold?3:1;GS(o.gold?'gold':'eat')}sc()}}g.it=g.it.filter(o=>!o.d&&o.y<H+30);requestAnimationFrame(loop)};sc();return requestAnimationFrame(loop)}
 if(k=='ink'){g.n=0;g.ph=0;g.hit=null;cv.onpointerdown=()=>{if(g.n>=10||g.wait)return;const pos=(Math.sin(g.ph)+1)/2,d=Math.abs(pos-.5)*2,pt=Math.max(0,Math.round(10-d*20));g.sc+=pt;g.n++;g.hit={pos,pt,t:30};sc();GS(pt>=9?'great':pt>0?'pt':'miss');const m=$('#gmsg');if(m)m.textContent=(pt>=9?'완벽해요! ':pt>=5?'좋아요! ':pt>0?'아깝다! ':'빗나갔어요 ')+'+'+pt+' · '+g.n+'/10';if(g.n>=10){g.wait=1;setTimeout(()=>gameOver(g),700)}};
 const loop=()=>{if(!alive())return;g.ph+=0.05+g.n*0.012;const pos=(Math.sin(g.ph)+1)/2;c.fillStyle='#15131c';c.fillRect(0,0,W,H);const y=H/2,x0=30,x1=W-30,zw=Math.max(.04,.1-g.n*.006);c.fillStyle='#2a2635';c.fillRect(x0,y-14,x1-x0,28);c.fillStyle='#3d8f78';c.fillRect(W/2-(x1-x0)*zw/2,y-14,(x1-x0)*zw,28);c.fillStyle='#d4af37';c.fillRect(W/2-(x1-x0)*0.02,y-14,(x1-x0)*0.04,28);
 c.font='34px sans-serif';c.fillText('🖋️',x0+(x1-x0)*pos,y-40);if(g.hit&&g.hit.t-->0){c.font='26px sans-serif';c.fillText('💥',x0+(x1-x0)*g.hit.pos,y)}requestAnimationFrame(loop)};sc();return requestAnimationFrame(loop)}
+// 🦇 유령 날기 (v1.49): 누를 때마다 내 유령이 날아오름, 비석 기둥 사이 틈으로
+if(k=='fly'){g.y=H/2;g.vy=0;g.ps=[];g.nx=0;g.go=0;g.t=0;cv.onpointerdown=()=>{if(g.end)return;g.go=1;g.vy=-6.2;GS('flap')};
+ const loop=()=>{if(!alive())return;g.t++;if(g.go){g.vy=Math.min(9,g.vy+.36);g.y+=g.vy}else g.y=H/2+Math.sin(g.t/10)*8;
+  const sp=2.4+Math.min(2.2,g.sc*.06),gap=Math.max(105,150-g.sc*1.6);if(g.go&&--g.nx<=0){g.ps.push({x:W+30,gy:40+Math.random()*(H-96-gap),gap});g.nx=Math.round(Math.max(70,105-g.sc*.8))}
+  c.fillStyle='#15131c';c.fillRect(0,0,W,H);c.fillStyle='#ffffff40';for(let i=0;i<16;i++){const sx=((i*73-g.t*.3*(1+i%3))%W+W)%W;c.fillRect(sx,(i*47)%(H-30),2,2)}c.fillStyle='#2a2635';c.fillRect(0,H-16,W,16);
+  for(const o of g.ps){if(g.go)o.x-=sp;c.fillStyle='#5b5566';c.fillRect(o.x-24,0,48,o.gy);c.fillRect(o.x-24,o.gy+o.gap,48,H-o.gy-o.gap);c.fillStyle='#7a7386';c.fillRect(o.x-28,o.gy-14,56,14);c.fillRect(o.x-28,o.gy+o.gap,56,14);
+   if(!o.p&&o.x<56){o.p=1;g.sc++;sc();GS(g.sc%10==0?'great':'pt')}if(Math.abs(o.x-80)<38&&(g.y-13<o.gy||g.y+13>o.gy+o.gap)){g.end=1;GS('bad');return gameOver(g)}}
+  g.ps=g.ps.filter(o=>o.x>-40);gDrawMe(c,80,g.y,34,Math.max(-.5,Math.min(.6,g.vy*.06)));
+  if(!g.go){c.fillStyle='#fff';c.font='15px sans-serif';c.fillText('화면을 누르면 출발!',W/2,H/2+60)}
+  if(g.y>H-30||g.y<-30){g.end=1;GS('bad');return gameOver(g)}requestAnimationFrame(loop)};sc();return requestAnimationFrame(loop)}
+// 🎃 호박 탑 쌓기 (v1.49): 움직이는 상자를 아래 칸과 겹칠 때 누름 → 겹친 만큼만 남음, 딱 맞추면 +2. 내 유령이 움직이는 상자에 올라탐
+if(k=='stack'){const bh=26,wy=i=>H-40-(i+1)*bh;g.tw=[{x:W/2-70,w:140}];g.cur={x:0,w:140,d:1,sp:1.8};g.cam=0;g.fall=[];g.flash=0;g.end=0;
+ const blk=(x,y,w,i)=>{c.fillStyle=`hsl(${22+(i*9)%30} 90% ${54-(i%2)*7}%)`;c.beginPath();if(c.roundRect)c.roundRect(x,y,w,bh-2,6);else c.rect(x,y,w,bh-2);c.fill();c.fillStyle='#00000030';for(let j=x+14;j<x+w-6;j+=18)c.fillRect(j,y+3,2,bh-8)};
+ cv.onpointerdown=()=>{if(g.end)return;const n=g.tw.length,tp=g.tw[n-1],cu=g.cur,l=Math.max(cu.x,tp.x),r=Math.min(cu.x+cu.w,tp.x+tp.w),ov=r-l;
+  if(ov<=0){g.fall.push({x:cu.x,w:cu.w,y:0,vy:0,lv:n});g.end=1;GS('bad');sc();return setTimeout(()=>gameOver(g),800)}
+  let nx=l,nw=ov;if(Math.abs(cu.x-tp.x)<5){nx=tp.x;nw=tp.w;g.sc+=2;g.flash=40;GS('great')}else{g.sc++;GS('pt');g.fall.push(cu.x<tp.x?{x:cu.x,w:tp.x-cu.x,y:0,vy:0,lv:n}:{x:r,w:cu.x+cu.w-r,y:0,vy:0,lv:n})}
+  g.tw.push({x:nx,w:nw});sc();const m=g.tw.length;g.cur={x:m%2?0:W-nw,w:nw,d:m%2?1:-1,sp:1.8+Math.min(4.2,m*.13)}};
+ const loop=()=>{if(!alive())return;const n=g.tw.length,cu=g.cur;if(!g.end){cu.x+=cu.d*cu.sp;if(cu.x+cu.w>W){cu.x=W-cu.w;cu.d=-1}if(cu.x<0){cu.x=0;cu.d=1}}
+  const tc=Math.max(0,(n+3)*bh-H*.6);g.cam+=(tc-g.cam)*.1;const Y=i=>wy(i)+g.cam;
+  c.fillStyle='#15131c';c.fillRect(0,0,W,H);c.fillStyle='#2a2635';c.fillRect(0,H-40+g.cam,W,40);g.tw.forEach((b,i)=>blk(b.x,Y(i),b.w,i));
+  if(!g.end){blk(cu.x,Y(n),cu.w,n);gDrawMe(c,cu.x+cu.w/2,Y(n)-17,30)}else{const tp=g.tw[n-1];gDrawMe(c,tp.x+tp.w/2,Y(n-1)-17,30)}
+  for(const f of g.fall){f.vy+=.5;f.y+=f.vy;c.globalAlpha=.75;blk(f.x,Y(f.lv)+f.y,f.w,f.lv);c.globalAlpha=1}g.fall=g.fall.filter(f=>f.y<H+300);
+  c.fillStyle='#fff';c.font='13px sans-serif';c.fillText(n-1+'층',W/2,14);if(g.flash>0){g.flash--;c.fillStyle='#ffd34d';c.font='bold 20px sans-serif';c.fillText('딱 맞았어요! +2 ✨',W/2,46)}
+  requestAnimationFrame(loop)};sc();return requestAnimationFrame(loop)}
+// 🃏 유령 짝 맞추기 (v1.49): 4×4 카드 8쌍, 한 쌍은 내 유령 그림. 60초, 다 찾으면 남은 시간×2 보너스
+if(k=='memory'){const N=4,top=28,cs=W/N,pad=5,E=['ME','🎃','🍬','🦇','💀','🕯️','🔮','🌙'],d=[];E.forEach((e,i)=>d.push(i,i));for(let i=d.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[d[i],d[j]]=[d[j],d[i]]}
+ g.cd=d.map(v=>({v,o:0,ok:0,f:0}));g.op=[];g.pairs=0;g.lock=0;g.end=0;
+ cv.onpointerdown=e=>{if(g.lock||g.end)return;const x=Math.floor(px(e)/cs),r=Math.floor((py(e)-top)/cs);if(x<0||x>=N||r<0||r>=N)return;const cd=g.cd[r*N+x];if(cd.o||cd.ok)return;cd.o=1;cd.f=8;GS('swipe');g.op.push(cd);
+  if(g.op.length<2)return;const[a,b]=g.op;g.op=[];if(a.v==b.v){a.ok=b.ok=1;g.pairs++;g.sc+=10;GS(a.v==0?'gold':'pt');sc();if(g.pairs==8){g.end=1;const left=Math.max(0,60-Math.floor((performance.now()-g.t0)/1000));g.sc+=left*2;sc();GS('great');const m=$('#gmsg');if(m)m.textContent='다 찾았어요! 남은 시간 보너스 +'+left*2;setTimeout(()=>gameOver(g),900)}}
+  else{g.lock=1;setTimeout(()=>{GS('miss');a.o=b.o=0;a.f=b.f=8;g.lock=0},650)}};
+ const loop=()=>{if(!alive())return;const el=(performance.now()-g.t0)/1000,left=Math.max(0,60-el);c.fillStyle='#15131c';c.fillRect(0,0,W,H);c.fillStyle='#2a2635';c.fillRect(0,0,W,10);c.fillStyle=left<10?'#ff5f6d':'#58c2a6';c.fillRect(0,0,W*left/60,10);c.fillStyle='#fff';c.font='13px sans-serif';c.fillText('⏱ '+Math.ceil(left)+'초 · 찾은 짝 '+g.pairs+'/8',W/2,20);
+  g.cd.forEach((cd,i)=>{const X=(i%N)*cs+pad,Yy=top+Math.floor(i/N)*cs+pad,S=cs-pad*2,up=cd.o||cd.ok,show=cd.f>4?!up:up,sx=cd.f>0?Math.max(.05,Math.abs(cd.f-4)/4):1;if(cd.f>0)cd.f--;
+   c.save();c.translate(X+S/2,Yy+S/2);c.scale(sx,1);c.fillStyle=show?(cd.ok?'#2e5e50':'#3a3450'):'#5a3d8a';c.beginPath();if(c.roundRect)c.roundRect(-S/2,-S/2,S,S,10);else c.rect(-S/2,-S/2,S,S);c.fill();
+   if(show){if(E[cd.v]=='ME')gDrawMe(c,0,0,S*.55);else{c.font=Math.floor(S*.52)+'px sans-serif';c.fillText(E[cd.v],0,2)}}else{c.fillStyle='#ffd34d';c.font='bold '+Math.floor(S*.38)+'px sans-serif';c.fillText('?',0,2)}c.restore()});
+  if(left<=0&&!g.end){g.end=1;return gameOver(g)}requestAnimationFrame(loop)};sc();return requestAnimationFrame(loop)}
 // 💥 유령 팡 (3개 맞추기): 밀거나 두 칸을 차례로 눌러 바꾸기, 터지면 위에서 떨어짐, 연속 콤보 점수
 if(k=='match'){const N=7,E=['👻','🎃','🍬','🦇','💀','🕯️'],cs=W/N,top=28;g.b=[];g.off=[];g.pop=[];g.combo=0;g.busy=0;g.sel=null;g.end=0;
  const mk=()=>{for(let r=0;r<N;r++){g.b[r]=[];g.off[r]=[];for(let x=0;x<N;x++){let v;do{v=Math.floor(Math.random()*E.length)}while((x>1&&g.b[r][x-1]==v&&g.b[r][x-2]==v)||(r>1&&g.b[r-1][x]==v&&g.b[r-2][x]==v));g.b[r][x]=v;g.off[r][x]=-(N+1)*cs}}};
@@ -909,7 +976,7 @@ if(k=='match'){const N=7,E=['👻','🎃','🍬','🦇','💀','🕯️'],cs=W/N
  const loop=()=>{if(!alive())return;const el=(performance.now()-g.t0)/1000,left=Math.max(0,60-el);c.fillStyle='#15131c';c.fillRect(0,0,W,H);c.fillStyle='#2a2635';c.fillRect(0,0,W,10);c.fillStyle=left<10?'#ff5f6d':'#58c2a6';c.fillRect(0,0,W*left/60,10);
   c.fillStyle='#fff';c.font='13px sans-serif';c.fillText('⏱ '+Math.ceil(left)+'초',W/2,20);c.font=Math.floor(cs*.72)+'px sans-serif';
   for(let r=0;r<N;r++)for(let x=0;x<N;x++){c.fillStyle=(r+x)%2?'#1d1a27':'#221f2e';c.fillRect(x*cs,top+r*cs,cs,cs);if(g.sel&&g.sel[0]==r&&g.sel[1]==x){c.fillStyle='#ffd34d55';c.fillRect(x*cs,top+r*cs,cs,cs)}
-   const v=g.b[r][x];if(v<0)continue;if(g.off[r][x]<0)g.off[r][x]=Math.min(0,g.off[r][x]+cs*.22);let sx=0;if(g.shake&&g.shake.t>0&&((g.shake.a[0]==r&&g.shake.a[1]==x)||(g.shake.b[0]==r&&g.shake.b[1]==x)))sx=Math.sin(g.shake.t*1.8)*4;c.fillText(E[v],x*cs+cs/2+sx,top+r*cs+cs/2+g.off[r][x])}
+   const v=g.b[r][x];if(v<0)continue;if(g.off[r][x]<0)g.off[r][x]=Math.min(0,g.off[r][x]+cs*.22);let sx=0;if(g.shake&&g.shake.t>0&&((g.shake.a[0]==r&&g.shake.a[1]==x)||(g.shake.b[0]==r&&g.shake.b[1]==x)))sx=Math.sin(g.shake.t*1.8)*4;if(v==0)gDrawMe(c,x*cs+cs/2+sx,top+r*cs+cs/2+g.off[r][x],cs*.7);else c.fillText(E[v],x*cs+cs/2+sx,top+r*cs+cs/2+g.off[r][x])}
   if(g.shake&&g.shake.t>0)g.shake.t--;
   for(const p of g.pop){p.t--;c.globalAlpha=Math.max(0,p.t/18);c.font=Math.floor(cs*(1.3-p.t/40))+'px sans-serif';c.fillText(p.t>9?p.e:'✨',p.x,p.y)}c.globalAlpha=1;g.pop=g.pop.filter(p=>p.t>0);
   if(g.combo>1){c.font='bold 22px sans-serif';c.fillStyle='#ffd34d';c.fillText('콤보 x'+g.combo+'!',W/2,H/2)}
@@ -930,11 +997,30 @@ if(k=='merge'){const N=4,E=['','🕯️','🍬','🎃','🦇','👻','💀','�
   requestAnimationFrame(loop)};sc();return requestAnimationFrame(loop)}}
 function gameHit(i){const g=G;if(!g||g.k!='mole'||g.stop||g.left<=0)return;const b=$('#gh'+i);if(i==g.cur){g.sc++;g.cur=-1;g.nx=0;GS('hit');if(b)b.textContent='💥'}else if(i==g.bad){g.sc=Math.max(0,g.sc-2);g.bad=-1;GS('bad');if(b)b.textContent='😵'}else if(b){GS('miss');b.textContent='❌';setTimeout(()=>{if(b.textContent=='❌')b.textContent='🪦'},250)}const e=$('#gsc');if(e)e.textContent='점수 '+g.sc+' · Lv.'+gLv(g)}
 async function gameOver(g){if(g.stop)return;g.stop=true;GS('over');GE();const s=gState(),get=gpOf(g.k,g.sc),best=Object.assign({},s.best),nb=g.sc>(+best[g.k]||0);if(nb)best[g.k]=g.sc;const td=today();
-const m=$('#gmsg');if(m)m.innerHTML=`<b>끝! 점수 ${g.sc}${nb?' 🏆 내 최고 기록!':''}</b><br>${get>0?'포인트 +'+get+' 🍬':'포인트를 받으려면 점수를 '+(GPDIV[g.k]||10)+'점 이상 올려 봐요'}`;const b=$('#gst');if(b){b.style.display='';b.textContent='다시 하기'}
+const tx=get>0&&Math.random()<GTIXP;if(tx){gTixSet(gTixN()+1);setTimeout(()=>GS('tix'),700)}
+const m=$('#gmsg');if(m)m.innerHTML=`<b>끝! 점수 ${g.sc}${nb?' 🏆 내 최고 기록!':''}</b><br>${get>0?'포인트 +'+get+' 🍬':'포인트를 받으려면 점수를 '+(GPDIV[g.k]||10)+'점 이상 올려 봐요'}${tx?'<br>🎟️ <b>앗! 복권을 주웠어요!</b> <button class="s p" onclick="gTixOpen()">긁으러 가기</button>':''}`;const b=$('#gst');if(b){b.style.display='';b.textContent='다시 하기'}
 if(get>0||nb)await petSave({gday:td,gtod:s.tod+get,gpt:s.tot+get,wkw:wkKey(td),wkp:s.wk+get,best})}
+// 🎟️ 게임 복권 (v1.49): 포인트를 받은 판에서 아주 가끔(3%) 주움 → 은박을 긁으면 포인트 당첨(꽝도 있음). 장수·이번 복권 결과는 이 폰에만(localStorage gTix_/gTixP_ — 결과는 열 때 한 번 정해 두고 다시 열어도 같음)
+// 게임 포인트라 유령 성장·꾸미기에만 씀(진짜 복권 이벤트·쉐어비와는 상관없음). 규칙: 한 번 저장에 100 이하
+const GTIXP=.03,GTPZ=[[0,25],[10,35],[20,20],[30,10],[50,7],[100,3]];
+const gTixN=()=>Math.max(0,Math.floor(+(lsGet('gTix_'+me.id)||0)||0));
+function gTixSet(n){try{localStorage.setItem('gTix_'+me.id,Math.max(0,Math.min(9,n)))}catch(e){}}
+function gTixOpen(){if(G)G.stop=true;G=null;GE();const n=gTixN();if(n<1)return toast('복권이 없어요');let pz=lsGet('gTixP_'+me.id);if(pz==null||pz===''){let r=Math.random()*100;pz=0;for(const[v,w]of GTPZ){if((r-=w)<0){pz=v;break}}try{localStorage.setItem('gTixP_'+me.id,pz)}catch(e){}}pz=+pz||0;
+ $('#mb').innerHTML=`<h2>🎟️ 게임 복권</h2><p class="mu" id="tixm">은박을 손가락으로 긁어 보세요! (가진 복권 ${n}장)</p><div class="tixw"><div class="tixp">${pz?`<div style="font-size:38px">🎉</div><div style="font-size:24px">${pz} 포인트 당첨!</div>`:`<div style="font-size:38px">👻</div><div style="font-size:20px">아쉽게도 꽝!</div><div style="font-size:12px;font-weight:400">다음엔 꼭!</div>`}</div><canvas id="tixc" width="280" height="150"></canvas></div><div class="row" style="justify-content:center;margin-top:8px" id="tixb"><button onclick="gTixClose()">닫기</button></div>`;$('#modal').style.display='flex';
+ const cv=$('#tixc'),c=cv.getContext('2d'),gr=c.createLinearGradient(0,0,280,150);gr.addColorStop(0,'#a9a9b5');gr.addColorStop(.5,'#e8e8f0');gr.addColorStop(1,'#9a9aa8');c.fillStyle=gr;c.fillRect(0,0,280,150);c.fillStyle='#5f5f6c';c.textAlign='center';c.font='bold 19px sans-serif';c.fillText('🪙 여기를 긁어요',140,68);c.font='12px sans-serif';c.fillText('BLACKGHOST LUCKY 👻',140,96);
+ const cells=new Set();let done=false,last=0,down=false;const at=e=>{const r=cv.getBoundingClientRect();return[(e.clientX-r.left)*280/r.width,(e.clientY-r.top)*150/r.height]};
+ const scr=e=>{if(done)return;const[x,y]=at(e);c.globalCompositeOperation='destination-out';c.beginPath();c.arc(x,y,18,0,7);c.fill();c.globalCompositeOperation='source-over';
+  for(let dx=-1;dx<=1;dx++)for(let dy=-1;dy<=1;dy++){const cx=Math.floor((x+dx*12)/20),cy=Math.floor((y+dy*12)/15);if(cx>=0&&cx<14&&cy>=0&&cy<10)cells.add(cx+'_'+cy)}
+  const now=performance.now();if(now-last>70){last=now;GS('scr')}if(cells.size>=77){done=true;cv.style.transition='opacity .5s';cv.style.opacity='0';cv.style.pointerEvents='none';gTixWin(pz)}};
+ cv.onpointerdown=e=>{down=true;try{cv.setPointerCapture(e.pointerId)}catch(x){}scr(e)};cv.onpointermove=e=>{if(down)scr(e)};cv.onpointerup=cv.onpointercancel=()=>{down=false}}
+async function gTixWin(pz){gTixSet(gTixN()-1);try{localStorage.removeItem('gTixP_'+me.id)}catch(e){}GS(pz?'win':'lose',pz);const m=$('#tixm'),more=()=>{const b=$('#tixb'),n=gTixN();if(b)b.innerHTML=(n?`<button class="p" onclick="gTixOpen()">한 장 더 긁기 (${n}장)</button> `:'')+'<button onclick="gTixClose()">닫기</button>'};
+ if(!pz){if(m)m.textContent='꽝! 다음 복권을 노려 봐요 👻';return more()}
+ const s=gState(),td=today();if(m)m.innerHTML='<b>🎉 '+pz+' 포인트를 받았어요!</b> 꾸미기 상점에서 써 보세요';more();
+ if(!await petSave({gday:td,gtod:s.tod+pz,gpt:s.tot+pz})){gTixSet(gTixN()+1);try{localStorage.setItem('gTixP_'+me.id,pz)}catch(e){}if(m)m.textContent='저장하지 못했어요. 복권은 그대로 남아 있어요.';more()}}
+function gTixClose(){closeM();draw()}
 // 대장 앱: 광장용 요약을 계산해 저장 (바뀐 사람만)
 async function petSync(){if(!adm())return;await loadPets();const b=db.batch();let n=0;Object.values(users).filter(u=>u.status=='active'&&u.role!='student'&&!u.del).forEach(u=>{const p=petCalc(u),o=pets[u.id]||{};if(o.st!==p.st||o.ex!==p.ex||o.full!==p.full||o.mood!==p.mood){b.set(db.doc('pets/'+u.id),{st:p.st,ex:p.ex,full:p.full,mood:p.mood,sAt:NOW()},{merge:true});n++}});if(n)await b.commit().catch(e=>console.log(e))}
-const APPV='v1.48',verLine=()=>`<p class="mu" style="text-align:center;margin:4px 0 12px">BLACKGHOST TATTOO STUDIO · ${APPV} <button class="s" style="margin-left:6px" onclick="goUpd()">🔄 새로고침</button></p>`;
+const APPV='v1.49',verLine=()=>`<p class="mu" style="text-align:center;margin:4px 0 12px">BLACKGHOST TATTOO STUDIO · ${APPV} <button class="s" style="margin-left:6px" onclick="goUpd()">🔄 새로고침</button></p>`;
 
 function sdraw(){const nv=`<nav class="nav">${[['home','내 수강','🎓'],['edu','기본교육','📚']].map(([k,l,i])=>`<button class="${tab==k?'on':''}" onclick="go('${k}')"><i>${i}</i>${l}</button>`).join('')}</nav>`;view(hdr()+(tab=='edu'?eduView():noticeBanner()+studentHome())+verLine()+nv)}
 async function saveCourse(id){const v=k=>$('#ac_'+k).value,c=crs[id],iu=instList().find(u=>u.id==v('inst')),o={phone:v('phone').trim(),insta:v('insta').trim(),start:v('start'),total:Math.max(1,+v('total')||25),inst:v('inst'),instName:iu?(iu.nick||iu.name):''};const fee=adm()?+v('fee')||0:null;await db.doc('courses/'+id).update(o).catch(err);Object.assign(c,o);if(fee!=null&&fee!==cpOf(id).fee){const cp=Object.assign({uid:id,pays:[]},cpOf(id),{fee});await db.doc('coursePay/'+id).set(cp).catch(err);cpay[id]=cp}draw()}
@@ -1386,6 +1472,7 @@ const GT={match:{bpm:150,sp:16,k:'chip',ch:[[60,64,67],[57,60,64],[53,57,60],[55
  mole:{bpm:140,sp:12,k:'waltz',ch:[[50,53,57],[46,50,53],[45,49,52],[50,53,57]],mel:['74 . 77 . 81 . 80 . 81 . . .','82 . 81 . 77 . 74 . 70 . . .','73 . 76 . 79 . 81 . 79 . 76 .','74 . . . 73 . . . 74 . . .'].map(MM)},
  merge:{bpm:80,sp:16,k:'piano',ch:[[57,60,64],[53,57,60],[60,64,67],[55,59,62]],mel:['76 . . . 72 . . . 69 . . . 72 . . .','77 . . . 76 . . . 72 . . . 69 . . .','79 . . . 76 . . . 72 . . . 76 . . .','74 . . . 71 . . . 67 . . . 71 . . .'].map(MM)},
  ink:{bpm:100,sp:16,k:'piano',ch:[[57,64,69],[55,62,67],[53,60,65],[52,59,64]],mel:['81 . 79 . 76 . 74 . 76 . . . 69 . . .','79 . 76 . 74 . 72 . 74 . . . 67 . . .','77 . 76 . 74 . 72 . 69 . 72 . 74 . . .','76 . . . 71 . 74 . 76 . . . . . . .'].map(MM)}};
+GT.fly=GT.jump;GT.stack=GT.candy;GT.memory=GT.merge; // v1.49 새 게임은 기존 곡을 나눠 씀
 function lead(ty,n,t,v){const f=NF(n);if(ty=='piano'){vo('triangle',f,t,1.8,v||.12,.004);vo('sine',f*2,t,.7,(v||.12)*.25,.004)}else if(ty=='sq'){vo('square',f,t,.16,(v||.12)*.38,.004)}else bell(n,t,v||.13)}
 function sch(){const T=gk&&GT[gk]||TR[tr],S=60/T.bpm/4,nb=T.mel.length;while(nextT<AC.currentTime+.3){const bar=Math.floor(step/T.sp)%nb,i=step%T.sp,l2=Math.floor(step/(T.sp*nb))%2,ch=T.ch[bar],n=T.mel[bar][i],t=nextT;
  if(T.k=='box'){if(i==0)padC(ch,t,S*16);if(n)bell(n,t,.13);if(l2&&i%2==0&&!n)bell(ch[(i/2)%ch.length]+24,t,.025);
@@ -1425,6 +1512,15 @@ function gsfx(n,x){if(!gOn()||!ens())return;AC.resume&&AC.resume();const t=AC.cu
  else if(n=='great')ar([84,88,91,96,100],.05,.1);
  else if(n=='start')ar([72,76,79,84],.08,.1);
  else if(n=='over'){[79,76,72,67].forEach((m,i)=>vo('triangle',NF(m),t+i*.13,.3,.12,.005))}
+ // v1.49: 단계 보상 '짠!' 팡파레 · 게임 복권(주움·긁기·당첨·꽝) · 새 게임
+ else if(n=='fanfare'){swp('sine',180,1400,t,.45,.07);nz(t,.05,'highpass',5000,.5);[67,72,76,79].forEach((m,i)=>vo('square',NF(m),t+.05+i*.1,.16,.045,.004));
+  const t2=t+.5;kik(t2);[60,64,67,72,76].forEach(m=>{vo('sawtooth',NF(m),t2,1.6,.028,.02,-6);vo('sawtooth',NF(m),t2,1.6,.028,.02,6)});[84,88,91,96].forEach((m,i)=>bell(m,t2+i*.06,.12));
+  [96,100,103,108,103,108,112].forEach((m,i)=>bell(m,t2+.45+i*.08,.06));nz(t2,.08,'highpass',7000,1.2)}
+ else if(n=='tix'){swp('sine',400,1200,t,.18,.06);ar([88,91,96,100],.07,.1)}
+ else if(n=='scr')nz(t,.035,'bandpass',2600+Math.random()*1500,.05);
+ else if(n=='win'){kik(t);ar([79,84,88,91,96],.06,.11);[72,76,79].forEach(m=>vo('triangle',NF(m),t+.32,.9,.05,.01));if(x>=50)[100,103,108,112].forEach((m,i)=>bell(m,t+.5+i*.07,.07))}
+ else if(n=='lose')swp('triangle',420,180,t,.45,.08);
+ else if(n=='flap')swp('sine',260,520,t,.09,.07);
 }finally{OUT=null}}
 function sfx(k){if(!mus||!AC)return;const t=AC.currentTime+.01;(k=='door'?[72,76,79,84,88]:k=='step'?[84,91]:[88,91,96]).forEach((n,i)=>bell(n,t+i*(k=='step'?.05:.06),k=='step'?.06:.11))}
 // 음악은 켜 두면 앱 어느 화면에서든 계속(사용자 요청 v1.41). 다시 열면 첫 터치 때 이어서 켜짐(폰은 터치 없이 소리를 못 냄), 앱 복귀 때 다시 재생
@@ -1453,5 +1549,5 @@ return `<nav class="nav gnav s-${se}">${dc}${bb||''}${it.map(([k,l,on])=>{const 
 function draw(){if(me.role=='student')return sdraw();const ad=adm(),V=vilOn(),main=[['home',V?'마을':ad?'총괄':'내현황',V?'🏘':'🏠'],['in','판매입력','🧾'],['toss','토스','🤝'],['share','쉐어비','💳']],
 more=ad?[V?['my','총괄','👑']:['vil','블랙고스트마을','🏘'],['sup','비품·소모품','📦'],['acd','수강관리','🎓'],['pet','유령 키우기','👻'],['edu','기본교육','📚'],['conv','컨벤션 일정','🗓'],['set','정산','💰'],['inv','재고·마진','📊'],['evt','이벤트','🎁'],['conf','설정','⚙️']]:(V?[['my','내현황','📋']]:[]).concat([['pet','유령 키우기','👻'],['sup','비품·소모품','📦'],['evt','이벤트','🎁'],['edu','기본교육','📚'],['conv','컨벤션 일정','🗓']]).concat(isInst()?[['acd','수강관리','🎓']]:[]),inMore=tab=='more'||more.some(x=>x[0]==tab);
 const vs=tab=='vil'||(tab=='home'&&V),body0=vs?'<div id="vslot"></div>':tab=='my'?(ad?home():myHome()):tab=='deco'?decoView():tab=='game'?gameCard()+'<div class="card">'+(gkHtml()||'<p class="mu">이번 주 게임왕은 아직 없어요. 첫 번째가 되어 보세요! 👑</p>')+'</div>':tab=='castle'?castleView():tab=='in'?form():tab=='toss'?tossView():tab=='share'?(ad?share():shareMe()):tab=='sup'?supView():tab=='acd'&&isInst()?acdView():tab=='evt'?evtView():tab=='edu'?eduView():tab=='conv'?convView():tab=='pet'?petView():tab=='set'&&ad?settle():tab=='conf'&&ad?confView():tab=='inv'&&ad?inv():tab=='more'?moreView(more):home(),vh=vHeroOn(),body=vh?vHero(VT[tab])+body0:body0;
-view((vs?vSlim():vh?'':hdr())+body+(V||vAd?gNav(main,inMore,vs?bedMini():''):`<nav class="nav">${main.map(([k,l,i])=>`<button class="${tab==k?'on':''}" onclick="go('${k}')"><i>${i}</i>${l}</button>`).join('')}<button class="${inMore?'on':''}" onclick="go('more')"><i>☰</i>더보기</button></nav>`));VIL.after()}
+view((vs?vSlim():vh?'':hdr())+body+(V||vAd?gNav(main,inMore,vs?bedMini():''):`<nav class="nav">${main.map(([k,l,i])=>`<button class="${tab==k?'on':''}" onclick="go('${k}')"><i>${i}</i>${l}</button>`).join('')}<button class="${inMore?'on':''}" onclick="go('more')"><i>☰</i>더보기</button></nav>`));VIL.after();stageChk()}
 </script></body></html>

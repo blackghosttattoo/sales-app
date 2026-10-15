@@ -196,13 +196,13 @@ service cloud.firestore {
         let k = request.time + duration.value(9, 'h');
         return string(k.year()) + '-' + (k.month() < 10 ? '0' : '') + string(k.month()) + '-' + (k.day() < 10 ? '0' : '') + string(k.day());
       }
-      // 게임 포인트(v1.43: 하루 제한 없앰, 대신 한 번 저장에 20 이하): 총 포인트(gpt)는 오늘 받은 만큼만 늘 수 있음, 쓴 포인트(gps)는 늘기만
+      // 게임 포인트(v1.43: 하루 제한 없앰, 대신 한 번 저장에 100 이하 — 한 판 최대 20, v1.49 게임 복권 당첨 최대 100): 총 포인트(gpt)는 오늘 받은 만큼만 늘 수 있음, 쓴 포인트(gps)는 늘기만
       function gameOk(n, o) {
         let tod = n.get('gtod', 0);
         let oTod = o.get('gday', '') == n.get('gday', '') ? o.get('gtod', 0) : 0;
         let gain = n.get('gpt', 0) - o.get('gpt', 0);
         return tod is int && tod >= 0 && tod <= 5000
-          && n.get('gpt', 0) is int && gain >= 0 && gain <= 20 && gain == tod - oTod
+          && n.get('gpt', 0) is int && gain >= 0 && gain <= 100 && gain == tod - oTod
           && (gain == 0 || n.get('gday', '') == kday())
           && n.get('gps', 0) is int && n.get('gps', 0) >= o.get('gps', 0) && n.get('gps', 0) <= n.get('gpt', 0)
           && n.get('own', []) is list && n.get('own', []).size() <= 40
