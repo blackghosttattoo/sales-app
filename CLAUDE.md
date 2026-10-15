@@ -206,6 +206,7 @@
 - 새 게임(`GAMES` 9개): 🦇 fly(플래피식, GPDIV 3), 🎃 stack(탑 쌓기, 딱 맞추면 +2, 2), 🃏 memory(4×4 짝, 한 쌍은 내 유령, 60초·남은 초×2, 8). 음악은 `GT.fly=jump·stack=candy·memory=merge` 공유. best 9개(규칙 10개 이하).
 - 🎟️ 게임 복권: 포인트 받은 판에서 3%(`GTIXP`) 주움 → localStorage `gTix_uid`(장수, 최대 9)·`gTixP_uid`(지금 복권 결과, 열 때 한 번 정함). `gTixOpen` 은박 긁기(캔버스 destination-out, 55% 긁으면 공개) → `gTixWin`: 꽝25%·10·20·30·50·100(3%)포인트(`GTPZ`), gpt·gtod에 더해 저장(wkp=게임왕엔 안 넣음), 실패 시 복권 되돌림. 게임 포인트라 성장·꾸미기에만. 효과음 tix·scr·win·lose·flap.
 - **규칙 변경**: pets gameOk 한 번 저장 gain ≤20 → **≤100**(복권 당첨). 에뮬레이터 19개 시험 통과.
+- (v1.49 추가 배포, 버전 그대로) **꾸미기 여러 개 같이 입기**: `pets.deco`='wing,glasses,cap' 쉼표 목록. 자리 `DSL`(h 머리·t 머리 위·p 핀·e 눈·c 볼·n 목·b 몸·r 손·s 옆·k 등·a 오라, legend='hrka'·wizard='hk') — 같은 자리는 하나만(`dHit`), `decoOk`가 검사·정리, `ghostSvg`가 여러 개 순서대로(`dOrd`) 그림. `decoTog(k,l)` 입기/벗기 확인창(같은 자리 벗는 것 안내) → `decoBack`, '모두 벗기'(PDECO ''), 상점 구매도 다른 꾸미기와 같이 입음. **유령 색 팔레트**: `PSW` 30색 + `<input type=color>` 직접 만들기 → `col`='#rrggbb'(`isHex`, `colHex`), 어두운 색이면 흰 눈(`colDk`). **규칙 변경**: pets deco 12 → 120자(에뮬레이터 통과).
 - 화면 확대 막기: viewport `maximum-scale=1, user-scalable=no`, 맨 앞 작은 script에서 `gesturestart`·두 손가락 touchmove 막기(아이폰), `html{touch-action:manipulation}`(두 번 톡톡). guide·care는 그대로(확대 가능).
 
 ## 임시 보관 (차근차근 만들 프로젝트 — 대기 목록과 별개)
