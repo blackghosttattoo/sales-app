@@ -195,6 +195,7 @@
 - 꾸미기 창(`petDeco`) 닫으면 뒤 화면 바로 다시 그림(`decoDone`에서 `_pd=true`) — 표정·색·꾸미기 바꾼 뒤 새로고침 안 해도 됨.
 - 단계 보상 `PDECO` 10개: 아기 모자·별 딸랑이(rattle)(Lv1) / 타투머신(손에 듦)·마법사 망토(wizard, 망토 BSVG 살랑)(Lv2) / 보석 왕관(CROWN3 반짝)·전설 날개(wing → BSVG `WINGS` 크게 펄럭 `.gwl`)·요술봉(wand, 별 반짝 `.gtw`)·삼지창(trident `TRI3`)·전설 풀세트(legend = 오라 `.gau`+날개+왕관+삼지창)(Lv3). 손에 드는 것은 `HANDD` → 몸 색 작은 손. 시안 https://claude.ai/artifact/MbtcR9xtRre1VaEXNECiWv
 - 쉐어비 [✅ 입금 완료] `ledDone(uid,m,k)`: 기록카드 월별 내역(미납·덜 낸 달) + 미입금자 팝업(`spList`, 이번 달 또는 가장 오래된 미납 달) — 확인 1번 → st done·paid=최종·paidDate 오늘·base 고정·hist, 납부확인 요청 대기 중이면 req.st ok. 금액 다르면 [수정].
+- 꾸미기에서 고르면(색·표정·단계 보상·상점) `petPick(o,이름)` → '○○(으)로 바꿀까요?' 확인창 → 확인=바로 바꾸고 `decoBack()`(팝업 닫고 유령 키우기 화면 tab `pet`), 취소=창만 닫히고 변경 없음. 구매도 확인 후 바로 착용·유령 키우기로(사용자 요청).
 - 유령 저장 `petSave`는 화면 먼저 바꾸고(myPet·pets 바로 반영) 서버 저장 실패 시 되돌림. 꾸미기·표정·색은 `petPick(o)`(바로 `decoDone`), 상점 구매·이름·미션도 바로 다시 그림. 폰 저장이 느려 '새로고침해야 바뀜' 문제 해결.
 - 규칙 변경 없음.
 
