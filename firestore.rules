@@ -188,7 +188,7 @@ service cloud.firestore {
     // 유령 키우기: 모두 읽기(광장), 본인은 이름·꾸미기·미션 날짜·게임 포인트만, 상태 요약(st·ex·full·mood)은 대장 앱이 계산해 저장
     match /pets/{u} {
       function petOk(d) {
-        return txt(d.get('name', ''), 10) && txt(d.get('deco', ''), 12) && txt(d.get('col', ''), 12)
+        return txt(d.get('name', ''), 10) && txt(d.get('deco', ''), 12) && txt(d.get('col', ''), 12) && txt(d.get('face', ''), 12)
           && d.get('mis', []) is list && d.get('mis', []).size() <= 60;
       }
       // 오늘 날짜(한국 시간) 'YYYY-MM-DD'
@@ -213,11 +213,11 @@ service cloud.firestore {
       allow read: if active();
       allow create: if admin()
         || (active() && request.auth.uid == u
-            && request.resource.data.keys().hasOnly(['name', 'deco', 'col', 'mis', 'at', 'gday', 'gtod', 'gpt', 'gps', 'own', 'wkw', 'wkp', 'best'])
+            && request.resource.data.keys().hasOnly(['name', 'deco', 'col', 'face', 'mis', 'at', 'gday', 'gtod', 'gpt', 'gps', 'own', 'wkw', 'wkp', 'best'])
             && petOk(request.resource.data) && gameOk(request.resource.data, {}));
       allow update: if admin()
         || (active() && request.auth.uid == u
-            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name', 'deco', 'col', 'mis', 'at', 'gday', 'gtod', 'gpt', 'gps', 'own', 'wkw', 'wkp', 'best'])
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name', 'deco', 'col', 'face', 'mis', 'at', 'gday', 'gtod', 'gpt', 'gps', 'own', 'wkw', 'wkp', 'best'])
             && petOk(request.resource.data) && gameOk(request.resource.data, resource.data));
       allow delete: if admin();
     }
