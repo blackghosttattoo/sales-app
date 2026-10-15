@@ -158,7 +158,14 @@ body.vmode{overflow:hidden}body.vmode main{padding-bottom:0}
 @keyframes gbob{50%{transform:translateY(-13px) scale(1.1)}}
 .gdot{position:absolute;top:-6px;right:-6px;min-width:19px;height:19px;padding:0 5px;border-radius:999px;background:#e0344c;color:#fff;font-size:11px;line-height:15px;border:2px solid var(--w2,#fff);box-shadow:0 2px 4px #0008}
 @media (prefers-reduced-motion:reduce){.gnav *{animation:none!important}}
-</style></head><body><main id="app">불러오는 중…</main><div id="modal"><div class="card" id="mb"></div></div><div id="snack"></div>
+.ld0{padding:28px 18px;max-width:560px;margin:0 auto}.ld0 .ldt{text-align:center;font-size:16px;opacity:.75}
+.ldh{opacity:0;animation:ldin .4s ease 4s forwards;line-height:1.55;font-size:14px;margin-top:14px}.ldc{border:1px solid #8884;border-radius:12px;padding:10px 12px;margin:10px 0}.ldc ol{margin:6px 0 0;padding-left:20px}.ldc li{margin:4px 0}
+.ldr{display:inline-block;padding:9px 16px;border-radius:10px;background:#d46a8f;color:#fff;font-weight:700;text-decoration:none}.ldm{opacity:.7;font-size:12px}
+@keyframes ldin{to{opacity:1}}@media (prefers-reduced-motion:reduce){.ldh{animation:none;opacity:1}}
+</style></head><body><main id="app"><div id="ld0" class="ld0"><p class="ldt">불러오는 중…</p><div class="ldh"><b>⏳ 계속 이 화면에서 멈춰 있나요?</b>
+<div class="ldc"><b>🍎 아이폰</b><ol><li>카카오톡·인스타그램 안에서 열었다면 → 아래(또는 위) <b>⋯</b> 버튼 → <b>'Safari로 열기'</b></li><li>Safari에서도 멈추면 → 설정 → Safari → <b>방문 기록 및 웹사이트 데이터 지우기</b>, <b>콘텐츠 차단기(광고 차단) 끄기</b>, 비공개 모드 끄기</li><li><b>iOS 14 이상</b>이어야 해요 (설정 → 일반 → 정보)</li><li>열리면 Safari <b>공유 □↑ → '홈 화면에 추가'</b></li></ol></div>
+<div class="ldc"><b>🤖 갤럭시 (안드로이드)</b><ol><li>카카오톡·인스타그램 안에서 열었다면 → 오른쪽 위(또는 아래) <b>⋮</b> 버튼 → <b>'다른 브라우저로 열기'</b> → <b>크롬(Chrome)</b></li><li>크롬에서도 멈추면 → 크롬 <b>⋮ → 설정 → 개인정보 보호 → 인터넷 사용 기록 삭제</b>(쿠키·캐시) 후 다시 열기. 삼성 인터넷은 광고 차단 끄기, 안 되면 크롬으로</li><li>열리면 크롬 <b>⋮ → '홈 화면에 추가'</b>(또는 '앱 설치')</li></ol></div>
+<p>주소: <b style="word-break:break-all">blackghosttattoo.github.io/sales-app</b></p><p><a class="ldr" href="?r=1">🔄 다시 시도</a></p><p class="ldm">그래도 안 되면 이 화면을 캡처해서 대장님께 보내 주세요.</p></div></div></main><div id="modal"><div class="card" id="mb"></div></div><div id="snack"></div>
 <script>window.APPV0='v1.47';
 // ----- 새 버전 알림: ver.json(배포할 때 APPV와 같이 올림)을 캐시 없이 받아 다르면 위에 [업데이트] 버튼 (아이폰 홈화면 앱은 새로고침이 어려워서)
 let _vcT=0;
@@ -178,7 +185,7 @@ function goUpd(){location.replace(location.pathname+'?u='+Date.now())}
   <p class="mu" style="margin-top:10px">그래도 안 되면 이 화면을 캡처해서 대장님께 보내 주세요.<br><span style="font-size:11px;word-break:break-all">${(ua.match(/(iPhone OS|Android) [\d_.]+/)||[''])[0]} · ${inapp?'앱 안 브라우저':'브라우저'}${fb?' · FB없음':''} · ${window.APPV0}</span></p></div>`};
  if(kakao){try{if(!sessionStorage.getItem('kx')){sessionStorage.setItem('kx','1');location.href='kakaotalk://web/openExternal?url='+encodeURIComponent(url)}}catch(e){}}
  if(inapp)setTimeout(()=>{if(document.getElementById('ibar'))return;const b=document.createElement('div');b.id='ibar';b.className='updb';b.innerHTML=`<span>📱 앱 안에서 열었어요 · ⋯ → '${br}로 열기'를 눌러 주세요</span><button class="p" onclick="bgCopy()">주소 복사</button>`;document.body.appendChild(b)},800);
- setTimeout(()=>{const a=document.getElementById('app');if(a&&a.textContent.trim()==='불러오는 중…')bgHelp()},9000)}catch(e){}})();
+ setTimeout(()=>{if(document.getElementById('ld0'))bgHelp()},9000)}catch(e){}})();
 if(typeof fetch=='function'){setTimeout(verChk,2000);setInterval(verChk,600000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)verChk()})}
 </script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
