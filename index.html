@@ -1704,7 +1704,7 @@ const GT={match:{bpm:150,sp:16,k:'chip',ch:[[60,64,67],[57,60,64],[53,57,60],[55
  merge:{bpm:80,sp:16,k:'piano',ch:[[57,60,64],[53,57,60],[60,64,67],[55,59,62]],mel:['76 . . . 72 . . . 69 . . . 72 . . .','77 . . . 76 . . . 72 . . . 69 . . .','79 . . . 76 . . . 72 . . . 76 . . .','74 . . . 71 . . . 67 . . . 71 . . .'].map(MM)},
  ink:{bpm:100,sp:16,k:'piano',ch:[[57,64,69],[55,62,67],[53,60,65],[52,59,64]],mel:['81 . 79 . 76 . 74 . 76 . . . 69 . . .','79 . 76 . 74 . 72 . 74 . . . 67 . . .','77 . 76 . 74 . 72 . 69 . 72 . 74 . . .','76 . . . 71 . 74 . 76 . . . . . . .'].map(MM)}};
 GT.fly=GT.jump;GT.stack=GT.candy;GT.memory=GT.merge; // v1.49 새 게임은 기존 곡을 나눠 씀
-function lead(ty,n,t,v){const f=NF(n);if(ty=='piano'){vo('triangle',f,t,1.8,v||.12,.004);vo('sine',f*2,t,.7,(v||.12)*.25,.004)}else if(ty=='sq'){vo('square',f,t,.16,(v||.12)*.38,.004)}else bell(n,t,v||.13)}
+function lead(ty,n,t,v){const f=NF(n);if(ty=='piano'){vo('triangle',f,t,1.8,v||.12,.004);vo('sine',f*2,t,.7,(v||.12)*.25,.004)}else if(ty=='sq'){vo('triangle',f,t,.2,(v||.12)*.75,.012);vo('sine',f*2,t,.12,(v||.12)*.14,.012)}else bell(n,t,v||.13)}
 function sch(){const T=gk&&GT[gk]||TR[tr],S=60/T.bpm/4,nb=T.mel.length;
  // 10-16: 폰이 바빠 예약이 늦어지면 지나간 음표는 건너뜀(한꺼번에 몰려 '틱틱' 나던 문제), 미리 예약 0.5초
  if(nextT<AC.currentTime+.02){const k=Math.ceil((AC.currentTime+.05-nextT)/S);step+=k;nextT+=k*S}
@@ -1713,7 +1713,7 @@ function sch(){const T=gk&&GT[gk]||TR[tr],S=60/T.bpm/4,nb=T.mel.length;
   if(i==0||i==10)bassN(ch[0]-12,t);if(i==6||i==14)bassN(ch[0],t);
   if(bar>=2||l2){if(i%4==0)nz(t,.035,'highpass',7000,.05);if(i%2==1)nz(t,.012,'highpass',7000,.05);if(i==0||i==8)kik(t);if(i==4||i==12)nz(t,.09,'bandpass',1800,.12)}}
  else if(T.k=='piano'){if(n)lead('piano',n,t,.12);if(i%2==0)lead('piano',ch[(i/2)%ch.length]+(i>=8?12:0),t,.035);if(i==0)bassN(ch[0]-12,t)}
- else if(T.k=='chip'){if(n)lead('sq',n,t,.12);if(i%2==0)vo('square',NF(ch[0]-12+(i%4==2?12:0)),t,.11,.03,.003);if(l2||bar>=2){if(i%8==0)kik(t);if(i%8==4)nz(t,.07,'bandpass',2200,.08);if(i%2==1)nz(t,.012,'highpass',8000,.03)}}
+ else if(T.k=='chip'){if(n)lead('sq',n,t,.12);if(i%2==0)vo('triangle',NF(ch[0]-12+(i%4==2?12:0)),t,.18,.055,.015);if(l2||bar>=2){if(i%8==0)kik(t);if(i%8==4)nz(t,.07,'bandpass',2200,.08);if(i%2==1)nz(t,.012,'highpass',8000,.03)}}
  else{if(n)bell(n,t,.12);if(i==0)bassN(ch[0]-12,t);if(i==4||i==8)ch.forEach(m=>vo('triangle',NF(m),t,.28,.022,.004));if(l2&&i%4==2)bell(ch[0]+24,t,.02)}
  nextT+=S;step++}}
 function fade(v,s){bus.gain.cancelScheduledValues(AC.currentTime);bus.gain.setValueAtTime(bus.gain.value,AC.currentTime);bus.gain.linearRampToValueAtTime(v,AC.currentTime+s)}
