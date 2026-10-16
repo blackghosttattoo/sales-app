@@ -88,7 +88,7 @@ ok('쉐어비 15일 전엔 입금 예정', (run(`me=users.a;tab='home';draw()`),
 ok('컨벤션 달력', (run(`me=users.a;tab='conv';draw()`), /Test Con/.test(out())));
 // 베드 현황 (v1.42): 사용 중·비어 있음·15분 넘게 신호 없으면 꺼짐
 run(`LS.beds={p:Promise.resolve()};beds={b1:{st:'on',at:new Date(Date.now()-5*60000),up:new Date()},b2:{st:'off',at:new Date(Date.now()-90*60000),up:new Date()},b3:{st:'on',at:new Date(),up:new Date(Date.now()-20*60000)}};me=users.a;tab='home';draw()`);
-ok('베드 현황 한 줄: 사용 중 5분 / 비어 있음 / 꺼짐', /1번<\/b> 🔴<span[^>]*> 5분/.test(out()) && /🟢/.test(out()) && (out().match(/⚪/g)||[]).length >= 2);
+ok('베드 현황 한 줄: 사용 중 5분 / 비어 있음 / 꺼짐 / 연결 안 된 베드는 준비 중', /1번<\/b> 🔴<span[^>]*> 5분/.test(out()) && /🟢/.test(out()) && (out().match(/⚪/g)||[]).length >= 1 && /4번<\/b> 🔧<span[^>]*> 준비 중/.test(out()));
 run(`cfg.bedNames=['창가','','','']`);ok('베드 이름', (run(`draw()`), /<b>창가<\/b> 🔴/.test(out())));run(`delete cfg.bedNames`);
 run(`beds={b1:{st:'off',at:new Date(Date.now()-5*60000),up:new Date()},b2:{st:'off',at:new Date(Date.now()-25*60000),up:new Date()}};draw()`);
 ok('베드: 나간 지 20분 안 = 잠시 비움, 넘으면 비어 있음', /잠시 비움/.test(out()) && /비어 있음/.test(out()));

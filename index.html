@@ -1524,7 +1524,7 @@ return `<div class="vhero"><div class="vhimg" style="background-image:url(${VD+b
 let beds={};
 function loadBeds(){return liveQ('beds',db.collection('beds'),sn=>{const o={};sn.forEach(d=>o[cid(d.id)]=cl(d.data()));beds=o})}
 const tsMs=t=>t&&t.toDate?t.toDate().getTime():t?new Date(t).getTime():0;
-function bedSt(i){const d=beds['b'+i],up=d&&tsMs(d.up),nowT=Date.now();if(!d||!up||nowT-up>15*60000)return{k:'x',i:'⚪',t:'꺼짐',c:'var(--mu)'};
+function bedSt(i){const d=beds['b'+i],up=d&&tsMs(d.up),nowT=Date.now();if(!d||!up)return{k:'prep',i:'🔧',t:'준비 중',c:'var(--mu)'};if(nowT-up>15*60000)return{k:'x',i:'⚪',t:'꺼짐',c:'var(--mu)'};
  const m=Math.max(0,Math.floor((nowT-tsMs(d.at))/60000)),dur=m<60?m+'분':Math.floor(m/60)+'시간 '+(m%60)+'분';
  if(d.st=='on')return{k:'on',i:'🔴',t:'사용 중',s:dur+'째',c:'var(--dg)'};
  if(m<bedGap())return{k:'brk',i:'🟡',t:'잠시 비움',s:(m<1?'방금':dur+'째')+' · '+bedGap()+'분 넘으면 빈 베드',c:'var(--wa)'};
@@ -1532,8 +1532,8 @@ function bedSt(i){const d=beds['b'+i],up=d&&tsMs(d.up),nowT=Date.now();if(!d||!u
 const bedGap=()=>Math.max(1,Math.min(120,+cfg.bedGap||20));
 const bedN=()=>Math.max(1,Math.min(8,+cfg.beds||4)),bedNm=i=>((cfg.bedNames||[])[i-1]||'').trim()||i+'번';
 function bedCard(){if(me.role=='student')return '';if(typeof db!='undefined'&&db.collection&&!LS.beds)loadBeds().then(redraw);const l=[];for(let i=1;i<=bedN();i++)l.push([i,bedSt(i)]);
- const sh=b=>b.k=='on'?' '+b.s.replace('째',''):b.k=='brk'?' 잠시':'';
- return `<div class="card" style="padding:9px 12px"><div class="row" style="gap:4px 12px;font-size:14px"><b>🛏</b>${l.map(([i,b])=>`<span style="white-space:nowrap" title="${esc(bedNm(i))} ${b.t}${b.s?' · '+b.s:''}"><b>${esc(bedNm(i))}</b> ${b.i}<span class="mu" style="font-size:12px">${sh(b)}</span></span>`).join('')}${l.every(x=>x[1].k=='x')?'<span class="mu" style="font-size:12px">센서 연결 전</span>':''}</div></div>`}
+ const sh=b=>b.k=='on'?' '+b.s.replace('째',''):b.k=='brk'?' 잠시':b.k=='prep'?' 준비 중':'';
+ return `<div class="card" style="padding:9px 12px"><div class="row" style="gap:4px 12px;font-size:14px"><b>🛏</b>${l.map(([i,b])=>`<span style="white-space:nowrap" title="${esc(bedNm(i))} ${b.t}${b.s?' · '+b.s:''}"><b>${esc(bedNm(i))}</b> ${b.i}<span class="mu" style="font-size:12px">${sh(b)}</span></span>`).join('')}</div></div>`}
 // 마을 화면: 하단 메뉴 바로 위 작은 탭 박스(v1.44, 인사말 박스에서 옮김)
 function bedMini(){if(me.role=='student')return '';if(typeof db!='undefined'&&db.collection&&!LS.beds)loadBeds().then(redraw);let h='';for(let i=1;i<=bedN();i++){const b=bedSt(i);h+=`<span title="${esc(bedNm(i))} ${b.t}">${esc(bedNm(i).slice(0,4))}${b.i}</span> `}return `<div class="bedbar">🛏 ${h}</div>`}
 setInterval(()=>{try{if(me&&LS.beds&&(tab=='home'||tab=='vil'||tab=='my'))redraw()}catch(e){}},60000);
