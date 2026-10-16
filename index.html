@@ -1087,7 +1087,7 @@ async function petSetSave(){const g=id=>Math.max(0,Math.round(+$(id).value||0)),
 const st=$('#pc_s').value||today(),o=cfg.pet||{};if(o.start&&st!=o.start&&!confirm('시작일을 바꾸면 모든 유령이 '+st+'부터 다시 알로 시작해요. 바꿀까요?'))return;
 cfg.pet={start:st,pts:{sale:g('#pc_sale'),toss:g('#pc_toss'),mis:g('#pc_mis'),sc:g('#pc_sc'),game:g('#pc_game')},lv,gcap:petc().gcap};const ok1=await db.doc('config/main').set(cfg).then(()=>1).catch(err);if(ok1){toast('저장했어요');petSync();draw()}}
 // ----- 유령 게임: 폰 안에서만 돌고, 끝날 때 포인트만 pets/{uid}에 저장. v1.43: 하루 제한 없음, 한 판 포인트는 조금(최대 20), 할수록 어려워짐. 유령 성장·꾸미기에만 씀.
-const GAMES=[['match','💥 유령 팡','같은 그림 3개 이상을 한 줄로! 맞추면 시계가 잠깐 멈추고, 헤매면 다시 흘러요 (60초)'],['merge','🔮 유령 합치기','밀어서 같은 그림끼리 합쳐요. 🕯️→🍬→🎃→🦇→👻→💀→🔮… 칸이 꽉 차면 끝'],['jump','👻 유령 점프','누르면 점프, 공중에서 한 번 더 누르면 2단 점프! 장애물을 넘고 🦇는 아래로 지나가거나 2단 점프로 넘어요. 가끔 떠 있는 🎟️ 복권을 먹어요'],['candy','🍬 사탕 받기','좌우로 밀어서 받아요. 🍬+1 🍭+3 🍫+5 ⭐무적 ❤️목숨 / 💣목숨−1 🧄점수−3 · 아주 가끔 🎟️ 복권!'],['mole','🪦 무덤 숨바꼭질','👻 유령만 골라 눌러요! 비슷하게 생긴 가짜(☁️🧻🥚👹💀…)를 누르면 감점 (30초)'],['ink','🎯 잉크 찍기','움직이는 바늘이 가운데 올 때 눌러요 (10번, 점점 빨라져요)'],['fly','🦇 유령 날기','블랙고스트마을 밤하늘을 날아요! 누를 때마다 날아올라 비석 틈으로 빠져나가요 (틈이 점점 좁아져요)'],['stack','🎃 호박 탑 쌓기','움직이는 호박 상자가 아래 칸과 겹칠 때 눌러요. 딱 맞추면 보너스! 맨 위엔 내 유령이 올라타요'],['memory','🃏 유령 짝 맞추기','다 맞추면 다음 단계! 단계마다 카드가 늘고 시간은 다시 채워져요']];
+const GAMES=[['match','💥 유령 팡','같은 그림 3개 이상을 한 줄로! 맞추면 시계가 잠깐 멈추고, 헤매면 다시 흘러요 (시간 10초)'],['merge','🔮 유령 합치기','밀어서 같은 그림끼리 합쳐요. 🕯️→🍬→🎃→🦇→👻→💀→🔮… 칸이 꽉 차면 끝'],['jump','👻 유령 점프','누르면 점프, 공중에서 한 번 더 누르면 2단 점프! 장애물을 넘고 🦇는 아래로 지나가거나 2단 점프로 넘어요. 가끔 떠 있는 🎟️ 복권을 먹어요'],['candy','🍬 사탕 받기','좌우로 밀어서 받아요. 🍬+1 🍭+3 🍫+5 ⭐무적 ❤️목숨 / 💣목숨−1 🧄점수−3 · 아주 가끔 🎟️ 복권!'],['mole','🪦 무덤 숨바꼭질','👻 유령만 골라 눌러요! 비슷하게 생긴 가짜(☁️🧻🥚👹💀…)를 누르면 감점 (30초)'],['ink','🎯 잉크 찍기','움직이는 바늘이 가운데 올 때 눌러요 (10번, 점점 빨라져요)'],['fly','🦇 유령 날기','블랙고스트마을 밤하늘을 날아요! 누를 때마다 날아올라 비석 틈으로 빠져나가요 (틈이 점점 좁아져요)'],['stack','🎃 호박 탑 쌓기','움직이는 호박 상자가 아래 칸과 겹칠 때 눌러요. 딱 맞추면 보너스! 맨 위엔 내 유령이 올라타요'],['memory','🃏 유령 짝 맞추기','다 맞추면 다음 단계! 단계마다 카드가 늘고 시간은 다시 채워져요']];
 const wkKey=d=>{const dt=new Date(d+'T00:00:00');dt.setDate(dt.getDate()-(dt.getDay()+6)%7);return dt.toLocaleDateString('sv')};
 // v1.50 추가 배포(10-16): 한 판 포인트 제한 없앰(점수만큼), 게임마다 보통 실력이면 10쯤 받게 맞춤. 대신 게임마다 하루 10판(GDAY)
 const GPDIV={match:300,merge:400,jump:3,candy:4,mole:2.5,ink:6,fly:1.2,stack:2,memory:25},GDAY=10;
@@ -1185,7 +1185,7 @@ if(k=='memory'){const top=28,pad=4,E=['ME','🎃','🍬','🦇','💀','🕯️'
    if(show){if(E[cd.v]=='ME')gDrawMe(c,0,0,S*.55);else{c.font=Math.floor(S*.52)+'px sans-serif';c.fillText(E[cd.v],0,2)}}else{c.fillStyle='#ffd34d';c.font='bold '+Math.floor(S*.38)+'px sans-serif';c.fillText('?',0,2)}c.restore()});
   if(left<=0&&!g.end&&!g.trans){g.end=1;return gameOver(g)}requestAnimationFrame(loop)};sc();return requestAnimationFrame(loop)}
 // 💥 유령 팡 (3개 맞추기): 밀거나 두 칸을 차례로 눌러 바꾸기, 터지면 위에서 떨어짐, 연속 콤보 점수
-if(k=='match'){const N=7,E=['👻','🎃','🍬','🦇','💀','🕯️'],cs=W/N,top=28;g.b=[];g.off=[];g.pop=[];g.combo=0;g.busy=0;g.sel=null;g.end=0;g.tl=60;g.mc=0;g.lt=performance.now();g.fz=g.lt+3000;
+if(k=='match'){const N=7,E=['👻','🎃','🍬','🦇','💀','🕯️'],cs=W/N,top=28;g.b=[];g.off=[];g.pop=[];g.combo=0;g.busy=0;g.sel=null;g.end=0;g.tl=10;g.mc=0;g.lt=performance.now();g.fz=g.lt+3000;
  // 10-16: 맞추면 시계가 멈추고, 멈춤 시간(처음 3초, 맞출수록 조금씩 줄어 최소 1.5초) 안에 못 맞추면 다시 흐름
  const grace=()=>Math.max(1500,3000-g.mc*50);
  const mk=()=>{for(let r=0;r<N;r++){g.b[r]=[];g.off[r]=[];for(let x=0;x<N;x++){let v;do{v=Math.floor(Math.random()*E.length)}while((x>1&&g.b[r][x-1]==v&&g.b[r][x-2]==v)||(r>1&&g.b[r-1][x]==v&&g.b[r-2][x]==v));g.b[r][x]=v;g.off[r][x]=-(N+1)*cs}}};
@@ -1203,7 +1203,7 @@ if(k=='match'){const N=7,E=['👻','🎃','🍬','🦇','💀','🕯️'],cs=W/N
  cv.onpointerup=e=>{if(!st)return;const dx=px(e)-st.x,dy=py(e)-st.y,a=st.c;st=null;if(a[0]<0||a[0]>=N)return;if(Math.max(Math.abs(dx),Math.abs(dy))>cs*.35){const b=Math.abs(dx)>Math.abs(dy)?[a[0],a[1]+Math.sign(dx)]:[a[0]+Math.sign(dy),a[1]];return tryS(a,b)}
   if(g.sel&&Math.abs(g.sel[0]-a[0])+Math.abs(g.sel[1]-a[1])==1)return tryS(g.sel,a);g.sel=g.sel&&g.sel[0]==a[0]&&g.sel[1]==a[1]?null:a};
  mk();
- const loop=()=>{if(!alive())return;const now=performance.now(),fr=g.busy||now<g.fz;if(!fr)g.tl=Math.max(0,g.tl-(now-g.lt)/1000);g.lt=now;const left=g.tl;c.fillStyle='#15131c';c.fillRect(0,0,W,H);c.fillStyle='#2a2635';c.fillRect(0,0,W,10);c.fillStyle=fr?'#ffd34d':left<10?'#ff5f6d':'#58c2a6';c.fillRect(0,0,W*left/60,10);
+ const loop=()=>{if(!alive())return;const now=performance.now(),fr=g.busy||now<g.fz;if(!fr)g.tl=Math.max(0,g.tl-(now-g.lt)/1000);g.lt=now;const left=g.tl;c.fillStyle='#15131c';c.fillRect(0,0,W,H);c.fillStyle='#2a2635';c.fillRect(0,0,W,10);c.fillStyle=fr?'#ffd34d':left<10?'#ff5f6d':'#58c2a6';c.fillRect(0,0,W*left/10,10);
   c.fillStyle='#fff';c.font='13px sans-serif';c.fillText((fr?'⏸ 멈춤 · ':'⏱ ')+Math.ceil(left)+'초',W/2,20);c.font=Math.floor(cs*.72)+'px sans-serif';
   for(let r=0;r<N;r++)for(let x=0;x<N;x++){c.fillStyle=(r+x)%2?'#1d1a27':'#221f2e';c.fillRect(x*cs,top+r*cs,cs,cs);if(g.sel&&g.sel[0]==r&&g.sel[1]==x){c.fillStyle='#ffd34d55';c.fillRect(x*cs,top+r*cs,cs,cs)}
    const v=g.b[r][x];if(v<0)continue;if(g.off[r][x]<0)g.off[r][x]=Math.min(0,g.off[r][x]+cs*.22);let sx=0;if(g.shake&&g.shake.t>0&&((g.shake.a[0]==r&&g.shake.a[1]==x)||(g.shake.b[0]==r&&g.shake.b[1]==x)))sx=Math.sin(g.shake.t*1.8)*4;if(v==0)gDrawMe(c,x*cs+cs/2+sx,top+r*cs+cs/2+g.off[r][x],cs*.7);else c.fillText(E[v],x*cs+cs/2+sx,top+r*cs+cs/2+g.off[r][x])}
@@ -1687,7 +1687,7 @@ function bell(n,t,v){const f=NF(n);vo('sine',f,t,2.2,v,.004,(Math.random()-.5)*6
 function padC(ch,t,dur){const lp=AC.createBiquadFilter();lp.type='lowpass';lp.frequency.setValueAtTime(500,t);lp.frequency.linearRampToValueAtTime(1100,t+dur*.5);lp.frequency.linearRampToValueAtTime(600,t+dur);lp.connect(bus);
  ch.forEach(n=>[-7,7].forEach(d=>{const o=AC.createOscillator(),g=AC.createGain();o.type='sawtooth';o.frequency.value=NF(n);o.detune.value=d;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.022,t+.5);g.gain.setValueAtTime(.022,t+dur-.3);g.gain.linearRampToValueAtTime(0,t+dur+.4);o.connect(g);g.connect(lp);o.start(t);o.stop(t+dur+.5)}))}
 function bassN(n,t){const o=AC.createOscillator(),g=AC.createGain(),lp=AC.createBiquadFilter();lp.type='lowpass';lp.frequency.value=420;o.type='triangle';o.frequency.value=NF(n);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.16,t+.01);g.gain.exponentialRampToValueAtTime(.001,t+.55);o.connect(lp);lp.connect(g);g.connect(bus);o.start(t);o.stop(t+.6)}
-function nz(t,v,ty,f,d){const s=AC.createBufferSource();s.buffer=noise;const fl=AC.createBiquadFilter();fl.type=ty;fl.frequency.value=f;const g=AC.createGain();g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.0005,t+d);s.connect(fl);fl.connect(g);g.connect(OUT||bus);s.start(t);s.stop(t+d+.02)}
+function nz(t,v,ty,f,d){const s=AC.createBufferSource();s.buffer=noise;const fl=AC.createBiquadFilter();fl.type=ty;fl.frequency.value=f;const g=AC.createGain();if(ty=='highpass'){v*=.55;f=Math.min(f,5500)}fl.frequency.value=f;g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(v,t+.004);g.gain.exponentialRampToValueAtTime(.0005,t+d+.004);s.connect(fl);fl.connect(g);g.connect(OUT||bus);s.start(t);s.stop(t+d+.02)}
 function kik(t){const o=AC.createOscillator(),g=AC.createGain();o.frequency.setValueAtTime(110,t);o.frequency.exponentialRampToValueAtTime(42,t+.18);g.gain.setValueAtTime(.22,t);g.gain.exponentialRampToValueAtTime(.001,t+.25);o.connect(g);g.connect(OUT||bus);o.start(t);o.stop(t+.3)}
 const TR=[{n:'🎵 오르골 마을',bpm:92,sp:16,ch:CHD,mel:MEL,ld:'bell',k:'box'},
  {n:'🎹 잔잔한 피아노',bpm:70,sp:16,k:'piano',ld:'piano',ch:[[60,64,67],[57,60,64],[53,57,60],[55,59,62],[60,64,67],[57,60,64],[50,53,57],[55,59,62]],
@@ -1705,7 +1705,10 @@ const GT={match:{bpm:150,sp:16,k:'chip',ch:[[60,64,67],[57,60,64],[53,57,60],[55
  ink:{bpm:100,sp:16,k:'piano',ch:[[57,64,69],[55,62,67],[53,60,65],[52,59,64]],mel:['81 . 79 . 76 . 74 . 76 . . . 69 . . .','79 . 76 . 74 . 72 . 74 . . . 67 . . .','77 . 76 . 74 . 72 . 69 . 72 . 74 . . .','76 . . . 71 . 74 . 76 . . . . . . .'].map(MM)}};
 GT.fly=GT.jump;GT.stack=GT.candy;GT.memory=GT.merge; // v1.49 새 게임은 기존 곡을 나눠 씀
 function lead(ty,n,t,v){const f=NF(n);if(ty=='piano'){vo('triangle',f,t,1.8,v||.12,.004);vo('sine',f*2,t,.7,(v||.12)*.25,.004)}else if(ty=='sq'){vo('square',f,t,.16,(v||.12)*.38,.004)}else bell(n,t,v||.13)}
-function sch(){const T=gk&&GT[gk]||TR[tr],S=60/T.bpm/4,nb=T.mel.length;while(nextT<AC.currentTime+.3){const bar=Math.floor(step/T.sp)%nb,i=step%T.sp,l2=Math.floor(step/(T.sp*nb))%2,ch=T.ch[bar],n=T.mel[bar][i],t=nextT;
+function sch(){const T=gk&&GT[gk]||TR[tr],S=60/T.bpm/4,nb=T.mel.length;
+ // 10-16: 폰이 바빠 예약이 늦어지면 지나간 음표는 건너뜀(한꺼번에 몰려 '틱틱' 나던 문제), 미리 예약 0.5초
+ if(nextT<AC.currentTime+.02){const k=Math.ceil((AC.currentTime+.05-nextT)/S);step+=k;nextT+=k*S}
+ while(nextT<AC.currentTime+.5){const bar=Math.floor(step/T.sp)%nb,i=step%T.sp,l2=Math.floor(step/(T.sp*nb))%2,ch=T.ch[bar],n=T.mel[bar][i],t=nextT;
  if(T.k=='box'){if(i==0)padC(ch,t,S*16);if(n)bell(n,t,.13);if(l2&&i%2==0&&!n)bell(ch[(i/2)%ch.length]+24,t,.025);
   if(i==0||i==10)bassN(ch[0]-12,t);if(i==6||i==14)bassN(ch[0],t);
   if(bar>=2||l2){if(i%4==0)nz(t,.035,'highpass',7000,.05);if(i%2==1)nz(t,.012,'highpass',7000,.05);if(i==0||i==8)kik(t);if(i==4||i==12)nz(t,.09,'bandpass',1800,.12)}}
