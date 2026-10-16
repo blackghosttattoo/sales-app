@@ -94,7 +94,7 @@ run(`beds={b1:{st:'off',at:new Date(Date.now()-5*60000),up:new Date()},b2:{st:'o
 ok('베드: 나간 지 20분 안 = 잠시 비움, 넘으면 비어 있음', /잠시 비움/.test(out()) && /비어 있음/.test(out()));
 run(`beds={}`);
 // v1.43 게임·꾸미기: 한 판 포인트 상한 20, 하루 제한 없음, 유령 색
-ok('게임 포인트: 한 판 제한 없음(점수만큼), 보통 실력이면 10쯤', run(`gpOf('match',3000)`) === 10 && run(`gpOf('jump',30)`) === 10 && run(`gpOf('memory',160)`) === 10 && run(`gpOf('merge',399)`) === 0 && run(`gpOf('match',30000)`) === 100);
+ok('게임 포인트: 한 판 제한 없음(점수만큼), 보통 실력이면 10쯤', run(`gpOf('match',3000)`) === 10 && run(`gpOf('jump',30)`) === 10 && run(`gpOf('memory',250)`) === 10 && run(`gpOf('merge',399)`) === 0 && run(`gpOf('match',30000)`) === 100);
 ok('꾸미기 19개·유령 색 10개', run(`PSHOP.length`) >= 19 && run(`PCOL.length`) === 10 && /fill="#3a3846"/.test(run(`ghostSvg(2,'cape',false,'','ink')`)));
 // 블랙고스트마을 (v1.39): 타투이스트 첫 화면 = 마을, 건물 탭 위에 건물 안 그림, 대장이 끄면 예전 내현황
 run(`me=Object.assign({},users.w1);delete cfg.vil;tab='home';draw()`); ok('마을: 타투이스트 첫 화면', /id="vslot"/.test(out()) && /마을/.test(out()));
