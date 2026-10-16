@@ -209,16 +209,17 @@ service cloud.firestore {
           && n.get('own', []) is list && n.get('own', []).size() <= 40
           && n.get('wkp', 0) is int && n.get('wkp', 0) >= 0 && n.get('wkp', 0) <= 30000
           && txt(n.get('wkw', ''), 10) && txt(n.get('gday', ''), 10)
-          && n.get('best', {}) is map && n.get('best', {}).size() <= 10;
+          && n.get('best', {}) is map && n.get('best', {}).size() <= 10
+          && n.get('wbest', {}) is map && n.get('wbest', {}).size() <= 10;
       }
       allow read: if active();
       allow create: if admin()
         || (active() && request.auth.uid == u
-            && request.resource.data.keys().hasOnly(['name', 'deco', 'col', 'face', 'mis', 'at', 'gday', 'gtod', 'gpt', 'gps', 'own', 'wkw', 'wkp', 'best'])
+            && request.resource.data.keys().hasOnly(['name', 'deco', 'col', 'face', 'mis', 'at', 'gday', 'gtod', 'gpt', 'gps', 'own', 'wkw', 'wkp', 'best', 'wbest'])
             && petOk(request.resource.data) && gameOk(request.resource.data, {}));
       allow update: if admin()
         || (active() && request.auth.uid == u
-            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name', 'deco', 'col', 'face', 'mis', 'at', 'gday', 'gtod', 'gpt', 'gps', 'own', 'wkw', 'wkp', 'best'])
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name', 'deco', 'col', 'face', 'mis', 'at', 'gday', 'gtod', 'gpt', 'gps', 'own', 'wkw', 'wkp', 'best', 'wbest'])
             && petOk(request.resource.data) && gameOk(request.resource.data, resource.data));
       allow delete: if admin();
     }

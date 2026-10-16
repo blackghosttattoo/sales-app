@@ -207,6 +207,7 @@
 - 🎟️ 게임 복권: 포인트 받은 판에서 3%(`GTIXP`) 주움 → localStorage `gTix_uid`(장수, 최대 9)·`gTixP_uid`(지금 복권 결과, 열 때 한 번 정함). `gTixOpen` 은박 긁기(캔버스 destination-out, 55% 긁으면 공개) → `gTixWin`: 꽝25%·10·20·30·50·100(3%)포인트(`GTPZ`), gpt·gtod에 더해 저장(wkp=게임왕엔 안 넣음), 실패 시 복권 되돌림. 게임 포인트라 성장·꾸미기에만. 효과음 tix·scr·win·lose·flap.
 - **규칙 변경**: pets gameOk 한 번 저장 gain ≤20 → **≤100**(복권 당첨). 에뮬레이터 19개 시험 통과.
 - (v1.49 추가 배포, 버전 그대로) **꾸미기 여러 개 같이 입기**: `pets.deco`='wing,glasses,cap' 쉼표 목록. 자리 `DSL`(h 머리·t 머리 위·p 핀·e 눈·c 볼·n 목·b 몸·r 손·s 옆·k 등·a 오라, legend='hrka'·wizard='hk') — 같은 자리는 하나만(`dHit`), `decoOk`가 검사·정리, `ghostSvg`가 여러 개 순서대로(`dOrd`) 그림. `decoTog(k,l)` 입기/벗기 확인창(같은 자리 벗는 것 안내) → `decoBack`, '모두 벗기'(PDECO ''), 상점 구매도 다른 꾸미기와 같이 입음. **유령 색 팔레트**: `PSW` 30색 + `<input type=color>` 직접 만들기 → `col`='#rrggbb'(`isHex`, `colHex`), 어두운 색이면 흰 눈(`colDk`). **규칙 변경**: pets deco 12 → 120자(에뮬레이터 통과).
+- (v1.49 추가 배포 2, 10-16, 버전 그대로) **게임별 실시간 랭킹**: 게임 창 아래 `#grank`(`gRankHtml(k)`, 탭 `gRk` 역대 최고=`pets.best` / 이번 주=`pets.wbest`(wkw가 이번 주일 때만, 월요일마다 새로)), 상위 5명 + 내가 6위 밑이면 내 줄, 유령 그림·닉네임. `loadPets` 실시간 연결이 바뀌면 `gRankUpd()`. 게임 끝나면 '역대 N위 · 이번 주 N위'(1등이면 👑). 게임 버튼에 👑 1등 표시. 점수는 폰에서 계산돼 조작 가능(게임용이라 그대로 둠). **규칙 변경**: pets `wbest`(map, 10개 이하) 허용(에뮬레이터 통과).
 - 화면 확대 막기: viewport `maximum-scale=1, user-scalable=no`, 맨 앞 작은 script에서 `gesturestart`·두 손가락 touchmove 막기(아이폰), `html{touch-action:manipulation}`(두 번 톡톡). guide·care는 그대로(확대 가능).
 
 ## 임시 보관 (차근차근 만들 프로젝트 — 대기 목록과 별개)
