@@ -4,6 +4,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>블랙고스트타투(전용)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<script>try{document.fonts&&document.fonts.load('20px "Do Hyeon"');document.fonts&&document.fonts.load('15px "Noto Sans KR"')}catch(e){}</script>
 <link rel="manifest" href="manifest.json?v=26"><link rel="icon" type="image/png" href="icons/favicon-48.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="theme-color" content="#000000"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="블랙고스트타투(전용)"><meta name="apple-mobile-web-app-status-bar-style" content="black">
 <style>
@@ -26,7 +27,7 @@
 main{max-width:720px;margin:0 auto;padding:calc(10px + env(safe-area-inset-top)) 12px calc(96px + env(safe-area-inset-bottom))}
 .card{background:var(--card);border:1px solid var(--ln);border-radius:14px;padding:14px;margin-bottom:12px}
 h2{font-size:17px;margin:0 0 10px;font-family:"Do Hyeon","Noto Sans KR",sans-serif;font-weight:400;letter-spacing:.01em}
-.hi,.big,.vht,.gnav .gl{font-family:"Do Hyeon","Noto Sans KR",sans-serif;font-weight:400!important;letter-spacing:.01em}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.hi,.big,.vht,.gnav .gl,h3,.hf,#gsc,.vtop b,.vhtop b,b[style*="font-size:17px"],b[style*="font-size:20px"],[style*="font-size:24px"]{font-family:"Do Hyeon","Noto Sans KR",sans-serif;font-weight:400!important;letter-spacing:.01em}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 button{border:1px solid var(--ln);background:var(--card);color:var(--tx);border-radius:10px;padding:9px 12px;font:inherit;cursor:pointer}
 button.on,button.p{background:var(--ac);border-color:var(--ac);color:var(--onac)}
 button.d{color:var(--dg);border-color:var(--dg)}button.s{padding:5px 10px;font-size:13px}
@@ -97,7 +98,7 @@ html{touch-action:manipulation}
 .tbl{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:13px}th,td{padding:7px 6px;border-bottom:1px solid var(--ln);text-align:left;white-space:nowrap}th{color:var(--mu);font-weight:500}
 @media (max-width:680px){.tbl.rs{overflow:visible}.tbl.rs table,.tbl.rs tbody,.tbl.rs tr,.tbl.rs td{display:block;width:100%}.tbl.rs tr.hd{display:none}.tbl.rs tr{border:1px solid var(--ln);border-radius:12px;padding:6px 10px;margin:8px 0;background:var(--bg)}.tbl.rs td{display:flex;gap:10px;justify-content:space-between;align-items:center;border:0;padding:4px 0;white-space:normal;text-align:right}.tbl.rs td::before{content:attr(data-l);color:var(--mu);font-size:12px;text-align:left;flex:0 0 auto}.tbl.rs td[data-l=""]::before{display:none}.tbl.rs td[data-l=""]{justify-content:flex-end}}
 .fold>h2{cursor:pointer;margin:0}.fold>h2::after{content:'＋';float:right;color:var(--mu)}.fold.open>h2{margin-bottom:10px}.fold.open>h2::after{content:'－'}
-.fold.hot>h2{background:var(--ac);color:var(--onac);padding:13px 14px;border-radius:10px;text-align:center;font-weight:700}
+.fold.hot>h2{background:var(--ac);color:var(--onac);padding:13px 14px;border-radius:10px;text-align:center}
 .fold.hot>h2::after{content:'';float:none}
 .fold.hot.open>h2{background:transparent;color:var(--ac);padding:0;text-align:left}
 .fold.hot.open>h2::after{content:'－';float:right;color:var(--mu)}.fold:not(.open)>:not(h2){display:none}
@@ -468,7 +469,7 @@ return `<div class="card"><h2>📷 리뷰 사진 정리 (${m})</h2><p class="mu"
 async function imgDl(m){const l=imgList(m);if(!l.length)return;const rows=[];
 for(const x of l){let im=String(x.img).startsWith('data:')?x.img:'';if(!im){const d=await db.doc('saleImg/'+x.id).get().catch(()=>null);if(d&&d.exists)im=cl(d.data()).img}if(String(im).startsWith('data:image/'))rows.push({x,im})}
 if(!rows.length)return toast('받을 수 있는 사진이 없어요');
-const h=`<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>리뷰 사진 ${m}</title><style>body{font-family:sans-serif;margin:12px;background:#111;color:#eee}figure{margin:0 0 20px}img{max-width:100%;border-radius:8px}figcaption{font-size:14px;margin-top:4px;color:#bbb}</style></head><body><h2>BLACKGHOST 리뷰 사진 · ${m} (${rows.length}장)</h2>`+rows.map(({x,im})=>`<figure><img src="${im}"><figcaption>${x.d} · ${nm(x.uid)}${x.buyer?' · '+esc(x.buyer):''}${x.ch?' · '+(x.ch=='naver'?'네이버':'구글'):''}${x.rid?' · '+esc(x.rid):''}${x.rn?' · '+esc(x.rn):''}</figcaption></figure>`).join('')+'</body></html>';
+const h=`<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>리뷰 사진 ${m}</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Noto+Sans+KR:wght@400;700&display=swap"><style>h2{font-family:"Do Hyeon",sans-serif;font-weight:400}body{font-family:"Noto Sans KR",sans-serif;margin:12px;background:#111;color:#eee}figure{margin:0 0 20px}img{max-width:100%;border-radius:8px}figcaption{font-size:14px;margin-top:4px;color:#bbb}</style></head><body><h2>BLACKGHOST 리뷰 사진 · ${m} (${rows.length}장)</h2>`+rows.map(({x,im})=>`<figure><img src="${im}"><figcaption>${x.d} · ${nm(x.uid)}${x.buyer?' · '+esc(x.buyer):''}${x.ch?' · '+(x.ch=='naver'?'네이버':'구글'):''}${x.rid?' · '+esc(x.rid):''}${x.rn?' · '+esc(x.rn):''}</figcaption></figure>`).join('')+'</body></html>';
 bkSave('리뷰사진_'+m+'.html',h,'text/html');imgGot[m]=rows.map(r=>r.x.id);draw();toast('사진 '+rows.length+'장을 한 파일로 받았어요.\n파일을 열어 사진이 잘 보이는지 확인한 뒤 ② 지우기를 눌러 주세요.')}
 async function imgDel(m){const ids=imgGot[m];if(!ids||!ids.length)return toast('먼저 ① 사진 받기를 눌러 주세요');if(!confirm('받은 사진 '+ids.length+'장을 앱에서 지울까요?\n\n판매 기록은 그대로 남고 사진 자리에 "정리됨"으로 표시돼요. 되돌릴 수 없어요.'))return;
 try{for(let i=0;i<ids.length;i+=200){const b=db.batch();ids.slice(i,i+200).forEach(id=>{b.delete(db.doc('saleImg/'+id));b.update(db.doc('sales/'+id),{img:'done',imgDone:today()})});await b.commit()}
@@ -1012,7 +1013,7 @@ function rPart(slot,set){const P=RP[set]||RP.basic;switch(slot){
   :set=='tat'?`${gl()}<path d="M300 204v-46" stroke="#555" stroke-width="3"/><circle cx="300" cy="140" r="18" fill="none" stroke="#fffbe6" stroke-width="6"/><path d="M288 204h24" stroke="#555" stroke-width="3"/>`
   :set=='forest'?`${gl()}<path d="M300 118v8" stroke="#3a2614" stroke-width="2"/><path d="M288 130h24l-4 30h-16z" fill="#3a2614"/><rect x="292" y="134" width="16" height="22" fill="#ffd36b"/><path d="M286 162h28" stroke="#3a2614" stroke-width="4"/><path d="M300 162v40" stroke="#3a2614" stroke-width="3"/>`
   :`${gl()}<path d="M300 200v-50" stroke="#3a2a22" stroke-width="3"/><path d="M286 152h28l-6-18h-16z" fill="#f2e3b8"/><ellipse cx="300" cy="202" rx="12" ry="3" fill="#2a1a22"/>`}
- case 'rug':return set=='tat'?`<ellipse cx="190" cy="216" rx="74" ry="18" fill="${P.rug[0]}"/><ellipse cx="190" cy="216" rx="60" ry="12" fill="none" stroke="${P.rug[1]}" stroke-width="2"/><text x="190" y="221" text-anchor="middle" font-size="12" font-weight="700" fill="${P.rug[1]}" font-family="serif">BG</text>`
+ case 'rug':return set=='tat'?`<ellipse cx="190" cy="216" rx="74" ry="18" fill="${P.rug[0]}"/><ellipse cx="190" cy="216" rx="60" ry="12" fill="none" stroke="${P.rug[1]}" stroke-width="2"/><text x="190" y="221" text-anchor="middle" font-size="12" fill="${P.rug[1]}" font-family="Do Hyeon,sans-serif">BG</text>`
   :set=='hall'?`<ellipse cx="190" cy="216" rx="74" ry="18" fill="#4a2a80"/><path d="M116 216h148M190 198v36M138 204l104 24M138 228l104-24" stroke="#8f5fd6" stroke-width="1.2"/><ellipse cx="190" cy="216" rx="40" ry="9" fill="none" stroke="#8f5fd6" stroke-width="1.2"/>`
   :`<ellipse cx="190" cy="216" rx="74" ry="18" fill="${P.rug[0]}"/><ellipse cx="190" cy="216" rx="60" ry="12" fill="${P.rug[1]}"/>${set=='forest'?'<ellipse cx="190" cy="216" rx="40" ry="7" fill="none" stroke="#5a7a2a" stroke-width="2"/>':''}`;
  case 'shelf':{const b=`<rect x="258" y="70" width="78" height="6" fill="${set=='tat'?'#d4af37':'#7a5a3a'}"/>`;
@@ -1105,7 +1106,7 @@ $('#mb').innerHTML=`<h2>${g[1]}</h2><p class="mu" id="gmsg">${g[2]}</p><p class=
 let gRk='all';
 const gRankL=(k,t)=>{const wk=wkKey(today());return Object.entries(pets).filter(([id])=>id==me.id||users[id]||roster[id]).map(([id,x])=>[id,x,+((t=='wk'?(x.wkw==wk?x.wbest:null):x.best)||{})[k]||0]).filter(r=>r[2]>0).sort((a,b)=>b[2]-a[2])};
 function gRankHtml(k){const L=gRankL(k,gRk),mi=L.findIndex(r=>r[0]==me.id),row=(r,i)=>`<div class="grr${r[0]==me.id?' me':''}" onclick="petPeek('${r[0]}','${k}')"><span class="grn">${['🥇','🥈','🥉'][i]||(i+1)+'위'}</span><span style="width:26px;flex-shrink:0;display:block">${ghostSvg(+r[1].st||0,r[1].deco||'',false,'',r[1].col,r[1].face)}</span><span class="grm">${esc(nm(r[0]))}${r[0]==me.id?' (나)':''}</span><b>${r[2]}점</b></div>`;
- return `<div class="row" style="justify-content:space-between;margin:12px 0 4px"><b>🏆 랭킹</b><span><button class="s ${gRk=='all'?'on':''}" onclick="gRkSet('all')">역대 최고</button> <button class="s ${gRk=='wk'?'on':''}" onclick="gRkSet('wk')">이번 주</button></span></div>${L.slice(0,5).map(row).join('')||`<p class="mu">${gRk=='wk'?'이번 주':'아직'} 기록이 없어요. 첫 1등이 되어 보세요! 👑</p>`}${mi>=5?`<div class="mu" style="text-align:center">⋯</div>`+row(L[mi],mi):''}${gRk=='wk'?'<p class="mu" style="font-size:11px;margin-top:4px">이번 주 순위는 월요일마다 새로 시작해요</p>':''}`}
+ return `<div class="row" style="justify-content:space-between;margin:12px 0 4px"><b class="hf">🏆 랭킹</b><span><button class="s ${gRk=='all'?'on':''}" onclick="gRkSet('all')">역대 최고</button> <button class="s ${gRk=='wk'?'on':''}" onclick="gRkSet('wk')">이번 주</button></span></div>${L.slice(0,5).map(row).join('')||`<p class="mu">${gRk=='wk'?'이번 주':'아직'} 기록이 없어요. 첫 1등이 되어 보세요! 👑</p>`}${mi>=5?`<div class="mu" style="text-align:center">⋯</div>`+row(L[mi],mi):''}${gRk=='wk'?'<p class="mu" style="font-size:11px;margin-top:4px">이번 주 순위는 월요일마다 새로 시작해요</p>':''}`}
 function gRankUpd(){const e=document.getElementById&&$('#grank');if(e)e.innerHTML=gRankHtml(e.dataset.k)}
 function gRkSet(t){gRk=t;gRankUpd()}
 function gameClose(){if(G)G.stop=true;G=null;GE();closeM();draw()}
@@ -1132,23 +1133,23 @@ if(k=='jump'){g.y=0;g.vy=0;g.ob=[];g.sp=4;g.nx=60;g.dj=0;cv.onpointerdown=()=>{i
    if(Math.random()<.035)g.ob.push({x:W+20+Math.random()*120,tix:1,h:70+Math.random()*60});const wide=g.ob[g.ob.length-1].w>30;g.nx=Math.floor(Math.max(48,60+Math.random()*55-Math.min(g.sc,30)*1.1))+(wide?14:0)}
   g.sp=4+Math.min(g.sc,40)*0.11;
   c.fillStyle='#15131c';c.fillRect(0,0,W,H);c.fillStyle='#2a2635';c.fillRect(0,H-40,W,40);gDrawMe(c,60,H-62-g.y,40);
-  for(const o of g.ob){o.x-=g.sp;if(o.tix){if(!o.got){c.font='26px sans-serif';c.fillText('🎟️',o.x,H-62-o.h);if(Math.abs(o.x-60)<26&&Math.abs(g.y-o.h)<30){o.got=1;gTixGot(g)}}continue}
-   c.font='32px sans-serif';if(o.two){c.fillText('🪦',o.x,H-58);c.fillText('🪦',o.x,H-92)}else c.fillText(o.e,o.x,H-58-o.h);
+  for(const o of g.ob){o.x-=g.sp;if(o.tix){if(!o.got){c.font='26px "Noto Sans KR",sans-serif';c.fillText('🎟️',o.x,H-62-o.h);if(Math.abs(o.x-60)<26&&Math.abs(g.y-o.h)<30){o.got=1;gTixGot(g)}}continue}
+   c.font='32px "Noto Sans KR",sans-serif';if(o.two){c.fillText('🪦',o.x,H-58);c.fillText('🪦',o.x,H-92)}else c.fillText(o.e,o.x,H-58-o.h);
    if(!o.p&&o.x<40){o.p=1;g.sc++;sc();if(g.sc%10==0)GS('great');else GS('pt')}
    if(Math.abs(o.x-60)<(o.bat?26:o.w+4)&&(o.bat?g.y>40&&g.y<100:g.y<o.t))return gameOver(g)}
-  g.ob=g.ob.filter(o=>o.x>-50&&!o.got);c.fillStyle='#ffffff66';c.font='11px sans-serif';c.fillText('공중에서 한 번 더 누르면 2단 점프',W/2,14);requestAnimationFrame(loop)};sc();return requestAnimationFrame(loop)}
+  g.ob=g.ob.filter(o=>o.x>-50&&!o.got);c.fillStyle='#ffffff66';c.font='11px "Noto Sans KR",sans-serif';c.fillText('공중에서 한 번 더 누르면 2단 점프',W/2,14);requestAnimationFrame(loop)};sc();return requestAnimationFrame(loop)}
 if(k=='candy'){g.x=W/2;g.it=[];g.life=3;g.nx=30;g.inv=0;const mv=e=>{g.x=Math.max(20,Math.min(W-20,px(e)))};cv.onpointerdown=mv;cv.onpointermove=e=>{if(e.buttons||e.pointerType=='touch')mv(e)};
  // 아이템(10-16): 🍬+1 🍭+3 🍫+5 ⭐5초 무적 ❤️목숨+1(최대5) / 💣목숨−1 🧄점수−3 / 🎟️ 아주 가끔 복권. 아주 조금씩 어려워짐(점수 120까지)
  const IC={candy:'🍬',lolli:'🍭',choco:'🍫',star:'⭐',heart:'❤️',b:'💣',garlic:'🧄',tix:'🎟️'};
  const pick=()=>{const v=Math.min(g.sc,120),pb=Math.min(.3,.12+v*.0015),pg=g.sc>=10?Math.min(.1,.03+v*.0006):0,r=Math.random();if(r<pb)return 'b';if(r<pb+pg)return 'garlic';const q=Math.random();if(q<.004)return 'tix';if(q<.02)return g.life<5?'heart':'candy';if(q<.045)return 'star';if(q<.085)return 'choco';if(q<.15)return 'lolli';return 'candy'};
  const loop=()=>{if(!alive())return;const now=performance.now(),v=Math.min(g.sc,120);if(--g.nx<=0){const t=pick();g.it.push({x:20+Math.random()*(W-40),y:-20,t,v:2.2+Math.random()*1.5+v*0.022,w:gLv(g)>=4?(Math.random()-.5)*Math.min(2.4,.8+v*.012):0});g.nx=Math.max(16,34-v*.15)}
-  c.fillStyle='#15131c';c.fillRect(0,0,W,H);const inv=g.inv>now;if(inv){c.save();c.globalAlpha=.35+.25*Math.sin(now/80);c.fillStyle='#ffd34d';c.beginPath();c.arc(g.x,H-34,30,0,7);c.fill();c.restore()}gDrawMe(c,g.x,H-32,42);c.font='28px sans-serif';
+  c.fillStyle='#15131c';c.fillRect(0,0,W,H);const inv=g.inv>now;if(inv){c.save();c.globalAlpha=.35+.25*Math.sin(now/80);c.fillStyle='#ffd34d';c.beginPath();c.arc(g.x,H-34,30,0,7);c.fill();c.restore()}gDrawMe(c,g.x,H-32,42);c.font='28px "Noto Sans KR",sans-serif';
   for(const o of g.it){o.y+=o.v;o.x=Math.max(14,Math.min(W-14,o.x+o.w));c.fillText(IC[o.t],o.x,o.y);if(!o.d&&o.y>H-55&&o.y<H-10&&Math.abs(o.x-g.x)<30){o.d=1;const T=o.t;
    if(T=='b'){if(inv)GS('pt');else{g.life--;GS('bad');if(g.life<=0){sc();return gameOver(g)}}}else if(T=='garlic'){if(!inv){g.sc=Math.max(0,g.sc-3);GS('bad')}}else if(T=='tix')gTixGot(g);else if(T=='heart'){g.life=Math.min(5,g.life+1);GS('gold')}else if(T=='star'){g.inv=now+5000;GS('great')}else{g.sc+=T=='choco'?5:T=='lolli'?3:1;GS(T=='candy'?'eat':'gold')}sc()}}
-  g.it=g.it.filter(o=>!o.d&&o.y<H+30);if(inv){c.fillStyle='#ffd34d';c.font='bold 13px sans-serif';c.fillText('⭐ 무적 '+Math.ceil((g.inv-now)/1000)+'초',W/2,16)}requestAnimationFrame(loop)};sc();return requestAnimationFrame(loop)}
+  g.it=g.it.filter(o=>!o.d&&o.y<H+30);if(inv){c.fillStyle='#ffd34d';c.font='13px "Do Hyeon",sans-serif';c.fillText('⭐ 무적 '+Math.ceil((g.inv-now)/1000)+'초',W/2,16)}requestAnimationFrame(loop)};sc();return requestAnimationFrame(loop)}
 if(k=='ink'){g.n=0;g.ph=0;g.hit=null;cv.onpointerdown=()=>{if(g.n>=10||g.wait)return;const pos=(Math.sin(g.ph)+1)/2,d=Math.abs(pos-.5)*2,pt=Math.max(0,Math.round(10-d*20));g.sc+=pt;g.n++;g.hit={pos,pt,t:30};sc();GS(pt>=9?'great':pt>0?'pt':'miss');const m=$('#gmsg');if(m)m.textContent=(pt>=9?'완벽해요! ':pt>=5?'좋아요! ':pt>0?'아깝다! ':'빗나갔어요 ')+'+'+pt+' · '+g.n+'/10';if(g.n>=10){g.wait=1;setTimeout(()=>gameOver(g),700)}};
 const loop=()=>{if(!alive())return;g.ph+=0.05+g.n*0.008;const pos=(Math.sin(g.ph)+1)/2;c.fillStyle='#15131c';c.fillRect(0,0,W,H);const y=H/2,x0=30,x1=W-30,zw=Math.max(.04,.1-g.n*.006);c.fillStyle='#2a2635';c.fillRect(x0,y-14,x1-x0,28);c.fillStyle='#3d8f78';c.fillRect(W/2-(x1-x0)*zw/2,y-14,(x1-x0)*zw,28);c.fillStyle='#d4af37';c.fillRect(W/2-(x1-x0)*0.02,y-14,(x1-x0)*0.04,28);
-c.font='34px sans-serif';c.fillText('🖋️',x0+(x1-x0)*pos,y-40);if(g.hit&&g.hit.t-->0){c.font='26px sans-serif';c.fillText('💥',x0+(x1-x0)*g.hit.pos,y)}requestAnimationFrame(loop)};sc();return requestAnimationFrame(loop)}
+c.font='34px "Noto Sans KR",sans-serif';c.fillText('🖋️',x0+(x1-x0)*pos,y-40);if(g.hit&&g.hit.t-->0){c.font='26px "Noto Sans KR",sans-serif';c.fillText('💥',x0+(x1-x0)*g.hit.pos,y)}requestAnimationFrame(loop)};sc();return requestAnimationFrame(loop)}
 // 🦇 유령 날기 (v1.49): 누를 때마다 내 유령이 날아오름, 비석 기둥 사이 틈으로
 if(k=='fly'){g.y=H/2;g.vy=0;g.ps=[];g.nx=0;g.go=0;g.t=0;g.bx=0;cv.onpointerdown=()=>{if(g.end)return;g.go=1;g.vy=-6.2;GS('flap')};
  // 10-16: 블랙고스트마을 밤하늘 배경(먼 성·마을 지붕·가까운 울타리가 다른 속도로), 기둥 굵기 다양, 틈 점점 좁게(최소 100, 다음 틈 위치는 ±80 안이라 항상 갈 수 있음), 속도 아주아주 조금씩
@@ -1169,7 +1170,7 @@ if(k=='fly'){g.y=H/2;g.vy=0;g.ps=[];g.nx=0;g.go=0;g.t=0;g.bx=0;cv.onpointerdown=
    if(!o.p&&o.x+w<80-14){o.p=1;g.sc++;sc();GS(g.sc%10==0?'great':'pt')}if(Math.abs(o.x-80)<w+4+13&&(g.y-13<o.gy||g.y+13>o.gy+o.gap)){g.end=1;GS('bad');return gameOver(g)}}
   g.ps=g.ps.filter(o=>o.x>-60);c.fillStyle='#120d1c';c.fillRect(0,H-16,W,16);for(let i=0;i<W/16+2;i++){const fx=i*16-(g.bx%16);c.fillRect(fx,H-24,3,10)}
   gDrawMe(c,80,g.y,34,Math.max(-.5,Math.min(.6,g.vy*.06)));
-  if(!g.go){c.fillStyle='#fff';c.font='15px sans-serif';c.fillText('화면을 누르면 출발!',W/2,H/2+60)}
+  if(!g.go){c.fillStyle='#fff';c.font='15px "Noto Sans KR",sans-serif';c.fillText('화면을 누르면 출발!',W/2,H/2+60)}
   if(g.y>H-30||g.y<-30){g.end=1;GS('bad');return gameOver(g)}requestAnimationFrame(loop)};sc();return requestAnimationFrame(loop)}
 if(k=='memory'){const top=28,pad=4,E=['ME','🎃','🍬','🦇','💀','🕯️','🔮','🌙','⭐','🍭','🕸️','🧪','🪦','🍄','🔥','💎','👑','🐈‍⬛'],LAY=[[4,3],[4,4],[4,5],[5,6],[6,6]];g.stg=0;g.pairs=0;g.lock=0;g.end=0;g.trans=0;
  // 10-16 단계제: 다 맞추면 다음 단계(4×3→4×4→4×5→5×6→6×6), 단계마다 시간 다시(40초 + 단계마다 10초, 6단계부터 5초씩 줄어 최소 50초)
@@ -1181,10 +1182,10 @@ if(k=='memory'){const top=28,pad=4,E=['ME','🎃','🍬','🦇','💀','🕯️'
    if(g.found==g.np){const bon=(g.stg+1)*20+Math.ceil(g.tl);g.sc+=bon;sc();GS('great');g.trans=1;const m=$('#gmsg');if(m)m.textContent=(g.stg+1)+'단계 통과! 🎉 보너스 +'+bon+' · 다음 단계는 카드가 더 많아요';setTimeout(()=>{if(g.stop)return;g.stg++;build();g.trans=0},1400)}}
   else{g.lock=1;setTimeout(()=>{GS('miss');a.o=b.o=0;a.f=b.f=8;g.lock=0},650)}};
  const loop=()=>{if(!alive())return;const now=performance.now();if(!g.trans)g.tl=Math.max(0,g.tl-(now-g.lt)/1000);g.lt=now;const left=g.tl;
-  c.fillStyle='#15131c';c.fillRect(0,0,W,H);c.fillStyle='#2a2635';c.fillRect(0,0,W,10);c.fillStyle=g.trans?'#ffd34d':left<10?'#ff5f6d':'#58c2a6';c.fillRect(0,0,W*left/g.tm,10);c.fillStyle='#fff';c.font='13px sans-serif';c.fillText('⏱ '+Math.ceil(left)+'초 · '+(g.stg+1)+'단계 · 짝 '+g.found+'/'+g.np,W/2,20);
+  c.fillStyle='#15131c';c.fillRect(0,0,W,H);c.fillStyle='#2a2635';c.fillRect(0,0,W,10);c.fillStyle=g.trans?'#ffd34d':left<10?'#ff5f6d':'#58c2a6';c.fillRect(0,0,W*left/g.tm,10);c.fillStyle='#fff';c.font='13px "Noto Sans KR",sans-serif';c.fillText('⏱ '+Math.ceil(left)+'초 · '+(g.stg+1)+'단계 · 짝 '+g.found+'/'+g.np,W/2,20);
   const cs=g.cs;g.cd.forEach((cd,i)=>{const X=g.ox+(i%g.C)*cs+pad,Yy=top+Math.floor(i/g.C)*cs+pad,S=cs-pad*2,up=cd.o||cd.ok,show=cd.f>4?!up:up,sx=cd.f>0?Math.max(.05,Math.abs(cd.f-4)/4):1;if(cd.f>0)cd.f--;
    c.save();c.translate(X+S/2,Yy+S/2);c.scale(sx,1);c.fillStyle=show?(cd.ok?'#2e5e50':'#3a3450'):'#5a3d8a';c.beginPath();if(c.roundRect)c.roundRect(-S/2,-S/2,S,S,8);else c.rect(-S/2,-S/2,S,S);c.fill();
-   if(show){if(E[cd.v]=='ME')gDrawMe(c,0,0,S*.55);else{c.font=Math.floor(S*.52)+'px sans-serif';c.fillText(E[cd.v],0,2)}}else{c.fillStyle='#ffd34d';c.font='bold '+Math.floor(S*.38)+'px sans-serif';c.fillText('?',0,2)}c.restore()});
+   if(show){if(E[cd.v]=='ME')gDrawMe(c,0,0,S*.55);else{c.font=Math.floor(S*.52)+'px sans-serif';c.fillText(E[cd.v],0,2)}}else{c.fillStyle='#ffd34d';c.font=Math.floor(S*.38)+'px "Do Hyeon",sans-serif';c.fillText('?',0,2)}c.restore()});
   if(left<=0&&!g.end&&!g.trans){g.end=1;return gameOver(g)}requestAnimationFrame(loop)};sc();return requestAnimationFrame(loop)}
 // 💥 유령 팡 (3개 맞추기): 밀거나 두 칸을 차례로 눌러 바꾸기, 터지면 위에서 떨어짐, 연속 콤보 점수
 if(k=='match'){const N=7,E=['👻','🎃','🍬','🦇','💀','🕯️'],cs=W/N,top=28;g.b=[];g.off=[];g.pop=[];g.combo=0;g.busy=0;g.sel=null;g.end=0;g.tl=10;g.mc=0;g.lt=performance.now();g.fz=g.lt+3000;
@@ -1206,12 +1207,12 @@ if(k=='match'){const N=7,E=['👻','🎃','🍬','🦇','💀','🕯️'],cs=W/N
   if(g.sel&&Math.abs(g.sel[0]-a[0])+Math.abs(g.sel[1]-a[1])==1)return tryS(g.sel,a);g.sel=g.sel&&g.sel[0]==a[0]&&g.sel[1]==a[1]?null:a};
  mk();
  const loop=()=>{if(!alive())return;const now=performance.now(),fr=g.busy||now<g.fz;if(!fr)g.tl=Math.max(0,g.tl-(now-g.lt)/1000);g.lt=now;const left=g.tl;c.fillStyle='#15131c';c.fillRect(0,0,W,H);c.fillStyle='#2a2635';c.fillRect(0,0,W,10);c.fillStyle=fr?'#ffd34d':left<10?'#ff5f6d':'#58c2a6';c.fillRect(0,0,W*left/10,10);
-  c.fillStyle='#fff';c.font='13px sans-serif';c.fillText((fr?'⏸ 멈춤 · ':'⏱ ')+Math.ceil(left)+'초',W/2,20);c.font=Math.floor(cs*.72)+'px sans-serif';
+  c.fillStyle='#fff';c.font='13px "Noto Sans KR",sans-serif';c.fillText((fr?'⏸ 멈춤 · ':'⏱ ')+Math.ceil(left)+'초',W/2,20);c.font=Math.floor(cs*.72)+'px sans-serif';
   for(let r=0;r<N;r++)for(let x=0;x<N;x++){c.fillStyle=(r+x)%2?'#1d1a27':'#221f2e';c.fillRect(x*cs,top+r*cs,cs,cs);if(g.sel&&g.sel[0]==r&&g.sel[1]==x){c.fillStyle='#ffd34d55';c.fillRect(x*cs,top+r*cs,cs,cs)}
    const v=g.b[r][x];if(v<0)continue;if(g.off[r][x]<0)g.off[r][x]=Math.min(0,g.off[r][x]+cs*.22);let sx=0;if(g.shake&&g.shake.t>0&&((g.shake.a[0]==r&&g.shake.a[1]==x)||(g.shake.b[0]==r&&g.shake.b[1]==x)))sx=Math.sin(g.shake.t*1.8)*4;if(v==0)gDrawMe(c,x*cs+cs/2+sx,top+r*cs+cs/2+g.off[r][x],cs*.7);else c.fillText(E[v],x*cs+cs/2+sx,top+r*cs+cs/2+g.off[r][x])}
   if(g.shake&&g.shake.t>0)g.shake.t--;
   for(const p of g.pop){p.t--;c.globalAlpha=Math.max(0,p.t/18);c.font=Math.floor(cs*(1.3-p.t/40))+'px sans-serif';c.fillText(p.t>9?p.e:'✨',p.x,p.y)}c.globalAlpha=1;g.pop=g.pop.filter(p=>p.t>0);
-  if(g.combo>1){c.font='bold 22px sans-serif';c.fillStyle='#ffd34d';c.fillText('콤보 x'+g.combo+'!',W/2,H/2)}
+  if(g.combo>1){c.font='22px "Do Hyeon",sans-serif';c.fillStyle='#ffd34d';c.fillText('콤보 x'+g.combo+'!',W/2,H/2)}
   if(left<=0&&!g.busy){g.end=1;return gameOver(g)}requestAnimationFrame(loop)};sc();return requestAnimationFrame(loop)}
 // 🔮 유령 합치기 (2048 방식): 밀면 같은 그림끼리 합쳐짐
 if(k=='merge'){const N=4,E=['','🕯️','🍬','🎃','🦇','👻','💀','🔮','🌙','⭐','👑','💎','🌈','🌌'],cs=W/N,top=28,pad=5;g.b=Array.from({length:N},()=>Array(N).fill(0));g.anim={};
@@ -1223,9 +1224,9 @@ if(k=='merge'){const N=4,E=['','🕯️','🍬','🎃','🦇','👻','💀','�
  let st=null;cv.onpointerdown=e=>{st={x:px(e),y:py(e)}};cv.onpointerup=e=>{if(!st)return;const dx=px(e)-st.x,dy=py(e)-st.y;st=null;if(Math.max(Math.abs(dx),Math.abs(dy))<20)return;Math.abs(dx)>Math.abs(dy)?move(0,Math.sign(dx)):move(Math.sign(dy),0)};
  g.key=e=>{const m={ArrowLeft:[0,-1],ArrowRight:[0,1],ArrowUp:[-1,0],ArrowDown:[1,0]}[e.key];if(m&&G==g&&!g.stop){e.preventDefault();move(m[0],m[1])}};document.addEventListener('keydown',g.key);
  spawn();spawn();
- const loop=()=>{if(!alive()){document.removeEventListener('keydown',g.key);return}c.fillStyle='#15131c';c.fillRect(0,0,W,H);c.fillStyle='#fff';c.font='13px sans-serif';c.fillText('밀어서 합치기 · 최고 그림 '+(E[g.mx||1]),W/2,14);
+ const loop=()=>{if(!alive()){document.removeEventListener('keydown',g.key);return}c.fillStyle='#15131c';c.fillRect(0,0,W,H);c.fillStyle='#fff';c.font='13px "Noto Sans KR",sans-serif';c.fillText('밀어서 합치기 · 최고 그림 '+(E[g.mx||1]),W/2,14);
   for(let r=0;r<N;r++)for(let x=0;x<N;x++){const v=g.b[r][x],X=x*cs+pad,Y=top+r*cs+pad,S=cs-pad*2;c.fillStyle=v?`hsl(${(v*37)%360} 55% ${Math.max(28,62-v*3)}%)`:'#221f2e';const a=g.anim[r+'_'+x]||0,k2=a?1+a*.015:1;c.save();c.translate(X+S/2,Y+S/2);c.scale(k2,k2);c.beginPath();if(c.roundRect)c.roundRect(-S/2,-S/2,S,S,10);else c.rect(-S/2,-S/2,S,S);c.fill();
-   if(v){c.font=Math.floor(S*.52)+'px sans-serif';c.fillText(E[Math.min(v,E.length-1)],0,-4);c.font='bold 11px sans-serif';c.fillStyle='#fff';c.fillText('Lv.'+v,0,S/2-10)}c.restore();if(a)g.anim[r+'_'+x]=a-1}
+   if(v){c.font=Math.floor(S*.52)+'px sans-serif';c.fillText(E[Math.min(v,E.length-1)],0,-4);c.font='11px "Do Hyeon",sans-serif';c.fillStyle='#fff';c.fillText('Lv.'+v,0,S/2-10)}c.restore();if(a)g.anim[r+'_'+x]=a-1}
   requestAnimationFrame(loop)};sc();return requestAnimationFrame(loop)}}
 function gameHit(i){const g=G;if(!g||g.k!='mole'||g.stop||g.left<=0)return;const b=$('#gh'+i);if(i==g.cur){g.sc++;g.cur=-1;g.nx=0;GS('hit');if(b)b.textContent='💥'}else if((g.bads||[]).includes(i)){g.sc=Math.max(0,g.sc-2);g.bads=g.bads.filter(x=>x!=i);GS('bad');if(b)b.textContent='😵'}else if(b){GS('miss');b.textContent='❌';setTimeout(()=>{if(b.textContent=='❌')b.textContent='🪦'},250)}const e=$('#gsc');if(e)e.textContent='점수 '+g.sc+' · Lv.'+gLv(g)}
 async function gameOver(g){if(g.stop)return;g.stop=true;GS('over');GE();const s=gState(),get=gpOf(g.k,g.sc),best=Object.assign({},s.best),nb=g.sc>(+best[g.k]||0);if(nb)best[g.k]=g.sc;const td=today(),wk=wkKey(td),wbest=Object.assign({},myPet.wkw==wk&&myPet.wbest||{}),nw=g.sc>(+wbest[g.k]||0);if(nw)wbest[g.k]=g.sc;
@@ -1240,7 +1241,7 @@ const gTixN=()=>Math.max(0,Math.floor(+(lsGet('gTix_'+me.id)||0)||0));
 function gTixSet(n){try{localStorage.setItem('gTix_'+me.id,Math.max(0,Math.min(9,n)))}catch(e){}}
 function gTixOpen(){if(G)G.stop=true;G=null;GE();const n=gTixN();if(n<1)return toast('복권이 없어요');let pz=lsGet('gTixP_'+me.id);if(pz==null||pz===''){let r=Math.random()*100;pz=0;for(const[v,w]of GTPZ){if((r-=w)<0){pz=v;break}}try{localStorage.setItem('gTixP_'+me.id,pz)}catch(e){}}pz=+pz||0;
  $('#mb').innerHTML=`<h2>🎟️ 게임 복권</h2><p class="mu" id="tixm">은박을 손가락으로 긁어 보세요! (가진 복권 ${n}장)</p><div class="tixw"><div class="tixp">${pz?`<div style="font-size:38px">🎉</div><div style="font-size:24px">${pz} 포인트 당첨!</div>`:`<div style="font-size:38px">👻</div><div style="font-size:20px">아쉽게도 꽝!</div><div style="font-size:12px;font-weight:400">다음엔 꼭!</div>`}</div><canvas id="tixc" width="280" height="150"></canvas></div><div class="row" style="justify-content:center;margin-top:8px" id="tixb"><button onclick="gTixClose()">닫기</button></div>`;$('#modal').style.display='flex';
- const cv=$('#tixc'),c=cv.getContext('2d'),gr=c.createLinearGradient(0,0,280,150);gr.addColorStop(0,'#a9a9b5');gr.addColorStop(.5,'#e8e8f0');gr.addColorStop(1,'#9a9aa8');c.fillStyle=gr;c.fillRect(0,0,280,150);c.fillStyle='#5f5f6c';c.textAlign='center';c.font='bold 19px sans-serif';c.fillText('🪙 여기를 긁어요',140,68);c.font='12px sans-serif';c.fillText('BLACKGHOST LUCKY 👻',140,96);
+ const cv=$('#tixc'),c=cv.getContext('2d'),gr=c.createLinearGradient(0,0,280,150);gr.addColorStop(0,'#a9a9b5');gr.addColorStop(.5,'#e8e8f0');gr.addColorStop(1,'#9a9aa8');c.fillStyle=gr;c.fillRect(0,0,280,150);c.fillStyle='#5f5f6c';c.textAlign='center';c.font='19px "Do Hyeon",sans-serif';c.fillText('🪙 여기를 긁어요',140,68);c.font='12px "Noto Sans KR",sans-serif';c.fillText('BLACKGHOST LUCKY 👻',140,96);
  const cells=new Set();let done=false,last=0,down=false;const at=e=>{const r=cv.getBoundingClientRect();return[(e.clientX-r.left)*280/r.width,(e.clientY-r.top)*150/r.height]};
  const scr=e=>{if(done)return;const[x,y]=at(e);c.globalCompositeOperation='destination-out';c.beginPath();c.arc(x,y,18,0,7);c.fill();c.globalCompositeOperation='source-over';
   for(let dx=-1;dx<=1;dx++)for(let dy=-1;dy<=1;dy++){const cx=Math.floor((x+dx*12)/20),cy=Math.floor((y+dy*12)/15);if(cx>=0&&cx<14&&cy>=0&&cy<10)cells.add(cx+'_'+cy)}
