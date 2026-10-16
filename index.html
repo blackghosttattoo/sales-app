@@ -3,6 +3,7 @@
 <meta name="color-scheme" content="light dark">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>블랙고스트타투(전용)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Noto+Sans+KR:wght@400;500;700&display=swap">
 <link rel="manifest" href="manifest.json?v=26"><link rel="icon" type="image/png" href="icons/favicon-48.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="theme-color" content="#000000"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="블랙고스트타투(전용)"><meta name="apple-mobile-web-app-status-bar-style" content="black">
 <style>
@@ -21,10 +22,11 @@
 :root[data-theme="wine"]{color-scheme:dark;--bg:#170b0e;--card:#221217;--tx:#f6e7ea;--mu:#c09aa2;--ac:#d23a62;--onac:#ffffff;--ln:#3d1f27;--wa:#f0955a;--dg:#ff8a80;--soft:#33141c}
 #bgl{position:fixed;inset:0;z-index:-1;pointer-events:none;background-size:cover;background-position:center}
 .sw{display:inline-flex;align-items:center;gap:6px}.sw i{width:14px;height:14px;border-radius:50%;display:inline-block;border:1px solid #0003}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 -apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;-webkit-text-size-adjust:100%}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 "Noto Sans KR",-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;-webkit-text-size-adjust:100%}
 main{max-width:720px;margin:0 auto;padding:calc(10px + env(safe-area-inset-top)) 12px calc(96px + env(safe-area-inset-bottom))}
 .card{background:var(--card);border:1px solid var(--ln);border-radius:14px;padding:14px;margin-bottom:12px}
-h2{font-size:16px;margin:0 0 10px}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+h2{font-size:17px;margin:0 0 10px;font-family:"Do Hyeon","Noto Sans KR",sans-serif;font-weight:400;letter-spacing:.01em}
+.hi,.big,.vht,.gnav .gl{font-family:"Do Hyeon","Noto Sans KR",sans-serif;font-weight:400!important;letter-spacing:.01em}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 button{border:1px solid var(--ln);background:var(--card);color:var(--tx);border-radius:10px;padding:9px 12px;font:inherit;cursor:pointer}
 button.on,button.p{background:var(--ac);border-color:var(--ac);color:var(--onac)}
 button.d{color:var(--dg);border-color:var(--dg)}button.s{padding:5px 10px;font-size:13px}
@@ -116,7 +118,7 @@ html{touch-action:manipulation}
 body.vmode{overflow:hidden}body.vmode main{padding-bottom:0}
 .vhdr{position:fixed;z-index:7;top:calc(8px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);width:min(calc(100% - 20px),700px);background:#140f18b8;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#fff;border:1px solid #ffffff26;border-radius:14px;padding:7px 10px;box-shadow:0 4px 14px #0006}
 .vht{font-size:14px;font-weight:700;line-height:1.35;word-break:keep-all;overflow-wrap:break-word}
-.vhs{display:flex;align-items:center;gap:6px;font-size:11.5px;color:#ddd8ea;margin-top:2px}.vhs button{padding:3px 8px;font-size:12px;background:#0006;color:#fff;border-color:#fff4}
+.vhs{display:flex;align-items:center;gap:6px;font-size:11.5px;color:#ddd8ea;margin-top:2px}.vhs button{white-space:nowrap;flex-shrink:0;padding:3px 7px;font-size:12px;background:#0006;color:#fff;border-color:#fff4}
 .vwrap{position:fixed;top:0;bottom:64px;left:50%;transform:translateX(-50%);width:min(100%,720px);z-index:1;overflow:hidden;background:#120d10;color:#fff}
 .vsc{position:absolute;inset:0;padding-top:calc(var(--vt,0px) + 40px);overflow-y:auto;overflow-x:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch}.vsc::-webkit-scrollbar{display:none}
 .vtop{position:absolute;left:0;right:0;top:var(--vt,0px);z-index:8;display:flex;align-items:center;gap:6px;padding:9px 10px;background:linear-gradient(#000c,#0000);pointer-events:none}
