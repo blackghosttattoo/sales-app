@@ -1678,7 +1678,7 @@ function mount(){const s=document.getElementById('vslot');if(!s)return;if(!EL)bu
  if(mx<20||mx>80)moveTo(50,58);if(!raf){lastT=0;raf=requestAnimationFrame(loop)}}
 // 배경 음악 (파일 없이 폰에서 직접 연주). 4곡(TR) 중 앱을 열 때마다 무작위 1곡(v1.44, 고르는 버튼 없음), 마을 모드 기본 켜짐(vMus '0'이면 꺼짐), 화면 꺼지거나 앱 내리면 멈춤
 // 게임 소리(v1.44): 게임마다 다른 음악(GT, gk=지금 게임) + 효과음 gsfx — 게임 창 🔊/🔇(localStorage gSnd)로 따로 켜고 끔. 효과음은 fx로(배경 음악 볼륨과 상관없이)
-let AC=null,bus=null,fx=null,OUT=null,tm=null,step=0,nextT=0,noise=null,gk=null;
+let REV=null,revOn=true,AC=null,bus=null,fx=null,OUT=null,tm=null,step=0,nextT=0,noise=null,gk=null;
 const NF=n=>440*Math.pow(2,(n-69)/12),MM=s=>s.split(' ').map(x=>x=='.'?0:+x);
 const CHD=[[57,60,64],[53,57,60],[48,52,55,59],[55,59,62],[57,60,64],[53,57,60,64],[52,56,59,62],[52,56,59],[50,53,57],[57,60,64],[53,57,60],[52,56,59],[50,53,57,60],[48,52,55],[52,56,59,62],[57,60,64]];
 const MEL=['76 . . 81 . 79 76 . 72 . . 74 . 76 . .','77 . . 76 . 72 . . 69 . . 72 . . . .','76 . 79 . 84 . 83 . 81 . 79 . 76 . . .','74 . . 79 . 74 . 71 . . 74 . 79 . . .','76 . . 81 . 79 76 . 84 . . 83 . 81 . .','81 . 77 . 76 . 74 . 72 . . 74 . . . .','71 . 74 . 76 . 80 . 83 . . 80 . 76 . .','76 . . . 74 . . . 71 . . . . . . .','77 . . 81 . 77 74 . 77 . . 81 . 86 . .','84 . . 81 . 76 . . 81 . 84 . 88 . . .','84 . 81 . 77 . 81 . 84 . . 86 . 84 . .','83 . . 80 . 76 . . 80 . 83 . 86 . . .','86 . 84 . 81 . 77 . 84 . 81 . 77 . 74 .','76 . 79 . 84 . 79 . 76 . 72 . 79 . . .','80 . 83 . 86 . 83 . 80 . 76 . 74 . 71 .','69 . . . 72 . . . 76 . . . 81 . . .'].map(MM);
@@ -1713,13 +1713,13 @@ function sch(){const T=gk&&GT[gk]||TR[tr],S=60/T.bpm/4,nb=T.mel.length;
   if(i==0||i==10)bassN(ch[0]-12,t);if(i==6||i==14)bassN(ch[0],t);
   if(bar>=2||l2){if(i%4==0)nz(t,.035,'highpass',7000,.05);if(i%2==1)nz(t,.012,'highpass',7000,.05);if(i==0||i==8)kik(t);if(i==4||i==12)nz(t,.09,'bandpass',1800,.12)}}
  else if(T.k=='piano'){if(n)lead('piano',n,t,.12);if(i%2==0)lead('piano',ch[(i/2)%ch.length]+(i>=8?12:0),t,.035);if(i==0)bassN(ch[0]-12,t)}
- else if(T.k=='chip'){if(n)lead('sq',n,t,.12);if(i%2==0)vo('triangle',NF(ch[0]-12+(i%4==2?12:0)),t,.18,.055,.015);if(l2||bar>=2){if(i%8==0)kik(t);if(i%8==4)nz(t,.07,'bandpass',2200,.08);if(i%2==1)nz(t,.012,'highpass',8000,.03)}}
+ else if(T.k=='chip'){if(n)lead('sq',n,t,.12);if(i%2==0)vo('triangle',NF(ch[0]-12+(i%4==2?12:0)),t,.18,.055,.015);if(l2||bar>=2){if(i%8==0)kik(t);if(i%8==4)nz(t,.05,'bandpass',1800,.08)}}
  else{if(n)bell(n,t,.12);if(i==0)bassN(ch[0]-12,t);if(i==4||i==8)ch.forEach(m=>vo('triangle',NF(m),t,.28,.022,.004));if(l2&&i%4==2)bell(ch[0]+24,t,.02)}
  nextT+=S;step++}}
 function fade(v,s){bus.gain.cancelScheduledValues(AC.currentTime);bus.gain.setValueAtTime(bus.gain.value,AC.currentTime);bus.gain.linearRampToValueAtTime(v,AC.currentTime+s)}
-function ens(){if(AC)return true;const C=typeof window!='undefined'&&(window.AudioContext||window.webkitAudioContext);if(!C)return false;AC=new C();
-  const comp=AC.createDynamicsCompressor();comp.threshold.value=-18;comp.ratio.value=3;comp.connect(AC.destination);const len=AC.sampleRate*2.6,ir=AC.createBuffer(2,len,AC.sampleRate);for(let c=0;c<2;c++){const d=ir.getChannelData(c);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.8)}
-  const rev=AC.createConvolver();rev.buffer=ir;const wet=AC.createGain();wet.gain.value=.35;rev.connect(wet);wet.connect(comp);bus=AC.createGain();bus.gain.value=0;bus.connect(comp);bus.connect(rev);
+function ens(){if(AC)return true;const C=typeof window!='undefined'&&(window.AudioContext||window.webkitAudioContext);if(!C)return false;try{AC=new C({latencyHint:'playback'})}catch(e){AC=new C()}
+  const comp=AC.createDynamicsCompressor();comp.threshold.value=-18;comp.ratio.value=3;comp.connect(AC.destination);const len=Math.floor(AC.sampleRate*1.3),ir=AC.createBuffer(2,len,AC.sampleRate);for(let c=0;c<2;c++){const d=ir.getChannelData(c);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.8)}
+  const rev=AC.createConvolver();rev.buffer=ir;const wet=AC.createGain();wet.gain.value=.35;rev.connect(wet);wet.connect(comp);bus=AC.createGain();bus.gain.value=0;bus.connect(comp);bus.connect(rev);REV=rev;
   fx=AC.createGain();fx.gain.value=.9;fx.connect(comp);
   noise=AC.createBuffer(1,AC.sampleRate*.5,AC.sampleRate);const nd=noise.getChannelData(0);for(let i=0;i<nd.length;i++)nd[i]=Math.random()*2-1;return true}
 function music(on){const b=EL&&q('[data-a="snd"]');if(on){if(!ens())return toast('이 폰에서는 소리를 낼 수 없어요');
@@ -1727,8 +1727,10 @@ function music(on){const b=EL&&q('[data-a="snd"]');if(on){if(!ens())return toast
  else{mus=false;if(AC&&!gk){fade(0,.8);setTimeout(()=>{if(!mus&&!gk&&tm){clearInterval(tm);tm=null}},850)}}
  if(b){b.textContent=mus?'🔊':'🔇';b.classList.toggle('on',mus)}try{localStorage.setItem('vMus',mus?'1':'0')}catch(e){}}
 const gOn=()=>lsGet('gSnd')!=='0';
-function gstart(k){if(!gOn()||!GT[k]||!ens())return;AC.resume&&AC.resume();gk=k;step=0;nextT=AC.currentTime+.08;if(!tm)tm=setInterval(sch,50);fade(.7,.4)}
-function gend(){if(!gk)return;gk=null;if(!AC)return;if(mus){step=0;nextT=AC.currentTime+.1;fade(.8,1)}else{fade(0,.5);setTimeout(()=>{if(!mus&&!gk&&tm){clearInterval(tm);tm=null}},550)}}
+// 10-17: 게임 중엔 울림(리버브) 연결을 끊어 폰 계산을 줄임(소리 '특특' 끊김 방지), 게임 끝나면 다시 연결
+const revSet=on=>{if(!REV||!bus||revOn==on)return;try{on?bus.connect(REV):bus.disconnect(REV)}catch(e){}revOn=on};
+function gstart(k){if(!gOn()||!GT[k]||!ens())return;AC.resume&&AC.resume();revSet(false);gk=k;step=0;nextT=AC.currentTime+.08;if(!tm)tm=setInterval(sch,50);fade(.7,.4)}
+function gend(){if(!gk)return;gk=null;if(!AC)return;revSet(true);if(mus){step=0;nextT=AC.currentTime+.1;fade(.8,1)}else{fade(0,.5);setTimeout(()=>{if(!mus&&!gk&&tm){clearInterval(tm);tm=null}},550)}}
 function swp(ty,f1,f2,t,d,v){const o=AC.createOscillator(),g=AC.createGain();o.type=ty;o.frequency.setValueAtTime(f1,t);o.frequency.exponentialRampToValueAtTime(f2,t+d);g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.0005,t+d);o.connect(g);g.connect(fx);o.start(t);o.stop(t+d+.05)}
 function gsfx(n,x){if(!gOn()||!ens())return;AC.resume&&AC.resume();const t=AC.currentTime+.01,ar=(ns,dt,v)=>ns.forEach((m,i)=>bell(m,t+i*dt,v));OUT=fx;try{x=+x||0;
  if(n=='jump')swp('square',320,760,t,.16,.09);
