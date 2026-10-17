@@ -1115,8 +1115,10 @@ const ROD=['wall','floor','win','wdeco','shelf','rug','bed','lamp','prop','plant
 // 배치(대장이 끌어서 옮김): pets.rpos — 바닥 가구 [p,q](그림 기준점), 벽 그림 ['l'|'r', 벽 x, 벽 y]
 const RPD={bed:[28,48],lamp:[118,16],rug:[86,92],prop:[30,122],plant:[146,72],win:['r',22,18],wdeco:['l',58,16],shelf:['r',98,12]};
 const RPB={bed:[28,122,46,104],lamp:[10,140,10,140],rug:[42,108,42,108],prop:[16,134,16,134],plant:[10,146,10,146],win:[10,86,8,44],wdeco:[2,100,6,44],shelf:[2,103,4,76]};
-function rClamp(k,v){const b=RPB[k],c=(x,a,z)=>Math.max(a,Math.min(z,Math.round(+x||0)));return typeof RPD[k][0]=='string'?[v[0]=='l'?'l':'r',c(v[1],b[0],b[1]),c(v[2],b[2],b[3])]:[c(v[0],b[0],b[1]),c(v[1],b[2],b[3])]}
-function rPosOf(pd){const r=(pd||{}).rpos||{},o={};for(const k in RPD){const v=r[k];o[k]=Array.isArray(v)&&v.length==RPD[k].length?rClamp(k,v):RPD[k].slice()}return o}
+// 바닥 가구 [p,q,f] — f=1이면 돌림(아이소메트릭에선 좌우 뒤집기 = 90° 회전, 가로·세로 범위도 바뀜)
+function rClamp(k,v){const b=RPB[k],c=(x,a,z)=>Math.max(a,Math.min(z,Math.round(+x||0)));if(typeof RPD[k][0]=='string')return[v[0]=='l'?'l':'r',c(v[1],b[0],b[1]),c(v[2],b[2],b[3])];const f=v[2]?1:0;return f?[c(v[0],b[2],b[3]),c(v[1],b[0],b[1]),1]:[c(v[0],b[0],b[1]),c(v[1],b[2],b[3]),0]}
+function rPosOf(pd){const r=(pd||{}).rpos||{},o={};for(const k in RPD){const v=r[k],ok=Array.isArray(v)&&(typeof RPD[k][0]=='string'?v.length==3:v.length>=2);o[k]=ok?rClamp(k,v):rClamp(k,RPD[k])}return o}
+function rFTf(s,v){const d=RPD[s],dp=v[0]-d[0],dq=v[1]-d[1],t=`translate(${dp-dq} ${(dp+dq)/2})`;if(!v[2])return t;const ax=180+v[0]-v[1];return `translate(${ax} 0) scale(-1 1) translate(${-ax} 0) ${t}`}
 function roomOf(pd){const r=Object.assign({},(pd||{}).room||{}),own=(pd||{}).rown||[],o={};RSLOT.forEach(([s])=>{const k=r[s];o[s]=k&&rSlotOf(k)==s&&RSET.some(z=>z[0]==rSetOf(k))&&(rSetOf(k)=='basic'||own.includes(k))?k:rItem('basic',s)});return o}
 function roomSet(o){const s=rSetOf(o.wall);return s!='basic'&&RSLOT.every(([k])=>rSetOf(o[k])==s)?s:''}
 function roomSvg(o,big,nt,ps,sel){ps=ps||rPosOf(myPet);const fs=roomSet(o),sets=[...new Set(RSLOT.map(([s])=>rSetOf(o[s])))],ws=rSetOf(o.wall),wid=x=>'r'+x+'-'+ws+(nt?'n':'');
@@ -1126,15 +1128,15 @@ function roomSvg(o,big,nt,ps,sel){ps=ps||rPosOf(myPet);const fs=roomSet(o),sets=
  return `<svg viewBox="0 0 360 300" ${big?'':'class="rmini"'} style="width:100%;height:auto;display:block;border-radius:14px"><defs>${RGL}${sets.map(s=>rDefs(s,nt)).join('')}<linearGradient id="rflg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity=".22"/><stop offset=".5" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#fff" stop-opacity=".06"/></linearGradient></defs>
  <rect width="360" height="300" fill="url(#${wid('bg')})"/>${amb}<ellipse cx="180" cy="290" rx="150" ry="12" fill="#000" opacity=".25" filter="url(#rbl2)"/>
  ${['wall','floor','win','wdeco','shelf'].map(s=>s=='wall'||s=='floor'?rPart(s,rSetOf(o[s]),nt):`<g data-s="${s}" ${sel==s?'class="rselg"':''}>${rPart(s,rSetOf(o[s]),nt,ps)}</g>`).join('')}
- ${['rug','bed','lamp','prop','plant'].sort((a,b)=>a=='rug'?-1:b=='rug'?1:(ps[a][0]+ps[a][1])-(ps[b][0]+ps[b][1])).map(s=>{const d=RPD[s],v=ps[s],dp=v[0]-d[0],dq=v[1]-d[1];return `<g data-s="${s}" transform="translate(${dp-dq} ${(dp+dq)/2})" ${sel==s?'class="rselg"':''}>${rPart(s,rSetOf(o[s]),nt)}</g>`}).join('')}
- ${nt?`<polygon points="30,85 180,10 330,85 330,209 180,284 30,209" fill="#0a0b2e" opacity=".4"/><circle cx="${lamp[0]}" cy="${lamp[1]}" r="80" fill="url(#rlm)" style="mix-blend-mode:screen"/>`:''}${fx}</svg>`}
+ ${['rug','bed','lamp','prop','plant'].sort((a,b)=>a=='rug'?-1:b=='rug'?1:(ps[a][0]+ps[a][1])-(ps[b][0]+ps[b][1])).map(s=>{return `<g data-s="${s}" transform="${rFTf(s,ps[s])}" ${sel==s?'class="rselg"':''}>${rPart(s,rSetOf(o[s]),nt)}</g>`}).join('')}
+ ${nt?`<polygon points="30,85 180,10 330,85 330,209 180,284 30,209" fill="#0a0b2e" opacity=".4"/><circle id="${big?'rlampg':''}" cx="${lamp[0]}" cy="${lamp[1]}" r="80" fill="url(#rlm)" style="mix-blend-mode:screen"/>`:''}${fx}</svg>`}
 let rSl='wall';
-let rEd=false,rPosE=null,rDrag=null,rRaf=0;
-function rGhostAt(ps){const[x,y]=I(ps.bed[0],ps.bed[1]-33,27);return `left:${(x/3.6-8.6).toFixed(1)}%;top:${(y/3-11).toFixed(1)}%;width:12%`}
+let rEd=false,rPosE=null,rDrag=null,rRaf=0,rSel='';
+function rGhostAt(ps){const b=ps.bed,[x,y]=b[2]?I(b[0]-33,b[1],27):I(b[0],b[1]-33,27);return `left:${(x/3.6-8.6).toFixed(1)}%;top:${(y/3-11).toFixed(1)}%;width:12%`}
 function roomView(){const p=petCalc(me),o=roomOf(myPet),own=myPet.rown||[],bal=p.gp-(+myPet.gps||0),hr=new Date().getHours(),night=hr>=19||hr<6,fs=roomSet(o),ps=rEd&&rPosE?rPosE:rPosOf(myPet);
  return `<div class="card"><div class="row" style="justify-content:space-between"><h2 style="margin:0">🏠 ${esc(p.name||'내 유령')}의 방</h2><span class="tag">대장만 보는 미리보기 · 11월 출시 예정</span></div>
  <div class="rbox ${rEd?'red':''}" onpointerdown="rDown(event)" onpointermove="rMove(event)" onpointerup="rUp(event)" onpointercancel="rUp(event)">${roomSvg(o,1,night,ps)}${rEd?'':`<div class="rgh ${night?'zz':''}" style="${night?rGhostAt(ps):''}">${ghostSvg(p.st,p.deco,false,'',p.col,night?'f_sleepy':p.face)}</div>`}</div>
- ${rEd?`<p class="mu" style="margin:8px 0 6px">✋ 가구를 손가락으로 <b>꾹 눌러 끌면</b> 옮겨져요. 창문·벽 장식·선반은 양쪽 벽 어디든 걸 수 있어요.</p><div class="row"><button class="p" onclick="rEdDone()">✔ 배치 저장</button><button onclick="rPosE=rPosOf({});rRedraw()">↺ 처음 배치로</button><button onclick="rEd=false;rPosE=null;draw()">취소</button></div>`:`<button class="s" style="margin-top:8px" onclick="rEd=true;rPosE=rPosOf(myPet);draw()">✋ 가구 옮기기</button>`}
+ ${rEd?`<p class="mu" style="margin:8px 0 6px">✋ 가구를 손가락으로 <b>꾹 눌러 끌면</b> 옮겨져요. 누른 가구는 [↻ 돌리기]로 방향을 바꿔요. 창문·벽 장식·선반은 양쪽 벽 어디든 걸 수 있어요.</p><div class="row"><button class="p" onclick="rEdDone()">✔ 배치 저장</button><button id="rrot" onclick="rRot()" disabled>↻ 돌리기 (바닥 가구를 먼저 눌러요)</button><button onclick="rPosE=rPosOf({});rSel='';rRedraw()">↺ 처음 배치로</button><button onclick="rEd=false;rPosE=null;draw()">취소</button></div>`:`<button class="s" style="margin-top:8px" onclick="rEd=true;rSel='';rPosE=rPosOf(myPet);draw()">✋ 가구 옮기기</button>`}
  <p class="mu" style="margin:6px 0 0">${night?'🌙 밤이라 침대에서 자고 있어요':'☀️ 낮엔 방 안을 돌아다녀요'}${fs?' · ✨ '+RSET.find(z=>z[0]==fs)[1]+' 세트 효과!':' · 한 세트 10개를 다 놓으면 세트 효과가 생겨요'} · 내 포인트 <b>${bal}</b></p></div>
  <div class="card"><div class="rchips">${RSLOT.map(([k,l])=>`<button class="s ${rSl==k?'on':''}" onclick="rSl='${k}';_keep=true;try{draw()}finally{_keep=false}">${l}</button>`).join('')}</div>
  <div class="pgrid" style="grid-template-columns:repeat(2,1fr);margin-top:10px">${RSET.map(([sk,sn,pr,need],i)=>{const k=rItem(sk,rSl),c=pr[RSLOT.findIndex(x=>x[0]==rSl)],has=!c||own.includes(k),on=o[rSl]==k,lock=p.st<need,t=Object.assign({},o,{[rSl]:k});
@@ -1143,12 +1145,20 @@ function rPt(e){const sv=document.querySelector('.rbox svg');if(!sv)return null;
 const rFloor=([X,Y])=>[((X-180)+2*(Y-120))/2,(2*(Y-120)-(X-180))/2],rWallL=([X,Y],w)=>{const x=w=='l'?X-30:X-180;return[x,w=='l'?Y-85+.5*x:Y-10-.5*x]};
 function rDown(e){if(!rEd||!rPosE)return;const g=e.target.closest&&e.target.closest('[data-s]'),pt=rPt(e);if(!g||!pt)return;const s=g.getAttribute('data-s'),v=rPosE[s];e.preventDefault();
  if(typeof v[0]=='string'){const L=rWallL(pt,v[0]);rDrag={s,wall:1,ox:L[0]-v[1],oy:L[1]-v[2]}}else{const F=rFloor(pt);rDrag={s,ox:F[0]-v[0],oy:F[1]-v[1]}}
- try{e.currentTarget.setPointerCapture(e.pointerId)}catch(x){}rRedraw()}
+ try{e.currentTarget.setPointerCapture(e.pointerId)}catch(x){}rSelSet(s)}
 function rMove(e){if(!rDrag)return;e.preventDefault();const pt=rPt(e);if(!pt)return;const d=rDrag;
- if(d.wall){const w=pt[0]<180?'l':'r',L=rWallL(pt,w);rPosE[d.s]=rClamp(d.s,[w,L[0]-d.ox,L[1]-d.oy])}else{const F=rFloor(pt);rPosE[d.s]=rClamp(d.s,[F[0]-d.ox,F[1]-d.oy])}
- if(!rRaf)rRaf=requestAnimationFrame(()=>{rRaf=0;rRedraw()})}
-function rUp(){if(!rDrag)return;rDrag=null;rRedraw()}
-function rRedraw(){const b=document.querySelector('.rbox svg');if(!b)return;const hr=new Date().getHours();b.outerHTML=roomSvg(roomOf(myPet),1,hr>=19||hr<6,rPosE,rDrag&&rDrag.s)}
+ if(d.wall){const w=pt[0]<180?'l':'r',L=rWallL(pt,w);rPosE[d.s]=rClamp(d.s,[w,L[0]-d.ox,L[1]-d.oy])}else{const F=rFloor(pt);rPosE[d.s]=rClamp(d.s,[F[0]-d.ox,F[1]-d.oy,rPosE[d.s][2]])}
+ if(!rRaf)rRaf=requestAnimationFrame(()=>{rRaf=0;rApply(d.s)})}
+function rUp(){if(!rDrag)return;const s=rDrag.s;rDrag=null;rApply(s);rSort()}
+// 움직인 가구 하나만 고침(방 전체를 다시 그리면 깜빡임)
+function rApply(s){const sv=document.querySelector('.rbox svg'),g=sv&&sv.querySelector(`[data-s="${s}"]`);if(!g)return;const v=rPosE[s];
+ if(typeof v[0]=='string'){const hr=new Date().getHours();g.innerHTML=rPart(s,rSetOf(roomOf(myPet)[s]),hr>=19||hr<6,rPosE)}else g.setAttribute('transform',rFTf(s,v));
+ if(s=='lamp'){const c=document.getElementById('rlampg');if(c){const o=roomOf(myPet),L=I(v[0],v[1],rSetOf(o.lamp)=='forest'?46:rSetOf(o.lamp)=='basic'?66:76);c.setAttribute('cx',L[0]);c.setAttribute('cy',L[1])}}}
+function rSort(){const sv=document.querySelector('.rbox svg');if(!sv)return;const gs=['rug','bed','lamp','prop','plant'].map(s=>sv.querySelector(`[data-s="${s}"]`)).filter(Boolean);if(!gs.length)return;const ref=gs.reduce((a,g)=>a.compareDocumentPosition(g)&Node.DOCUMENT_POSITION_FOLLOWING?g:a,gs[0]).nextSibling;
+ gs.sort((a,b)=>{const x=a.dataset.s,y=b.dataset.s;return x=='rug'?-1:y=='rug'?1:(rPosE[x][0]+rPosE[x][1])-(rPosE[y][0]+rPosE[y][1])}).forEach(g=>sv.insertBefore(g,ref))}
+function rSelSet(s){rSel=s;document.querySelectorAll('.rbox [data-s]').forEach(g=>g.classList.toggle('rselg',g.dataset.s==s));const b=$('#rrot');if(b){const ok=s&&typeof RPD[s][0]!='string';b.disabled=!ok;b.textContent=ok?'↻ '+(RSLOT.find(x=>x[0]==s)||['',''])[1]+' 돌리기':'↻ 돌리기 (바닥 가구를 먼저 눌러요)'}}
+function rRot(){const s=rSel;if(!s||!rPosE||typeof RPD[s][0]=='string')return;const v=rPosE[s];rPosE[s]=rClamp(s,[v[0],v[1],v[2]?0:1]);rApply(s);rSort()}
+function rRedraw(){const b=document.querySelector('.rbox svg');if(!b)return;const hr=new Date().getHours();b.outerHTML=roomSvg(roomOf(myPet),1,hr>=19||hr<6,rPosE,rSel)}
 async function rEdDone(){const ps=rPosE;rEd=false;rPosE=null;const pr=petSave({rpos:ps});_keep=true;try{draw()}finally{_keep=false}if(await pr)toast('배치를 저장했어요');else draw()}
 async function roomPick(k){const p=petCalc(me),s=rSlotOf(k),set=RSET.find(z=>z[0]==rSetOf(k));if(!set)return;const c=set[2][RSLOT.findIndex(x=>x[0]==s)],own=myPet.rown||[],o=roomOf(myPet),nm2=set[1]+' '+RSLOT.find(x=>x[0]==s)[1];if(o[s]==k)return;
  if(p.st<set[3])return toast(PSTN[set[3]]+'이 되면 살 수 있어요 🔒');const has=!c||own.includes(k);
