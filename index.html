@@ -154,6 +154,7 @@ body.vmode{overflow:hidden}body.vmode main{padding-bottom:0}
 @keyframes rwalk{0%,100%{left:46%}25%{left:62%}50%{left:52%}75%{left:34%}}@keyframes pfz{50%{transform:translateY(-6px);opacity:.5}}
 .rchips{display:flex;flex-wrap:wrap;gap:6px}
 .rgh::before{content:'';position:absolute;left:18%;right:18%;bottom:-4%;height:9%;background:radial-gradient(#0007,#0000 70%);border-radius:50%}.rgh.zz::before{display:none}
+.rbox.red{touch-action:none;outline:2px dashed var(--ac);outline-offset:-2px}.rbox.red [data-s]{cursor:grab}.rbox.red svg>:not([data-s]){pointer-events:none}.rselg{filter:drop-shadow(0 0 3px #fff) drop-shadow(0 0 6px #ffd36b)}
 .rneo{animation:rneo 4s steps(1) infinite}@keyframes rneo{0%,100%{opacity:1}46%{opacity:.35}48%{opacity:1}50%{opacity:.5}52%{opacity:1}}
 .rsp{animation:rsp 4s ease-in-out infinite}@keyframes rsp{50%{transform:translateY(10px)}}
 .rcl{animation:rcl 18s linear infinite}@keyframes rcl{from{transform:translateX(-40px)}to{transform:translateX(50px)}}
@@ -1050,7 +1051,7 @@ case 'win':{const fr=set=='tat'?'#3a3a40':set=='hall'?'#6b4a2e':set=='forest'?'#
    :`${[[230,'#d65a5a',15],[237,'#4f8a5a',17],[244,'#5a7dff',14],[251,'#e0b04e',16]].map(([x,c,hh])=>`<rect x="${x}" y="${78-hh}" width="6.5" height="${hh}" rx="1" fill="${c}"/><rect x="${x+1}" y="${81-hh}" width="4.5" height="1.4" fill="#fff" opacity=".5"/>`).join('')}<path d="M258 78l6-15 3 1-6 15z" fill="#8a6aa8"/><rect x="270" y="64" width="16" height="14" rx="1.5" fill="#fff" stroke="#a87d52" stroke-width="2"/><circle cx="278" cy="70" r="3" fill="#7ab0d8"/><path d="M272 76q6-6 12 0" fill="#7fbf7f"/><path d="M288 78h4l-1-6h-2z" fill="#b5603a"/><circle cx="290" cy="70" r="3.5" fill="#4fae7a"/>`)}
  
  }return ''}
-function rPart(slot,set,nt){const P=RP[set]||RP.basic,id=x=>'r'+x+'-'+set+(nt?'n':'');switch(slot){
+function rPart(slot,set,nt,ps){const P=RP[set]||RP.basic,id=x=>'r'+x+'-'+set+(nt?'n':'');switch(slot){
  case 'wall':{const W=`url(#${id('w')})`;let h=`<polygon points="30,85 180,10 180,120 30,195" fill="${W}"/><polygon points="30,85 180,10 180,120 30,195" fill="url(#${id('wl')})"/>
   <polygon points="180,10 330,85 330,195 180,120" fill="${W}"/><polygon points="180,10 330,85 330,195 180,120" fill="url(#${id('wr')})"/><polygon points="180,10 330,85 330,195 180,120" fill="#000" opacity=".1"/>
   <path d="M180 12V120" stroke="#000" stroke-opacity=".18" stroke-width="5" filter="url(#rbl)"/>`;
@@ -1066,9 +1067,9 @@ function rPart(slot,set,nt){const P=RP[set]||RP.basic,id=x=>'r'+x+'-'+set+(nt?'n
    if(set=='forest')h+=`<circle cx="18" cy="140" r="10" fill="#6fbf6f" opacity=".45"/><circle cx="138" cy="20" r="8" fill="#6fbf6f" opacity=".35"/>`;
    if(set=='hall')h+=`<path d="M40 70l10 6 6-4 8 7" stroke="#2a1810" stroke-width="1" fill="none" opacity=".7"/>`}
   return h+`</g><polygon points="180,120 330,195 180,270 30,195" fill="url(#rflg)"/><path d="M30 195L180 120L330 195" stroke="#000" stroke-opacity=".25" stroke-width="6" fill="none" filter="url(#rbl)"/>`}
- case 'win':case 'wdeco':case 'shelf':{const T=slot=='win'?`translate(22 18) scale(.8) translate(-146 -34)`:slot=='wdeco'?`translate(58 16) scale(.82) translate(-72 -36)`:`translate(98 12) scale(.66) translate(-226 -50)`;
-  let h=`<g transform="${slot=='wdeco'?RWL:RWR}"><g transform="${T}">${rWallArt(slot,set,nt)}</g></g>`;
-  if(slot=='win')h=`<polygon points="${IP([24,0],[70,0],[112,70],[66,70])}" fill="url(#${id('bm')})" filter="url(#rbl)"/>`+h;
+ case 'win':case 'wdeco':case 'shelf':{const v=(ps||{})[slot]||RPD[slot],T=`translate(${v[1]} ${v[2]}) `+(slot=='win'?`scale(.8) translate(-146 -34)`:slot=='wdeco'?`scale(.82) translate(-72 -36)`:`scale(.66) translate(-226 -50)`);
+  let h=`<g transform="${v[0]=='l'?RWL:RWR}"><g transform="${T}">${rWallArt(slot,set,nt)}</g></g>`;
+  if(slot=='win'){const a=v[0]=='l'?150-v[1]-48:v[1]+2,pts=v[0]=='l'?IP([0,a],[0,a+46],[70,a+88],[70,a+42]):IP([a,0],[a+46,0],[a+88,70],[a+42,70]);h=`<polygon points="${pts}" fill="url(#${id('bm')})" filter="url(#rbl)"/>`+h}
   return h}
  case 'bed':{if(set=='tat'){let g=`${iSh(26,52,34,.32)}${iBox(14,34,38,72,0,20,'#9a9aa2','#7a7a82','#626269')}<polygon points="${IP([15,72,4],[37,72,4],[37,72,16],[15,72,16])}" fill="#8a8a92"/>${iBox(3,8,49,96,20,29,'#2e2e33','#1f1f23','#17171a')}${iBox(3,8,49,32,29,38,'#38383e','#26262b','#1c1c20')}`;
   g+=`<path d="M${I(6,36,29)} L${I(46,36,29)}" stroke="#55555c" stroke-width="1" stroke-dasharray="2 2"/><path d="M${I(6,94,29)} L${I(46,94,29)}" stroke="#55555c" stroke-width="1" stroke-dasharray="2 2"/>`;
@@ -1111,24 +1112,44 @@ function rPart(slot,set,nt){const P=RP[set]||RP.basic,id=x=>'r'+x+'-'+set+(nt?'n
   return `${iSh(146,72,12)}${iCyl(146,72,8,0,15,'#d27a4a','#c06a40','#a8562f')}<ellipse cx="${x}" cy="${y-15}" rx="9.5" ry="4.5" fill="#6a4a2a"/><path d="M${x} ${y-16}c-16-8-18-26-6-34c4 10 8 18 6 34z" fill="#4fae7a"/><path d="M${x} ${y-16}c14-10 20-26 10-38c-6 12-10 22-10 38z" fill="#3d9a64"/><path d="M${x} ${y-16}c-2-16 0-34 6-44c4 14 2 30-6 44z" fill="#6fce96"/>`}
  }return ''}
 const ROD=['wall','floor','win','wdeco','shelf','rug','bed','lamp','prop','plant'];
+// 배치(대장이 끌어서 옮김): pets.rpos — 바닥 가구 [p,q](그림 기준점), 벽 그림 ['l'|'r', 벽 x, 벽 y]
+const RPD={bed:[28,48],lamp:[118,16],rug:[86,92],prop:[30,122],plant:[146,72],win:['r',22,18],wdeco:['l',58,16],shelf:['r',98,12]};
+const RPB={bed:[28,122,46,104],lamp:[10,140,10,140],rug:[42,108,42,108],prop:[16,134,16,134],plant:[10,146,10,146],win:[10,86,8,44],wdeco:[2,100,6,44],shelf:[2,103,4,76]};
+function rClamp(k,v){const b=RPB[k],c=(x,a,z)=>Math.max(a,Math.min(z,Math.round(+x||0)));return typeof RPD[k][0]=='string'?[v[0]=='l'?'l':'r',c(v[1],b[0],b[1]),c(v[2],b[2],b[3])]:[c(v[0],b[0],b[1]),c(v[1],b[2],b[3])]}
+function rPosOf(pd){const r=(pd||{}).rpos||{},o={};for(const k in RPD){const v=r[k];o[k]=Array.isArray(v)&&v.length==RPD[k].length?rClamp(k,v):RPD[k].slice()}return o}
 function roomOf(pd){const r=Object.assign({},(pd||{}).room||{}),own=(pd||{}).rown||[],o={};RSLOT.forEach(([s])=>{const k=r[s];o[s]=k&&rSlotOf(k)==s&&RSET.some(z=>z[0]==rSetOf(k))&&(rSetOf(k)=='basic'||own.includes(k))?k:rItem('basic',s)});return o}
 function roomSet(o){const s=rSetOf(o.wall);return s!='basic'&&RSLOT.every(([k])=>rSetOf(o[k])==s)?s:''}
-function roomSvg(o,big,nt){const fs=roomSet(o),sets=[...new Set(RSLOT.map(([s])=>rSetOf(o[s])))],ws=rSetOf(o.wall),wid=x=>'r'+x+'-'+ws+(nt?'n':'');
+function roomSvg(o,big,nt,ps,sel){ps=ps||rPosOf(myPet);const fs=roomSet(o),sets=[...new Set(RSLOT.map(([s])=>rSetOf(o[s])))],ws=rSetOf(o.wall),wid=x=>'r'+x+'-'+ws+(nt?'n':'');
  const fx=fs=='hall'?'<text class="rbat" x="0" y="40" font-size="16">🦇</text><text class="rbat" x="0" y="74" font-size="12" style="animation-delay:-3s">🦇</text><text class="rbat" x="0" y="26" font-size="10" style="animation-delay:-5s">🦇</text>':fs=='tat'?[[90,130],[150,96],[250,110],[310,160],[120,180],[210,70]].map(([x,y],i)=>`<text class="rtw" x="${x}" y="${y}" font-size="10" style="animation-delay:${i*.3}s">✨</text>`).join(''):fs=='forest'?[[50,120],[120,90],[200,140],[260,90],[320,140],[90,170],[170,200],[290,210]].map(([x,y],i)=>`<circle class="rff" cx="${x}" cy="${y}" r="2.4" fill="#ffe98a" style="animation-delay:${i*.5}s;filter:drop-shadow(0 0 3px #ffe98a)"/>`).join(''):'';
  const amb=big?[[24,40],[340,60],[20,250],[344,240],[60,20],[300,24]].map(([x,y],i)=>`<circle class="rds" cx="${x}" cy="${y}" r="${1+i%2}" fill="#fff" opacity=".7" style="animation-delay:${i*1.1}s"/>`).join(''):'';
- const lamp=I(118,16,rSetOf(o.lamp)=='forest'?46:rSetOf(o.lamp)=='basic'?66:76);
+ const lamp=I(ps.lamp[0],ps.lamp[1],rSetOf(o.lamp)=='forest'?46:rSetOf(o.lamp)=='basic'?66:76);
  return `<svg viewBox="0 0 360 300" ${big?'':'class="rmini"'} style="width:100%;height:auto;display:block;border-radius:14px"><defs>${RGL}${sets.map(s=>rDefs(s,nt)).join('')}<linearGradient id="rflg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity=".22"/><stop offset=".5" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#fff" stop-opacity=".06"/></linearGradient></defs>
  <rect width="360" height="300" fill="url(#${wid('bg')})"/>${amb}<ellipse cx="180" cy="290" rx="150" ry="12" fill="#000" opacity=".25" filter="url(#rbl2)"/>
- ${ROD.map(s=>rPart(s,rSetOf(o[s]),nt)).join('')}
+ ${['wall','floor','win','wdeco','shelf'].map(s=>s=='wall'||s=='floor'?rPart(s,rSetOf(o[s]),nt):`<g data-s="${s}" ${sel==s?'class="rselg"':''}>${rPart(s,rSetOf(o[s]),nt,ps)}</g>`).join('')}
+ ${['rug','bed','lamp','prop','plant'].sort((a,b)=>a=='rug'?-1:b=='rug'?1:(ps[a][0]+ps[a][1])-(ps[b][0]+ps[b][1])).map(s=>{const d=RPD[s],v=ps[s],dp=v[0]-d[0],dq=v[1]-d[1];return `<g data-s="${s}" transform="translate(${dp-dq} ${(dp+dq)/2})" ${sel==s?'class="rselg"':''}>${rPart(s,rSetOf(o[s]),nt)}</g>`}).join('')}
  ${nt?`<polygon points="30,85 180,10 330,85 330,209 180,284 30,209" fill="#0a0b2e" opacity=".4"/><circle cx="${lamp[0]}" cy="${lamp[1]}" r="80" fill="url(#rlm)" style="mix-blend-mode:screen"/>`:''}${fx}</svg>`}
 let rSl='wall';
-function roomView(){const p=petCalc(me),o=roomOf(myPet),own=myPet.rown||[],bal=p.gp-(+myPet.gps||0),hr=new Date().getHours(),night=hr>=19||hr<6,fs=roomSet(o);
+let rEd=false,rPosE=null,rDrag=null,rRaf=0;
+function rGhostAt(ps){const[x,y]=I(ps.bed[0],ps.bed[1]-33,27);return `left:${(x/3.6-8.6).toFixed(1)}%;top:${(y/3-11).toFixed(1)}%;width:12%`}
+function roomView(){const p=petCalc(me),o=roomOf(myPet),own=myPet.rown||[],bal=p.gp-(+myPet.gps||0),hr=new Date().getHours(),night=hr>=19||hr<6,fs=roomSet(o),ps=rEd&&rPosE?rPosE:rPosOf(myPet);
  return `<div class="card"><div class="row" style="justify-content:space-between"><h2 style="margin:0">🏠 ${esc(p.name||'내 유령')}의 방</h2><span class="tag">대장만 보는 미리보기 · 11월 출시 예정</span></div>
- <div class="rbox">${roomSvg(o,1,night)}<div class="rgh ${night?'zz':''}" style="${night?'left:45%;top:27%;width:12%':''}">${ghostSvg(p.st,p.deco,false,'',p.col,night?'f_sleepy':p.face)}</div></div>
+ <div class="rbox ${rEd?'red':''}" onpointerdown="rDown(event)" onpointermove="rMove(event)" onpointerup="rUp(event)" onpointercancel="rUp(event)">${roomSvg(o,1,night,ps)}${rEd?'':`<div class="rgh ${night?'zz':''}" style="${night?rGhostAt(ps):''}">${ghostSvg(p.st,p.deco,false,'',p.col,night?'f_sleepy':p.face)}</div>`}</div>
+ ${rEd?`<p class="mu" style="margin:8px 0 6px">✋ 가구를 손가락으로 <b>꾹 눌러 끌면</b> 옮겨져요. 창문·벽 장식·선반은 양쪽 벽 어디든 걸 수 있어요.</p><div class="row"><button class="p" onclick="rEdDone()">✔ 배치 저장</button><button onclick="rPosE=rPosOf({});rRedraw()">↺ 처음 배치로</button><button onclick="rEd=false;rPosE=null;draw()">취소</button></div>`:`<button class="s" style="margin-top:8px" onclick="rEd=true;rPosE=rPosOf(myPet);draw()">✋ 가구 옮기기</button>`}
  <p class="mu" style="margin:6px 0 0">${night?'🌙 밤이라 침대에서 자고 있어요':'☀️ 낮엔 방 안을 돌아다녀요'}${fs?' · ✨ '+RSET.find(z=>z[0]==fs)[1]+' 세트 효과!':' · 한 세트 10개를 다 놓으면 세트 효과가 생겨요'} · 내 포인트 <b>${bal}</b></p></div>
  <div class="card"><div class="rchips">${RSLOT.map(([k,l])=>`<button class="s ${rSl==k?'on':''}" onclick="rSl='${k}';_keep=true;try{draw()}finally{_keep=false}">${l}</button>`).join('')}</div>
  <div class="pgrid" style="grid-template-columns:repeat(2,1fr);margin-top:10px">${RSET.map(([sk,sn,pr,need],i)=>{const k=rItem(sk,rSl),c=pr[RSLOT.findIndex(x=>x[0]==rSl)],has=!c||own.includes(k),on=o[rSl]==k,lock=p.st<need,t=Object.assign({},o,{[rSl]:k});
   return `<button class="pslot ${on?'on':''}" onclick="roomPick('${k}')" ${lock?'style="opacity:.55"':''}>${roomSvg(t)}<div style="margin-top:4px">${sn}</div><div class="mu">${on?'👍 놓여 있어요':lock?'🔒 '+PSTN[need]+'부터':has?'✔ 가지고 있어요':'🛒 '+c+'포인트'}</div></button>`}).join('')}</div></div>`}
+function rPt(e){const sv=document.querySelector('.rbox svg');if(!sv)return null;const m=sv.getScreenCTM();if(!m)return null;const pt=new DOMPoint(e.clientX,e.clientY).matrixTransform(m.inverse());return[pt.x,pt.y]}
+const rFloor=([X,Y])=>[((X-180)+2*(Y-120))/2,(2*(Y-120)-(X-180))/2],rWallL=([X,Y],w)=>{const x=w=='l'?X-30:X-180;return[x,w=='l'?Y-85+.5*x:Y-10-.5*x]};
+function rDown(e){if(!rEd||!rPosE)return;const g=e.target.closest&&e.target.closest('[data-s]'),pt=rPt(e);if(!g||!pt)return;const s=g.getAttribute('data-s'),v=rPosE[s];e.preventDefault();
+ if(typeof v[0]=='string'){const L=rWallL(pt,v[0]);rDrag={s,wall:1,ox:L[0]-v[1],oy:L[1]-v[2]}}else{const F=rFloor(pt);rDrag={s,ox:F[0]-v[0],oy:F[1]-v[1]}}
+ try{e.currentTarget.setPointerCapture(e.pointerId)}catch(x){}rRedraw()}
+function rMove(e){if(!rDrag)return;e.preventDefault();const pt=rPt(e);if(!pt)return;const d=rDrag;
+ if(d.wall){const w=pt[0]<180?'l':'r',L=rWallL(pt,w);rPosE[d.s]=rClamp(d.s,[w,L[0]-d.ox,L[1]-d.oy])}else{const F=rFloor(pt);rPosE[d.s]=rClamp(d.s,[F[0]-d.ox,F[1]-d.oy])}
+ if(!rRaf)rRaf=requestAnimationFrame(()=>{rRaf=0;rRedraw()})}
+function rUp(){if(!rDrag)return;rDrag=null;rRedraw()}
+function rRedraw(){const b=document.querySelector('.rbox svg');if(!b)return;const hr=new Date().getHours();b.outerHTML=roomSvg(roomOf(myPet),1,hr>=19||hr<6,rPosE,rDrag&&rDrag.s)}
+async function rEdDone(){const ps=rPosE;rEd=false;rPosE=null;const pr=petSave({rpos:ps});_keep=true;try{draw()}finally{_keep=false}if(await pr)toast('배치를 저장했어요');else draw()}
 async function roomPick(k){const p=petCalc(me),s=rSlotOf(k),set=RSET.find(z=>z[0]==rSetOf(k));if(!set)return;const c=set[2][RSLOT.findIndex(x=>x[0]==s)],own=myPet.rown||[],o=roomOf(myPet),nm2=set[1]+' '+RSLOT.find(x=>x[0]==s)[1];if(o[s]==k)return;
  if(p.st<set[3])return toast(PSTN[set[3]]+'이 되면 살 수 있어요 🔒');const has=!c||own.includes(k);
  if(has){if(!confirm(nm2+'(으)로 바꿀까요?'))return;const pr=petSave({room:Object.assign({},o,{[s]:k})});_keep=true;try{draw()}finally{_keep=false}if(!await pr)draw();return}
