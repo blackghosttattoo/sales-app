@@ -232,6 +232,15 @@ service cloud.firestore {
         && request.resource.data.keys().hasOnly(['at']) && request.resource.data.at == request.time;
     }
 
+    // 샵 이용규칙 '확인했어요' (v = 확인한 게시 번호). 본인만 쓰기, 읽기는 본인·대장
+    match /ruleAck/{u} {
+      allow read: if signedIn() && (request.auth.uid == u || admin());
+      allow delete: if admin();
+      allow create, update: if activeAny() && request.auth.uid == u
+        && request.resource.data.keys().hasOnly(['v', 'at']) && request.resource.data.v is int
+        && request.resource.data.v >= 0 && request.resource.data.v <= 100000 && request.resource.data.at == request.time;
+    }
+
     // 베드 센서(보드): 보드 전용 계정(bed@blackghost.app, 대장님이 Firebase 콘솔에서 만듦)만 beds/b1~b8 상태 기록.
     // st = 'on'(사용 중) | 'off'(비어 있음), up = 마지막 신호(서버 시간만), at = 상태가 바뀐 시간(서버 시간 또는 그대로)
     function bedDev() { return request.auth != null && request.auth.token.email == 'bed@blackghost.app'; }
