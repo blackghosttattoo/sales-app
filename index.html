@@ -184,7 +184,7 @@ body.vmode{overflow:hidden}body.vmode main{padding-bottom:0}
 .vme,.vmini{position:absolute;aspect-ratio:120/130;transform:translate(-50%,-85%);pointer-events:none}
 .vme{width:16%;z-index:4;left:0;top:0;will-change:transform}
 .vmini{width:8%;z-index:3;pointer-events:auto;cursor:pointer;left:0;top:0;will-change:transform}
-.vbody{width:100%;height:100%;animation:vfl 2.6s ease-in-out infinite;transform-origin:50% 90%}.vbody svg{width:100%;height:100%;overflow:visible}
+.vbody{width:100%;height:100%;transform-origin:50% 90%}.vbody svg{width:100%;height:100%;overflow:visible}
 .vtilt{width:100%;height:100%;transition:transform .5s}
 .vme.vspn .vbody{animation:vspin .9s ease}.vme.jump .vbody{animation:vjmp .7s ease}
 @keyframes vfl{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px) scale(.97,1.03)}}
@@ -2059,7 +2059,7 @@ function build(){EL=document.createElement('div');EL.className='vwrap';
 function fit(){if(!EL.parentNode||EL.style.display=='none')return;const nv=document.querySelector('.nav'),hd=document.querySelector('.vhdr');EL.style.bottom=(nv?nv.offsetHeight:64)+'px';EL.style.setProperty('--vt',(hd?hd.getBoundingClientRect().bottom+2:0)+'px');
  const r=MAP.getBoundingClientRect(),d=Math.min(2,window.devicePixelRatio||1);if(Math.abs(r.width-CW)<.5&&CV.width)return;CW=r.width;CH=r.width*1672/941;CV.width=CW*d;CV.height=CH*d;CX.setTransform(d,0,0,d,0,0)}// 크기가 같으면 캔버스를 다시 만들지 않음
 function spark(x,y,n,c){for(let i=0;i<n;i++)P.push({k:'sp',x,y,vx:rnd(-.7,.7),vy:rnd(-1.5,-.3),life:1,c:c||'#fff6c0'})}
-function loop(t){if(!live2()){raf=0;return}const dt=Math.min(50,t-(lastT||t))/16.7,N=EL.classList.contains('vnight');lastT=t;[ME,...MINI].forEach(el=>{if(el._g){const [x,y]=gpos(el),k=x.toFixed(2)+','+y.toFixed(2)+','+MAP.offsetWidth;if(el._k!=k){el._k=k;paint(el,x,y)}}});CX.clearRect(0,0,CW,CH);
+function loop(t){if(!live2()){raf=0;return}const dt=Math.min(50,t-(lastT||t))/16.7,N=EL.classList.contains('vnight');lastT=t;const bt=t/2600;[ME,...MINI].forEach((el,i)=>{if(el._g){const [x,y]=gpos(el),k=x.toFixed(2)+','+y.toFixed(2)+','+MAP.offsetWidth;if(el._k!=k){el._k=k;paint(el,x,y)}}let vb=el._vb;if(!vb||!vb.isConnected)vb=el._vb=el.querySelector('.vbody');if(vb){const v=(1-Math.cos((bt+i*.37)*2*Math.PI))/2;vb.style.transform=`translateY(${(-10*v).toFixed(2)}px) scale(${(1-.03*v).toFixed(4)},${(1+.03*v).toFixed(4)})`}});// 두둥실(v1.57 추가): CSS 대신 직접 — 폰 절전·애니메이션 줄이기에서도 움직이게. 빙글·점프 애니메이션은 CSS가 덮어씀CX.clearRect(0,0,CW,CH);
  for(let i=P.length-1;i>=0;i--){const o=P[i];
   if(o.k=='leaf'){o.y+=.0007*dt*o.s;o.p+=.025*dt;if(o.y>1){o.y=-.02;o.x=rnd(0,1)}CX.save();CX.translate(o.x*CW+Math.sin(o.p)*16,o.y*CH);CX.rotate(o.p*1.5);CX.scale(1,Math.abs(Math.cos(o.p)));CX.fillStyle=o.c;CX.beginPath();CX.ellipse(0,0,4.5*o.s,2.6*o.s,0,0,7);CX.fill();CX.restore()}
   else if(o.k=='fly'){if(!N)continue;o.p+=.02*dt;const x=o.x*CW+Math.sin(o.p*1.3)*16,y=o.y*CH+Math.cos(o.p)*10,a=.3+.7*Math.abs(Math.sin(o.p*2)),g=CX.createRadialGradient(x,y,0,x,y,6*o.s);g.addColorStop(0,`rgba(255,246,160,${a})`);g.addColorStop(1,'rgba(255,246,160,0)');CX.fillStyle=g;CX.beginPath();CX.arc(x,y,6*o.s,0,7);CX.fill()}
