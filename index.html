@@ -242,7 +242,7 @@ body.vmode{overflow:hidden}body.vmode main{padding-bottom:0}
 <div class="ldc"><b>🍎 아이폰</b><ol><li>카카오톡·인스타그램 안에서 열었다면 → 아래(또는 위) <b>⋯</b> 버튼 → <b>'Safari로 열기'</b></li><li>Safari에서도 멈추면 → 설정 → Safari → <b>방문 기록 및 웹사이트 데이터 지우기</b>, <b>콘텐츠 차단기(광고 차단) 끄기</b>, 비공개 모드 끄기</li><li><b>iOS 14 이상</b>이어야 해요 (설정 → 일반 → 정보)</li><li>열리면 Safari <b>공유 □↑ → '홈 화면에 추가'</b></li></ol></div>
 <div class="ldc"><b>🤖 갤럭시 (안드로이드)</b><ol><li>카카오톡·인스타그램 안에서 열었다면 → 오른쪽 위(또는 아래) <b>⋮</b> 버튼 → <b>'다른 브라우저로 열기'</b> → <b>크롬(Chrome)</b></li><li>크롬에서도 멈추면 → 크롬 <b>⋮ → 설정 → 개인정보 보호 → 인터넷 사용 기록 삭제</b>(쿠키·캐시) 후 다시 열기. 삼성 인터넷은 광고 차단 끄기, 안 되면 크롬으로</li><li>열리면 크롬 <b>⋮ → '홈 화면에 추가'</b>(또는 '앱 설치')</li></ol></div>
 <p>주소: <b style="word-break:break-all">blackghosttattoo.github.io/sales-app</b></p><p><a class="ldr" href="?r=1">🔄 다시 시도</a></p><p class="ldm">그래도 안 되면 이 화면을 캡처해서 대장에게 보내 주세요.</p></div></div></main><div id="modal"><div class="card" id="mb"></div></div><div id="snack"></div>
-<script>window.APPV0='v1.56';
+<script>window.APPV0='v1.57';
 // 화면 확대 막기 (v1.49 사용자 요청): 두 손가락 벌리기(아이폰은 설정만으론 안 막혀서 동작 자체를 막음)·두 번 톡톡 확대·입력칸 자동 확대
 try{document.addEventListener('gesturestart',e=>e.preventDefault());document.addEventListener('touchmove',e=>{if(e.touches&&e.touches.length>1)e.preventDefault()},{passive:false})}catch(e){}
 
@@ -1395,7 +1395,9 @@ const wkKey=d=>{const dt=new Date(d+'T00:00:00');dt.setDate(dt.getDate()-(dt.get
 const GPDIV={match:300,merge:400,jump:3,candy:4,mole:2.5,ink:6,fly:1.2,stack:2,memory:25},GDAY=10;
 const gpOf=(k,sc)=>Math.max(0,Math.min(300,Math.floor(sc/(GPDIV[k]||10))));
 // 하루 판 수: gplay={d:날짜,t:{게임:판수}} (v1.54: 예전 n은 merge 저장 때문에 어제 판 수가 섞여 남아서 t로 새로 셈)
-const gPlays=k=>{const g=myPet.gplay||{};return g.d==today()?(+(g.t||{})[k]||0):0};
+// 10-23 하루만: 호박 탑 쌓기가 안 뜨던 동안 쓴 판 수 돌려주기(v1.56 대장 결정). 오늘 판 수 기록 안에 sfx 표시를 남겨 한 번만
+const gStkFix=()=>{const g=myPet.gplay;if(!g||g.d!=today()||today()!='2026-10-23')return;const t=g.t||{};if(t.sfx||!t.stack)return;const t2=Object.assign({},t,{stack:0,sfx:1});try{petSave({gplay:{d:g.d,t:t2}})}catch(e){}};
+const gPlays=k=>{if(k=='stack')gStkFix();const g=myPet.gplay||{};return g.d==today()?(+(g.t||{})[k]||0):0};
 function gState(){const p=myPet||{},td=today();return{tod:p.gday==td?(+p.gtod||0):0,tot:+p.gpt||0,wk:p.wkw==wkKey(td)?(+p.wkp||0):0,best:p.best||{}}}
 function gkHtml(){const wk=wkKey(today()),l=Object.entries(pets).filter(([id,x])=>x.wkw==wk&&+x.wkp>0&&(id==me.id||users[id]||roster[id])).sort((a,b)=>b[1].wkp-a[1].wkp).slice(0,5);return l.length?`<div style="margin-bottom:10px"><b>🎮 이번 주 게임왕</b>${l.map(([id,x],i)=>`<div class="row" style="justify-content:space-between;padding:4px 0;${id==me.id?'font-weight:700':''}"><span>${['🥇','🥈','🥉','4위','5위'][i]} ${esc(x.name||nm(id))}${id==me.id?' (나)':''}</span><span>${x.wkp}포인트</span></div>`).join('')}</div>`:''}
 function gameCard(){const s=gState(),bal=s.tot-(+myPet.gps||0);return `<div class="card"><h2>🎮 유령 게임</h2><p class="mu">오늘 받은 포인트 <b>${s.tod}</b> · 모은 포인트 <b>${bal}</b> · 포인트로 유령이 자라고 🎨 꾸미기를 살 수 있어요 (게임마다 하루 10판, 점수만큼 포인트). 게임 주인공은 내 유령! 아주 가끔 🎟️ 복권도 나와요</p>${gTixN()?`<button class="p" style="width:100%;margin-bottom:8px" onclick="gTixOpen()">🎟️ 게임 복권 ${gTixN()}장 · 긁으러 가기</button>`:''}<div class="grid">${GAMES.map(([k,l])=>`<button onclick="gameOpen('${k}')">${l}<span class="mu">최고 ${+(s.best||{})[k]||0}점 · 오늘 ${gPlays(k)}/${GDAY}판</span>${(t=>t?`<span class="mu" style="font-size:11px">👑 ${esc(nm(t[0]))} ${t[2]}점</span>`:'')(gRankL(k,'all')[0])}</button>`).join('')}</div></div>`}
@@ -1570,7 +1572,7 @@ async function gTixWin(pz){gTixSet(gTixN()-1);try{localStorage.removeItem('gTixP
 function gTixClose(){closeM();draw()}
 // 대장 앱: 광장용 요약을 계산해 저장 (바뀐 사람만)
 async function petSync(){if(!adm())return;await loadPets();const b=db.batch();let n=0;Object.values(users).filter(u=>u.status=='active'&&u.role!='student'&&!u.del).forEach(u=>{const p=petCalc(u),o=pets[u.id]||{};if(o.st!==p.st||o.ex!==p.ex||o.full!==p.full||o.mood!==p.mood){b.set(db.doc('pets/'+u.id),{st:p.st,ex:p.ex,full:p.full,mood:p.mood,sAt:NOW()},{merge:true});n++}});if(n)await b.commit().catch(e=>console.log(e))}
-const APPV='v1.56',verLine=()=>`<p class="mu" style="text-align:center;margin:4px 0 12px">BLACKGHOST TATTOO STUDIO · ${APPV} <button class="s" style="margin-left:6px" onclick="goUpd()">🔄 새로고침</button></p>`;
+const APPV='v1.57',verLine=()=>`<p class="mu" style="text-align:center;margin:4px 0 12px">BLACKGHOST TATTOO STUDIO · ${APPV} <button class="s" style="margin-left:6px" onclick="goUpd()">🔄 새로고침</button></p>`;
 
 function sdraw(){const nv=`<nav class="nav">${[['home','내 수강','🎓'],['edu','기본교육','📚']].map(([k,l,i])=>`<button class="${tab==k?'on':''}" onclick="go('${k}')"><i>${i}</i>${l}</button>`).join('')}</nav>`;view(hdr()+(tab=='edu'?eduView():noticeBanner()+studentHome())+verLine()+nv);ruleChk()}
 async function saveCourse(id){const v=k=>$('#ac_'+k).value,c=crs[id],iu=instList().find(u=>u.id==v('inst')),o={phone:v('phone').trim(),insta:v('insta').trim(),start:v('start'),total:Math.max(1,+v('total')||25),inst:v('inst'),instName:iu?(iu.nick||iu.name):''};const fee=adm()?+v('fee')||0:null;await db.doc('courses/'+id).update(o).catch(err);Object.assign(c,o);if(fee!=null&&fee!==cpOf(id).fee){const cp=Object.assign({uid:id,pays:[]},cpOf(id),{fee});await db.doc('coursePay/'+id).set(cp).catch(err);cpay[id]=cp}draw()}
