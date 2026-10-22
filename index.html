@@ -117,7 +117,7 @@ html{touch-action:manipulation}
 #snack{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#000c;color:#fff;padding:10px 16px;border-radius:999px;font-size:13px;z-index:10;display:none;white-space:nowrap}
 /* 블랙고스트마을 (v1.39) */
 body.vmode{overflow:hidden}body.vmode main{padding-bottom:0}
-.vhdr{position:fixed;z-index:7;top:calc(8px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);width:min(calc(100% - 20px),700px);background:#140f18b8;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#fff;border:1px solid #ffffff26;border-radius:14px;padding:7px 10px;box-shadow:0 4px 14px #0006}
+.vhdr{position:fixed;z-index:7;top:calc(8px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);width:min(calc(100% - 20px),700px);background:#140f18e6;color:#fff;border:1px solid #ffffff26;border-radius:14px;padding:7px 10px;box-shadow:0 4px 14px #0006}
 .vht{font-size:14px;font-weight:700;line-height:1.35;word-break:keep-all;overflow-wrap:break-word}
 .vhs{display:flex;align-items:center;gap:6px;font-size:11.5px;color:#ddd8ea;margin-top:2px}.vhs button{white-space:nowrap;flex-shrink:0;padding:3px 7px;font-size:12px;background:#0006;color:#fff;border-color:#fff4}
 .vwrap{position:fixed;top:0;bottom:64px;left:50%;transform:translateX(-50%);width:min(100%,720px);z-index:1;overflow:hidden;background:#120d10;color:#fff}
@@ -125,11 +125,11 @@ body.vmode{overflow:hidden}body.vmode main{padding-bottom:0}
 .vtop{position:absolute;left:0;right:0;top:var(--vt,0px);z-index:8;display:flex;align-items:center;gap:6px;padding:9px 10px;background:linear-gradient(#000c,#0000);pointer-events:none}
 .vtop b{font-size:17px;letter-spacing:.5px;text-shadow:0 2px 6px #000}.vtop button{pointer-events:auto}
 .vqk{position:absolute;right:10px;bottom:calc(52px + env(safe-area-inset-bottom,0px));z-index:8;display:flex;flex-direction:column;gap:8px}
-.vqb{width:62px;height:62px;border-radius:50%;border:2px solid #ffd98a;background:radial-gradient(circle at 35% 30%,#7a4fc0,#3a2060 70%);color:#fff;font-size:11.5px;font-weight:700;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:0;box-shadow:0 0 0 3px #0005,0 4px 14px #000a,0 0 16px #b98aff88;animation:vqb 2.6s ease-in-out infinite}
-.vqb+.vqb{background:radial-gradient(circle at 35% 30%,#ff8fb1,#c0386a 70%);box-shadow:0 0 0 3px #0005,0 4px 14px #000a,0 0 16px #ff8fb188;animation-delay:-1.3s}
+.vqb{width:62px;height:62px;border-radius:50%;border:2px solid #ffd98a;background:radial-gradient(circle at 35% 30%,#7a4fc0,#3a2060 70%);color:#fff;font-size:11.5px;font-weight:700;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:0;box-shadow:0 0 0 3px #0005,0 4px 12px #000a}
+.vqb+.vqb{background:radial-gradient(circle at 35% 30%,#ff8fb1,#c0386a 70%);box-shadow:0 0 0 3px #0005,0 4px 12px #000a}
 .vqb i{font-style:normal;font-size:24px;line-height:1}@keyframes vqb{50%{transform:translateY(-4px)}}
 @media (prefers-reduced-motion:reduce){.vqb{animation:none}}
-.vib{border:1px solid #fff5;background:#0008;color:#fff;border-radius:999px;padding:5px 9px;font-size:12px;backdrop-filter:blur(4px)}.vib.on{background:#ffcf6b;color:#3a2a00;border-color:#ffcf6b}
+.vib{border:1px solid #fff5;background:#000b;color:#fff;border-radius:999px;padding:5px 9px;font-size:12px}.vib.on{background:#ffcf6b;color:#3a2a00;border-color:#ffcf6b}
 .vmap{position:relative;width:100%;aspect-ratio:941/1672;transform-origin:50% 50%;transition:transform .75s cubic-bezier(.65,0,.35,1),filter .75s;cursor:pointer}
 .vmap.zoom{filter:brightness(.35) blur(1.5px)}
 .vimg{position:absolute;inset:0;width:100%;height:100%;display:block;user-select:none;-webkit-user-select:none;-webkit-user-drag:none}
@@ -138,7 +138,7 @@ body.vmode{overflow:hidden}body.vmode main{padding-bottom:0}
 .vlg{position:absolute;width:15%;aspect-ratio:1;margin:-7.5% 0 0 -7.5%;border-radius:50%;background:radial-gradient(#ffcf7aaa,#ff9a3a33 40%,#0000 70%);animation:vlamp 2.8s ease-in-out infinite}
 .vnight .vlg{background:radial-gradient(#ffd98add,#ffa04a55 40%,#0000 70%)}
 @keyframes vlamp{50%{opacity:.6;transform:scale(.9)}}
-.vwin{position:absolute;border-radius:40%;background:radial-gradient(#ffd27a99,#0000 70%);animation:vflick 5s infinite;pointer-events:none;mix-blend-mode:screen}
+.vwin{position:absolute;border-radius:40%;background:radial-gradient(#ffd27a99,#0000 70%);animation:vflick 5s infinite;pointer-events:none}
 @keyframes vflick{0%,46%,100%{opacity:1}48%{opacity:.7}50%{opacity:1}52%{opacity:.8}}
 .vsmk{position:absolute;width:3.5%;aspect-ratio:1;border-radius:50%;background:#e9e4f2;filter:blur(2px);animation:vsmk 4.5s ease-out infinite;pointer-events:none}
 @keyframes vsmk{0%{opacity:0;transform:translate(0,0) scale(.5)}20%{opacity:.55}100%{opacity:0;transform:translate(14px,-40px) scale(2.2)}}
@@ -242,7 +242,7 @@ body.vmode{overflow:hidden}body.vmode main{padding-bottom:0}
 <div class="ldc"><b>🍎 아이폰</b><ol><li>카카오톡·인스타그램 안에서 열었다면 → 아래(또는 위) <b>⋯</b> 버튼 → <b>'Safari로 열기'</b></li><li>Safari에서도 멈추면 → 설정 → Safari → <b>방문 기록 및 웹사이트 데이터 지우기</b>, <b>콘텐츠 차단기(광고 차단) 끄기</b>, 비공개 모드 끄기</li><li><b>iOS 14 이상</b>이어야 해요 (설정 → 일반 → 정보)</li><li>열리면 Safari <b>공유 □↑ → '홈 화면에 추가'</b></li></ol></div>
 <div class="ldc"><b>🤖 갤럭시 (안드로이드)</b><ol><li>카카오톡·인스타그램 안에서 열었다면 → 오른쪽 위(또는 아래) <b>⋮</b> 버튼 → <b>'다른 브라우저로 열기'</b> → <b>크롬(Chrome)</b></li><li>크롬에서도 멈추면 → 크롬 <b>⋮ → 설정 → 개인정보 보호 → 인터넷 사용 기록 삭제</b>(쿠키·캐시) 후 다시 열기. 삼성 인터넷은 광고 차단 끄기, 안 되면 크롬으로</li><li>열리면 크롬 <b>⋮ → '홈 화면에 추가'</b>(또는 '앱 설치')</li></ol></div>
 <p>주소: <b style="word-break:break-all">blackghosttattoo.github.io/sales-app</b></p><p><a class="ldr" href="?r=1">🔄 다시 시도</a></p><p class="ldm">그래도 안 되면 이 화면을 캡처해서 대장에게 보내 주세요.</p></div></div></main><div id="modal"><div class="card" id="mb"></div></div><div id="snack"></div>
-<script>window.APPV0='v1.51';
+<script>window.APPV0='v1.52';
 // 화면 확대 막기 (v1.49 사용자 요청): 두 손가락 벌리기(아이폰은 설정만으론 안 막혀서 동작 자체를 막음)·두 번 톡톡 확대·입력칸 자동 확대
 try{document.addEventListener('gesturestart',e=>e.preventDefault());document.addEventListener('touchmove',e=>{if(e.touches&&e.touches.length>1)e.preventDefault()},{passive:false})}catch(e){}
 
@@ -1554,7 +1554,7 @@ async function gTixWin(pz){gTixSet(gTixN()-1);try{localStorage.removeItem('gTixP
 function gTixClose(){closeM();draw()}
 // 대장 앱: 광장용 요약을 계산해 저장 (바뀐 사람만)
 async function petSync(){if(!adm())return;await loadPets();const b=db.batch();let n=0;Object.values(users).filter(u=>u.status=='active'&&u.role!='student'&&!u.del).forEach(u=>{const p=petCalc(u),o=pets[u.id]||{};if(o.st!==p.st||o.ex!==p.ex||o.full!==p.full||o.mood!==p.mood){b.set(db.doc('pets/'+u.id),{st:p.st,ex:p.ex,full:p.full,mood:p.mood,sAt:NOW()},{merge:true});n++}});if(n)await b.commit().catch(e=>console.log(e))}
-const APPV='v1.51',verLine=()=>`<p class="mu" style="text-align:center;margin:4px 0 12px">BLACKGHOST TATTOO STUDIO · ${APPV} <button class="s" style="margin-left:6px" onclick="goUpd()">🔄 새로고침</button></p>`;
+const APPV='v1.52',verLine=()=>`<p class="mu" style="text-align:center;margin:4px 0 12px">BLACKGHOST TATTOO STUDIO · ${APPV} <button class="s" style="margin-left:6px" onclick="goUpd()">🔄 새로고침</button></p>`;
 
 function sdraw(){const nv=`<nav class="nav">${[['home','내 수강','🎓'],['edu','기본교육','📚']].map(([k,l,i])=>`<button class="${tab==k?'on':''}" onclick="go('${k}')"><i>${i}</i>${l}</button>`).join('')}</nav>`;view(hdr()+(tab=='edu'?eduView():noticeBanner()+studentHome())+verLine()+nv);ruleChk()}
 async function saveCourse(id){const v=k=>$('#ac_'+k).value,c=crs[id],iu=instList().find(u=>u.id==v('inst')),o={phone:v('phone').trim(),insta:v('insta').trim(),start:v('start'),total:Math.max(1,+v('total')||25),inst:v('inst'),instName:iu?(iu.nick||iu.name):''};const fee=adm()?+v('fee')||0:null;await db.doc('courses/'+id).update(o).catch(err);Object.assign(c,o);if(fee!=null&&fee!==cpOf(id).fee){const cp=Object.assign({uid:id,pays:[]},cpOf(id),{fee});await db.doc('coursePay/'+id).set(cp).catch(err);cpay[id]=cp}draw()}
@@ -2024,7 +2024,7 @@ function myHome(){return bedCard()+noticeBanner()+petCard()+rankCard()+eventBann
 function decoView(){const p=petCalc(me),bal=p.gp-(+myPet.gps||0);return `<div class="card"><h2>🎨 꾸미기 상점</h2><div class="row" style="flex-wrap:nowrap"><div style="width:80px;flex-shrink:0">${ghostSvg(p.st,p.deco,p.sad,'pfl',p.col,p.face)}</div><div><b>${esc(p.name||'내 유령')}</b> <span class="mu">${p.stName}</span><div class="mu">내 포인트 <b>${bal}</b> · 🎮 게임 동굴에서 모아요</div></div></div><p class="mu">단계가 오르면 열리는 꾸미기와, 게임 포인트로 사는 꾸미기가 있어요.</p>${decoGrid()}</div>`}
 function castleView(){return (noticeBanner()||'<div class="card"><h2>📢 공지</h2><p class="mu">지금은 공지가 없어요.</p></div>')+`<div class="card"><h2>📜 샵 규칙</h2><div class="grid"><button onclick="shopRules('rule')"><i>📜</i>샵 이용규칙</button><button onclick="shopRules('law')"><i>⚖️</i>문신사법 안내</button></div></div><div class="card"><h2>도움말</h2><a href="guide.html?v=40" style="color:var(--ac);font-weight:700">설치·사용 안내 · 자주 묻는 질문 →</a></div>`}
 const VIL=(()=>{let EL=null,MAP=null,ME=null,CV=null,CX=null,CW=0,CH=0,raf=0,busy=false,moving=false,idle=0,mx=50,my=58,sc=-1,night=null,mus=false,meK='',miK='',lastT=0;const P=[],MINI=[];
-const rnd=(a,b)=>a+Math.random()*(b-a),q=s=>EL.querySelector(s),live2=()=>!!EL&&document.body.contains(EL);
+const rnd=(a,b)=>a+Math.random()*(b-a),q=s=>EL.querySelector(s),live2=()=>!!EL&&EL.style.display!='none'&&document.body.contains(EL);
 function build(){EL=document.createElement('div');EL.className='vwrap';
  EL.innerHTML=`<div class="vtop"><b>블랙고스트마을</b><span style="flex:1"></span><button class="vib" data-a="my"></button><button class="vib" data-a="snd" aria-label="배경 음악">🔇</button><button class="vib" data-a="dn" aria-label="낮밤 바꾸기">🌙</button></div><div class="vsc"><div class="vmap"><img class="vimg" src="${VD}village.jpg" alt="블랙고스트마을 지도" draggable="false"><div class="vtint"></div><div class="vfall"></div><div class="vglows"></div><canvas class="vfx"></canvas><div class="vnews">${new Date().getMonth()>=10?'🎁 곧 새로운 업데이트가 와요!':'🎁 11월 새로운 업데이트 예정!'}</div><div class="vme" style="left:50%;top:58%"><div class="vsay2 hide"></div><div class="vtilt"><div class="vbody"></div></div><div class="vshd"></div></div></div></div><div class="vhint">⬆⬇ 밀어서 구경 · 건물을 눌러 들어가요</div><div class="vqk"><button class="vqb" data-a="pet"><i>👻</i>키우기</button><button class="vqb" data-a="deco"><i>🎨</i>꾸미기</button></div>`;
  MAP=q('.vmap');ME=q('.vme');CV=q('.vfx');CX=CV.getContext('2d');
@@ -2038,8 +2038,8 @@ function build(){EL=document.createElement('div');EL.className='vwrap';
  q('.vsc').addEventListener('scroll',e=>{sc=e.target.scrollTop},{passive:true});
  EL.addEventListener('click',onClick);
  setInterval(tick,2000);addEventListener('resize',()=>{if(live2())fit()})}
-function fit(){if(!EL.parentNode)return;const nv=document.querySelector('.nav'),hd=document.querySelector('.vhdr');EL.style.bottom=(nv?nv.offsetHeight:64)+'px';EL.style.setProperty('--vt',(hd?hd.getBoundingClientRect().bottom+2:0)+'px');
- const r=MAP.getBoundingClientRect(),d=Math.min(2,window.devicePixelRatio||1);CW=r.width;CH=r.width*1672/941;CV.width=CW*d;CV.height=CH*d;CX.setTransform(d,0,0,d,0,0)}
+function fit(){if(!EL.parentNode||EL.style.display=='none')return;const nv=document.querySelector('.nav'),hd=document.querySelector('.vhdr');EL.style.bottom=(nv?nv.offsetHeight:64)+'px';EL.style.setProperty('--vt',(hd?hd.getBoundingClientRect().bottom+2:0)+'px');
+ const r=MAP.getBoundingClientRect(),d=Math.min(1.5,window.devicePixelRatio||1);if(Math.abs(r.width-CW)<.5&&CV.width)return;CW=r.width;CH=r.width*1672/941;CV.width=CW*d;CV.height=CH*d;CX.setTransform(d,0,0,d,0,0)}// 크기가 같으면 캔버스를 다시 만들지 않음
 function spark(x,y,n,c){for(let i=0;i<n;i++)P.push({k:'sp',x,y,vx:rnd(-.7,.7),vy:rnd(-1.5,-.3),life:1,c:c||'#fff6c0'})}
 function loop(t){if(!live2()){raf=0;return}const dt=Math.min(50,t-(lastT||t))/16.7,N=EL.classList.contains('vnight');lastT=t;CX.clearRect(0,0,CW,CH);
  for(let i=P.length-1;i>=0;i--){const o=P[i];
@@ -2070,7 +2070,8 @@ function upd(){const p=petCalc(me),k=p.st+'|'+p.deco+'|'+p.sad+'|'+p.col+'|'+p.f
  if(ns)B.cream=['🧾 오늘 '+ns+'개',''];if(tp)B.toss=['🔔 승인 '+tp+'건',''];if(p.sad)B.pet=['🍙 배고파요','y'];if(tk)B.lotto=['🎟 '+tk+'장',''];B.game=[g.tod?'오늘 +'+g.tod:'🎮 새 게임','y'];if(nl().some(x=>(x.d||'')>=wk))B.castle=['📢 새 공지',''];
  EL.querySelectorAll('.vspot').forEach(s=>{const b=B[s.dataset.k]||['',''],u=s.querySelector('.vbub');u.textContent=b[0];u.className='vbub '+b[1]});
  q('[data-a="my"]').textContent=adm()?'🏠 총괄':'📋 내현황'}
-function mount(){const s=document.getElementById('vslot');if(!s)return;if(!EL)build();s.appendChild(EL);if(!LS.pets)loadPets().then(redraw);
+function mount(){const s=document.getElementById('vslot');if(!s)return;if(!EL)build();if(EL.parentNode!==document.body)document.body.appendChild(EL);EL.style.display='';// 마을은 body에 한 번만 붙여 두고 다시 그릴 때 떼지 않음(떼었다 붙이면 그림·움직임이 처음부터 다시 그려져 끊김)
+if(!LS.pets)loadPets().then(redraw);
  if(night==null){const h=new Date().getHours();EL.classList.toggle('vnight',h>=19||h<6);q('[data-a="dn"]').textContent=EL.classList.contains('vnight')?'🌅':'🌙'}
  MAP.style.transform='';MAP.classList.remove('zoom');EL.querySelectorAll('.vspot.hit').forEach(x=>x.classList.remove('hit'));busy=false;
  fit();upd();const v=q('.vsc');if(sc<0){sc=Math.max(0,MAP.offsetHeight*.5-v.clientHeight/2);setTimeout(()=>talk('땅을 눌러서 날 움직여 봐! 👻',3200),400)}v.scrollTop=sc;
@@ -2166,7 +2167,7 @@ const hush=()=>{if(AC&&AC.state=='running'&&AC.suspend)AC.suspend()},wake=()=>{i
 if(document.addEventListener)document.addEventListener('visibilitychange',()=>{document.hidden?hush():wake()});
 if(window.addEventListener)window.addEventListener('pagehide',hush);
 // draw() 뒤에 부름: 마을 자리가 있으면 붙임
-function after(){if(!document.createElement||!document.body)return;try{const s=!!document.getElementById('vslot');document.body.classList.toggle('vmode',s);if(s)mount();
+function after(){if(!document.createElement||!document.body)return;try{const s=!!document.getElementById('vslot');document.body.classList.toggle('vmode',s);if(s)mount();else if(EL&&EL.style.display!='none')EL.style.display='none';
  if(EL){const b=q('[data-a="snd"]');b.textContent=mus?'🔊':'🔇';b.classList.toggle('on',mus)}}catch(e){console.error(e)}}
 return{after,gs:gsfx,gm:gstart,ge:gend}})();
 // 게임 아이콘 하단 메뉴 (마을 켜졌을 때): 색 보석 타일 + 금테, 누른 칸은 위로 튀어 오름, 토스 승인 대기 숫자
