@@ -242,7 +242,7 @@ body.vmode{overflow:hidden}body.vmode main{padding-bottom:0}
 <div class="ldc"><b>🍎 아이폰</b><ol><li>카카오톡·인스타그램 안에서 열었다면 → 아래(또는 위) <b>⋯</b> 버튼 → <b>'Safari로 열기'</b></li><li>Safari에서도 멈추면 → 설정 → Safari → <b>방문 기록 및 웹사이트 데이터 지우기</b>, <b>콘텐츠 차단기(광고 차단) 끄기</b>, 비공개 모드 끄기</li><li><b>iOS 14 이상</b>이어야 해요 (설정 → 일반 → 정보)</li><li>열리면 Safari <b>공유 □↑ → '홈 화면에 추가'</b></li></ol></div>
 <div class="ldc"><b>🤖 갤럭시 (안드로이드)</b><ol><li>카카오톡·인스타그램 안에서 열었다면 → 오른쪽 위(또는 아래) <b>⋮</b> 버튼 → <b>'다른 브라우저로 열기'</b> → <b>크롬(Chrome)</b></li><li>크롬에서도 멈추면 → 크롬 <b>⋮ → 설정 → 개인정보 보호 → 인터넷 사용 기록 삭제</b>(쿠키·캐시) 후 다시 열기. 삼성 인터넷은 광고 차단 끄기, 안 되면 크롬으로</li><li>열리면 크롬 <b>⋮ → '홈 화면에 추가'</b>(또는 '앱 설치')</li></ol></div>
 <p>주소: <b style="word-break:break-all">blackghosttattoo.github.io/sales-app</b></p><p><a class="ldr" href="?r=1">🔄 다시 시도</a></p><p class="ldm">그래도 안 되면 이 화면을 캡처해서 대장에게 보내 주세요.</p></div></div></main><div id="modal"><div class="card" id="mb"></div></div><div id="snack"></div>
-<script>window.APPV0='v1.55';
+<script>window.APPV0='v1.56';
 // 화면 확대 막기 (v1.49 사용자 요청): 두 손가락 벌리기(아이폰은 설정만으론 안 막혀서 동작 자체를 막음)·두 번 톡톡 확대·입력칸 자동 확대
 try{document.addEventListener('gesturestart',e=>e.preventDefault());document.addEventListener('touchmove',e=>{if(e.touches&&e.touches.length>1)e.preventDefault()},{passive:false})}catch(e){}
 
@@ -1472,6 +1472,20 @@ if(k=='fly'){g.y=H/2;g.vy=0;g.ps=[];g.nx=0;g.go=0;g.t=0;g.bx=0;cv.onpointerdown=
   gDrawMe(c,80,g.y,34,Math.max(-.5,Math.min(.6,g.vy*.06)));
   if(!g.go){c.fillStyle='#fff';c.font='15px "Noto Sans KR",sans-serif';c.fillText('화면을 누르면 출발!',W/2,H/2+60)}
   if(g.y>H-30||g.y<-30){g.end=1;GS('bad');return gameOver(g)}requestAnimationFrame(loop)};sc();return requestAnimationFrame(loop)}
+// 🎃 호박 탑 쌓기 (v1.49): 움직이는 상자를 아래 칸과 겹칠 때 누름 → 겹친 만큼만 남음, 딱 맞추면 +2. 내 유령이 움직이는 상자에 올라탐
+if(k=='stack'){const bh=26,wy=i=>H-40-(i+1)*bh;g.tw=[{x:W/2-70,w:140}];g.cur={x:0,w:140,d:1,sp:1.8};g.cam=0;g.fall=[];g.flash=0;g.end=0;
+ const blk=(x,y,w,i)=>{c.fillStyle=`hsl(${22+(i*9)%30} 90% ${54-(i%2)*7}%)`;c.beginPath();if(c.roundRect)c.roundRect(x,y,w,bh-2,6);else c.rect(x,y,w,bh-2);c.fill();c.fillStyle='#00000030';for(let j=x+14;j<x+w-6;j+=18)c.fillRect(j,y+3,2,bh-8)};
+ cv.onpointerdown=()=>{if(g.end)return;const n=g.tw.length,tp=g.tw[n-1],cu=g.cur,l=Math.max(cu.x,tp.x),r=Math.min(cu.x+cu.w,tp.x+tp.w),ov=r-l;
+  if(ov<=0){g.fall.push({x:cu.x,w:cu.w,y:0,vy:0,lv:n});g.end=1;GS('bad');sc();return setTimeout(()=>gameOver(g),800)}
+  let nx=l,nw=ov;if(Math.abs(cu.x-tp.x)<5){nx=tp.x;nw=tp.w;g.sc+=2;g.flash=40;GS('great')}else{g.sc++;GS('pt');g.fall.push(cu.x<tp.x?{x:cu.x,w:tp.x-cu.x,y:0,vy:0,lv:n}:{x:r,w:cu.x+cu.w-r,y:0,vy:0,lv:n})}
+  g.tw.push({x:nx,w:nw});sc();const m=g.tw.length;g.cur={x:m%2?0:W-nw,w:nw,d:m%2?1:-1,sp:1.8+Math.min(2.4,m*.08)}};
+ const loop=()=>{if(!alive())return;const n=g.tw.length,cu=g.cur;if(!g.end){cu.x+=cu.d*cu.sp;if(cu.x+cu.w>W){cu.x=W-cu.w;cu.d=-1}if(cu.x<0){cu.x=0;cu.d=1}}
+  const tc=Math.max(0,(n+3)*bh-H*.6);g.cam+=(tc-g.cam)*.1;const Y=i=>wy(i)+g.cam;
+  c.fillStyle='#15131c';c.fillRect(0,0,W,H);c.fillStyle='#2a2635';c.fillRect(0,H-40+g.cam,W,40);g.tw.forEach((b,i)=>blk(b.x,Y(i),b.w,i));
+  if(!g.end){blk(cu.x,Y(n),cu.w,n);gDrawMe(c,cu.x+cu.w/2,Y(n)-17,30)}else{const tp=g.tw[n-1];gDrawMe(c,tp.x+tp.w/2,Y(n-1)-17,30)}
+  for(const f of g.fall){f.vy+=.5;f.y+=f.vy;c.globalAlpha=.75;blk(f.x,Y(f.lv)+f.y,f.w,f.lv);c.globalAlpha=1}g.fall=g.fall.filter(f=>f.y<H+300);
+  c.fillStyle='#fff';c.font='13px sans-serif';c.fillText(n-1+'층',W/2,14);if(g.flash>0){g.flash--;c.fillStyle='#ffd34d';c.font='bold 20px sans-serif';c.fillText('딱 맞았어요! +2 ✨',W/2,46)}
+  requestAnimationFrame(loop)};sc();return requestAnimationFrame(loop)}
 if(k=='memory'){const top=28,pad=4,E=['ME','🎃','🍬','🦇','💀','🕯️','🔮','🌙','⭐','🍭','🕸️','🧪','🪦','🍄','🔥','💎','👑','🐈‍⬛'],LAY=[[4,3],[4,4],[4,5],[5,6],[6,6]];g.stg=0;g.pairs=0;g.lock=0;g.end=0;g.trans=0;
  // 10-16 단계제: 다 맞추면 다음 단계(4×3→4×4→4×5→5×6→6×6), 단계마다 시간 다시(40초 + 단계마다 10초, 6단계부터 5초씩 줄어 최소 50초)
  const tmax=st=>st<5?40+st*10:Math.max(50,80-(st-4)*5);
@@ -1556,7 +1570,7 @@ async function gTixWin(pz){gTixSet(gTixN()-1);try{localStorage.removeItem('gTixP
 function gTixClose(){closeM();draw()}
 // 대장 앱: 광장용 요약을 계산해 저장 (바뀐 사람만)
 async function petSync(){if(!adm())return;await loadPets();const b=db.batch();let n=0;Object.values(users).filter(u=>u.status=='active'&&u.role!='student'&&!u.del).forEach(u=>{const p=petCalc(u),o=pets[u.id]||{};if(o.st!==p.st||o.ex!==p.ex||o.full!==p.full||o.mood!==p.mood){b.set(db.doc('pets/'+u.id),{st:p.st,ex:p.ex,full:p.full,mood:p.mood,sAt:NOW()},{merge:true});n++}});if(n)await b.commit().catch(e=>console.log(e))}
-const APPV='v1.55',verLine=()=>`<p class="mu" style="text-align:center;margin:4px 0 12px">BLACKGHOST TATTOO STUDIO · ${APPV} <button class="s" style="margin-left:6px" onclick="goUpd()">🔄 새로고침</button></p>`;
+const APPV='v1.56',verLine=()=>`<p class="mu" style="text-align:center;margin:4px 0 12px">BLACKGHOST TATTOO STUDIO · ${APPV} <button class="s" style="margin-left:6px" onclick="goUpd()">🔄 새로고침</button></p>`;
 
 function sdraw(){const nv=`<nav class="nav">${[['home','내 수강','🎓'],['edu','기본교육','📚']].map(([k,l,i])=>`<button class="${tab==k?'on':''}" onclick="go('${k}')"><i>${i}</i>${l}</button>`).join('')}</nav>`;view(hdr()+(tab=='edu'?eduView():noticeBanner()+studentHome())+verLine()+nv);ruleChk()}
 async function saveCourse(id){const v=k=>$('#ac_'+k).value,c=crs[id],iu=instList().find(u=>u.id==v('inst')),o={phone:v('phone').trim(),insta:v('insta').trim(),start:v('start'),total:Math.max(1,+v('total')||25),inst:v('inst'),instName:iu?(iu.nick||iu.name):''};const fee=adm()?+v('fee')||0:null;await db.doc('courses/'+id).update(o).catch(err);Object.assign(c,o);if(fee!=null&&fee!==cpOf(id).fee){const cp=Object.assign({uid:id,pays:[]},cpOf(id),{fee});await db.doc('coursePay/'+id).set(cp).catch(err);cpay[id]=cp}draw()}
