@@ -51,94 +51,45 @@ details>div{padding:0 0 14px;color:#dcd9d2}
 footer{margin-top:40px;text-align:center;color:var(--mu);font-size:13px}
 @media (max-width:420px){body{font-size:15.5px}.cta.ghost{display:inline-block;margin:10px 0 0}}
 .csg{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin:12px 0}.cst{position:relative;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 12px 12px;text-align:center}.cst p{margin:6px 0 0;color:var(--mu);font-size:13.5px;line-height:1.5}.csn{position:absolute;top:8px;left:10px;width:22px;height:22px;border-radius:50%;background:#cdb67c;color:#16130c;font-weight:700;font-size:13px;line-height:22px}.cse{font-size:30px;margin-bottom:4px}.cpre li{margin:7px 0;line-height:1.55}
+.steps{counter-reset:st;list-style:none;padding:0;margin:8px 0}.steps li{counter-increment:st;position:relative;padding:10px 12px 10px 46px;background:var(--card);border:1px solid var(--line);border-radius:14px;margin:8px 0}.steps li::before{content:counter(st);position:absolute;left:12px;top:10px;width:24px;height:24px;border-radius:50%;background:var(--hl);color:#16130c;font-weight:700;display:grid;place-items:center;font-size:13px}
+.box4{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.box4 .feat{text-align:center}.box4 .feat .e{font-size:28px}
 </style></head><body><main>
-
 <div class="hero">
 <img src="icons/logo.jpg" alt="BLACKGHOST TATTOO STUDIO 로고">
 <h1>BLACKGHOST<br><span style="font-size:.62em;letter-spacing:.32em">TATTOO STUDIO</span></h1>
-<p class="sub">블랙고스트 타투이스트 전용 앱 · 판매·토스·쉐어비·이벤트를 한곳에서<br>설치는 5분이면 끝나요</p>
+<p class="sub">블랙고스트 타투이스트 전용 앱 · 설치 5분</p>
 <a class="cta" href="https://blackghosttattoo.github.io/sales-app/">앱 열기</a><a class="cta ghost" href="#faq">자주 묻는 질문</a>
 </div>
+<nav class="toc"><a href="#install">설치</a><a href="#use">사용법</a><a href="#consent">동의서</a><a href="#game">게임</a><a href="#faq">FAQ</a><a href="#safe">보안</a></nav>
 
-<nav class="toc"><a href="#what">할 수 있는 것</a><a href="#ready">준비물</a><a href="#install">설치</a><a href="#home">홈 화면 추가</a><a href="#use">사용법</a><a href="#consent">동의서</a><a href="#faq">FAQ</a><a href="#safe">보안·개인정보</a></nav>
+<section id="install"><h2>📲 설치</h2>
+<ol class="steps">
+<li><b>앱 주소 열기</b> — 아이폰은 <b>Safari</b>, 갤럭시는 <b>Chrome</b>. 카톡 안에서 열렸으면 ⋮ → <b>다른 브라우저로 열기</b></li>
+<li><b>가입</b> — 이메일·비밀번호 → 메일함의 <b>인증 링크</b> 누르기(스팸함도 확인)</li>
+<li><b>정보 입력</b> — 이름·닉네임·<b>가게 가입코드</b>(대장에게 받기) → 대장이 승인하면 시작</li>
+<li><b>홈 화면에 추가</b> — 아이폰: 공유 □↑ → 홈 화면에 추가 · 갤럭시: ⋮ → 홈 화면에 추가</li>
+</ol>
+<div class="tip">앱 주소는 <b>blackghosttattoo.github.io/sales-app</b> 하나뿐이에요. 다른 주소에서 비밀번호를 묻으면 입력하지 마세요.</div>
+</section>
 
-<section id="what"><h2>이 앱으로 할 수 있는 것</h2>
-<div class="whatg">
-<div class="feat"><h4>🧴 타투크림 판매 기록</h4><p>크림을 팔면 바로 입력. 내 <b>판매수당이 자동 계산</b>되고, 정산됐는지도 바로 보여요.</p></div>
-<div class="feat"><h4>🤝 토스 관리</h4><p>작업을 넘기거나 받으면 기록. 수수료·카드 수수료·각자 몫이 <b>자동 계산</b>되고, 받는 사람이 승인하면 확정돼요.</p></div>
-<div class="feat"><h4>🛏 베드 현황 실시간 <span style="font-size:12px;color:#e0b04e">(준비 중)</span></h4><p>샵에 오기 전에 <b>베드가 비었는지</b> 폰으로 확인하는 기능을 준비하고 있어요. 곧 열려요!</p></div>
-<div class="feat"><h4>📢 공지 확인</h4><p>새 공지가 올라오면 앱 <b>맨 위에 얇은 알림바</b>(📢 제목)로 떠요. 누르면 내용을 보고 [확인]하면 사라져요. 지난 공지는 판매관리 → 공지·샵 규칙에서 볼 수 있어요. 새 버전이 나오면 맨 위에 <b>✨ 새 버전 · 눌러서 업데이트</b> 알림바가 떠요.</p></div>
-<div class="feat"><h4>💳 쉐어비 관리</h4><p>달마다 낼 금액·낸 금액·할인 내역을 <b>나만</b> 봐요(비밀번호 한 번 더). 입금하면 [납부확인 요청] 한 번이면 끝.</p></div>
-<div class="feat"><h4>🎁 할인 이벤트 · 기프티콘</h4><p>매일 복권을 긁으면 <b>쉐어비 할인</b>이나 <b>기프티콘</b>이 당첨돼요. 당첨된 할인은 다음 쉐어비에서 자동으로 빠져요.</p></div>
-<div class="feat"><h4>👻 유령 키우기 · 게임</h4><p>판매·토스를 할수록 내 유령이 자라요. 게임으로 포인트를 모아 꾸며 보세요.</p></div>
-</div></section>
-
-<section id="ready"><h2>준비물</h2>
+<section id="use"><h2>🧭 사용법 한눈에</h2>
+<p class="mu">앱을 열면 큰 박스가 나와요. 눌러서 들어가요.</p>
+<div class="box4">
+<div class="feat"><div class="e">📝</div><h4>동의서</h4><p>손님 폰으로 동의서 받기</p></div>
+<div class="feat"><div class="e">🧴</div><h4>판매관리</h4><p>크림 판매 입력·토스·비품·공지</p></div>
+<div class="feat"><div class="e">🎮</div><h4>게임</h4><p>마을·유령 키우기·게임·복권</p></div>
+<div class="feat"><div class="e">👤</div><h4>MY</h4><p>내 판매·수당·쉐어비·당첨 내역</p></div>
+</div>
+<h3>꼭 해야 할 3가지</h3>
 <div class="card"><ul>
-<li><b>내 이메일 주소</b> (자주 쓰는 메일. 인증 메일이 와요)</li>
-<li><b>가게 가입코드</b> (대장에게 따로 받아요. 남에게 알려주지 마세요)</li>
-<li>휴대폰 (아이폰은 <b>Safari</b>, 안드로이드는 <b>Chrome</b>을 추천해요)</li>
+<li><b>🧴 크림 팔면 바로 판매 입력</b> — 입력한 것만 판매수당이 정산돼요(구매자 이름은 비워도 돼요)</li>
+<li><b>🤝 작업을 넘기면 토스 입력</b> — 보내는 사람이 입력, 받는 사람이 승인 · 수수료 10~20%</li>
+<li><b>📝 시술 전 동의서</b> — 아래 '동의서' 참고</li>
 </ul></div>
-<p class="mu">앱 주소: <b>https://blackghosttattoo.github.io/sales-app/</b> 하나뿐이에요. 다른 주소에서 비밀번호를 묻는다면 입력하지 마세요.</p>
-</section>
-
-<section id="install"><h2><span class="n">1</span>카톡에서 열렸다면 브라우저로 다시 열기</h2>
-<p>카카오톡에서 링크를 누르면 카톡 안의 화면으로 열려요. 여기서는 <b>홈 화면 추가가 안 되고 로그인이 자주 풀려요.</b> 오른쪽 아래(또는 위) <b>⋮</b> 메뉴에서 <b>다른 브라우저로 열기</b>(아이폰은 <b>Safari로 열기</b>)를 눌러주세요.</p>
-<div class="ph-row"><figure class="ph"><svg viewBox="0 0 240 470" role="img" aria-label="카톡에서 열렸다면: ⋮ → 다른 브라우저로 열기"><rect x="4" y="4" width="232" height="462" rx="34" class="frame"/><rect x="14" y="14" width="212" height="442" rx="26" class="scr"/><rect x="95" y="22" width="50" height="10" rx="5" class="notch"/><rect x="14" y="40" width="212" height="34" class="bar"/><text x="30" y="62" class="tx" text-anchor="start">✕</text><rect x="52" y="48" width="130" height="18" rx="9" class="url"/><text x="117" y="61" class="mini" text-anchor="middle">blackghost…</text><rect x="34" y="100" width="170" height="6" rx="3" class="ln"/><rect x="34" y="114" width="140" height="6" rx="3" class="ln"/><rect x="34" y="128" width="110" height="6" rx="3" class="ln"/><rect x="34" y="142" width="170" height="6" rx="3" class="ln"/><rect x="34" y="156" width="140" height="6" rx="3" class="ln"/><rect x="34" y="170" width="110" height="6" rx="3" class="ln"/><rect x="34" y="184" width="170" height="6" rx="3" class="ln"/><rect x="44" y="230" width="152" height="118" rx="12" class="menu"/><text x="60" y="256" class="tx" text-anchor="start">공유하기</text><text x="60" y="286" class="tx" text-anchor="start">링크 복사</text><rect x="50" y="300" width="140" height="30" rx="8" class="ring"/><text x="60" y="320" class="txb" text-anchor="start">다른 브라우저로 열기</text><rect x="14" y="410" width="212" height="46" class="bar"/><text x="40" y="439" class="tx" text-anchor="middle">←</text><text x="90" y="439" class="tx" text-anchor="middle">→</text><text x="145" y="439" class="tx" text-anchor="middle">⟳</text><text x="200" y="440" class="txb" text-anchor="middle">⋮</text><circle cx="200" cy="433" r="15" class="ring"/></svg><figcaption>카톡에서 열렸다면: ⋮ → 다른 브라우저로 열기</figcaption></figure></div>
-
-<h2 style="margin-top:28px"><span class="n">2</span>가입하기 → 인증 메일 확인</h2>
-<ol>
-<li>앱에서 <b>이메일</b>과 <b>비밀번호(6자 이상)</b>를 쓰고 <b>[가입하기]</b>를 눌러요.</li>
-<li>메일함에 온 <b>인증 메일의 링크</b>를 눌러요. 안 보이면 <b>스팸함·프로모션함</b>을 확인하세요.</li>
-<li>앱으로 돌아와 <b>새로고침</b>하면 다음 화면이 나와요.</li>
-</ol>
-<div class="ph-row"><figure class="ph"><svg viewBox="0 0 240 470" role="img" aria-label="처음엔 이메일·비밀번호 쓰고 [가입하기]"><rect x="4" y="4" width="232" height="462" rx="34" class="frame"/><rect x="14" y="14" width="212" height="442" rx="26" class="scr"/><rect x="95" y="22" width="50" height="10" rx="5" class="notch"/><circle cx="120" cy="92" r="34" class="logo"/><text x="120" y="100" class="logot" text-anchor="middle">BG</text><rect x="28" y="142" width="184" height="190" rx="14" class="card"/><text x="42" y="166" class="mini" text-anchor="start">BLACKGHOST TATTOO STUDIO</text><text x="42" y="190" class="mini" text-anchor="start">이메일</text><rect x="42" y="196" width="156" height="22" rx="6" class="inp"/><text x="48" y="211" class="mini" text-anchor="start">me@gmail.com</text><text x="42" y="236" class="mini" text-anchor="start">비밀번호 (6자 이상)</text><rect x="42" y="242" width="156" height="22" rx="6" class="inp"/><text x="48" y="258" class="mini" text-anchor="start">••••••</text><rect x="42" y="280" width="46" height="24" rx="7" class="btnp"/><text x="65" y="296" class="minib" text-anchor="middle">로그인</text><rect x="94" y="280" width="48" height="24" rx="7" class="btn"/><text x="118" y="296" class="mini" text-anchor="middle">가입하기</text><rect x="90" y="276" width="56" height="32" rx="8" class="ring"/><rect x="148" y="280" width="50" height="24" rx="7" class="btn"/><text x="173" y="296" class="mini" text-anchor="middle">재설정</text></svg><figcaption>처음엔 이메일·비밀번호 쓰고 [가입하기]</figcaption></figure><figure class="ph"><svg viewBox="0 0 240 470" role="img" aria-label="이름·닉네임·가입코드 넣고 [신청]"><rect x="4" y="4" width="232" height="462" rx="34" class="frame"/><rect x="14" y="14" width="212" height="442" rx="26" class="scr"/><rect x="95" y="22" width="50" height="10" rx="5" class="notch"/><rect x="24" y="52" width="192" height="330" rx="14" class="card"/><text x="38" y="78" class="txb" text-anchor="start">가입 정보 입력</text><text x="38" y="104" class="mini" text-anchor="start">이름</text><rect x="38" y="110" width="164" height="22" rx="6" class="inp"/><text x="44" y="125" class="mini" text-anchor="start">홍길동</text><text x="38" y="152" class="mini" text-anchor="start">닉네임 (앱에 표시)</text><rect x="38" y="158" width="164" height="22" rx="6" class="inp"/><text x="44" y="173" class="mini" text-anchor="start">길동</text><text x="38" y="200" class="mini" text-anchor="start">가입 구분</text><rect x="38" y="206" width="164" height="22" rx="6" class="inp"/><text x="44" y="221" class="mini" text-anchor="start">타투이스트 (쉐어) ▾</text><text x="38" y="248" class="mini" text-anchor="start">가게 가입코드</text><rect x="38" y="254" width="164" height="22" rx="6" class="inp"/><text x="44" y="269" class="mini" text-anchor="start">대장에게 받은 코드</text><rect x="34" y="252" width="172" height="32" rx="8" class="ring"/><rect x="38" y="304" width="164" height="28" rx="8" class="btnp"/><text x="120" y="322" class="minib" text-anchor="middle">신청</text><text x="120" y="360" class="mini" text-anchor="middle">→ 대장 승인 후 사용 시작</text></svg><figcaption>이름·닉네임·가입코드 넣고 [신청]</figcaption></figure></div>
-
-<h2 style="margin-top:28px"><span class="n">3</span>가입 정보 입력 → 승인 기다리기</h2>
-<ol>
-<li><b>이름</b>, <b>닉네임</b>(앱에서 이 이름으로 보여요), <b>가입 구분</b>(타투이스트 / 수강생), <b>가게 가입코드</b>를 넣고 <b>[신청]</b>.</li>
-<li>"승인 대기 중"이 보이면 끝! <b>대장이 승인</b>하면 바로 쓸 수 있어요. 승인 후 앱을 새로고침하세요.</li>
-</ol>
-<div class="tip">수강생은 가입 구분에서 <b>수강생</b>을 고르고 <b>기수</b>(예: 12)도 적어주세요.</div>
-</section>
-
-<section id="home"><h2><span class="n">4</span>홈 화면에 추가 (앱처럼 쓰기)</h2>
-<p>한 번 추가하면 폰 바탕화면에 <b>블랙고스트타투(전용)</b> 아이콘이 생기고, 앱처럼 바로 열려요. 앱스토어 설치는 필요 없어요.</p>
-<div class="ph-row"><figure class="ph"><svg viewBox="0 0 240 470" role="img" aria-label="아이폰 Safari: 공유 □↑ → 홈 화면에 추가"><rect x="4" y="4" width="232" height="462" rx="34" class="frame"/><rect x="14" y="14" width="212" height="442" rx="26" class="scr"/><rect x="95" y="22" width="50" height="10" rx="5" class="notch"/><rect x="34" y="60" width="170" height="6" rx="3" class="ln"/><rect x="34" y="74" width="140" height="6" rx="3" class="ln"/><rect x="34" y="88" width="110" height="6" rx="3" class="ln"/><rect x="34" y="102" width="170" height="6" rx="3" class="ln"/><rect x="34" y="116" width="140" height="6" rx="3" class="ln"/><rect x="34" y="130" width="110" height="6" rx="3" class="ln"/><rect x="34" y="144" width="170" height="6" rx="3" class="ln"/><rect x="34" y="158" width="140" height="6" rx="3" class="ln"/><rect x="14" y="226" width="212" height="170" rx="18" class="menu"/><text x="120" y="248" class="txb" text-anchor="middle">공유</text><text x="34" y="280" class="tx" text-anchor="start">⧉  복사</text><text x="34" y="310" class="tx" text-anchor="start">☆  즐겨찾기에 추가</text><rect x="24" y="322" width="192" height="30" rx="8" class="ring"/><text x="34" y="342" class="txb" text-anchor="start">⊞  홈 화면에 추가</text><text x="34" y="375" class="tx" text-anchor="start">⋯  기타</text><rect x="14" y="404" width="212" height="52" class="bar"/><rect x="40" y="412" width="160" height="18" rx="9" class="url"/><text x="120" y="425" class="mini" text-anchor="middle">blackghosttattoo…</text><text x="40" y="449" class="tx" text-anchor="middle">‹</text><text x="80" y="449" class="tx" text-anchor="middle">›</text><path d="M114 448 v-12 m-5 5 l5 -5 l5 5 M108 440 h-3 v12 h18 v-12 h-3" class="ico"/><circle cx="114" cy="443" r="13" class="ring"/><text x="160" y="449" class="tx" text-anchor="middle">⧉</text><text x="200" y="449" class="tx" text-anchor="middle">⋯</text></svg><figcaption>아이폰 Safari: 공유 □↑ → 홈 화면에 추가</figcaption></figure><figure class="ph"><svg viewBox="0 0 240 470" role="img" aria-label="안드로이드 Chrome: ⋮ → 홈 화면에 추가 (앱 설치)"><rect x="4" y="4" width="232" height="462" rx="34" class="frame"/><rect x="14" y="14" width="212" height="442" rx="26" class="scr"/><rect x="95" y="22" width="50" height="10" rx="5" class="notch"/><rect x="14" y="40" width="212" height="38" class="bar"/><rect x="28" y="49" width="150" height="20" rx="10" class="url"/><text x="103" y="63" class="mini" text-anchor="middle">blackghosttattoo…</text><text x="205" y="65" class="txb" text-anchor="middle">⋮</text><circle cx="205" cy="58" r="14" class="ring"/><rect x="92" y="84" width="128" height="164" rx="10" class="menu"/><text x="104" y="108" class="tx" text-anchor="start">새 탭</text><text x="104" y="136" class="tx" text-anchor="start">북마크</text><text x="104" y="164" class="tx" text-anchor="start">방문 기록</text><rect x="98" y="178" width="116" height="30" rx="8" class="ring"/><text x="104" y="198" class="txb" text-anchor="start">홈 화면에 추가</text><text x="104" y="232" class="mini" text-anchor="start">(또는 앱 설치)</text><rect x="34" y="270" width="170" height="6" rx="3" class="ln"/><rect x="34" y="284" width="140" height="6" rx="3" class="ln"/><rect x="34" y="298" width="110" height="6" rx="3" class="ln"/><rect x="34" y="312" width="170" height="6" rx="3" class="ln"/><rect x="34" y="326" width="140" height="6" rx="3" class="ln"/><rect x="34" y="340" width="110" height="6" rx="3" class="ln"/><rect x="34" y="354" width="170" height="6" rx="3" class="ln"/><rect x="34" y="368" width="140" height="6" rx="3" class="ln"/></svg><figcaption>안드로이드 Chrome: ⋮ → 홈 화면에 추가 (앱 설치)</figcaption></figure></div>
-<div class="grid2">
-<div class="feat"><h4>아이폰</h4><p><b>Safari</b>로 열기 → 아래 <b>공유 □↑</b> 버튼 (안 보이면 주소창 옆 <b>⋯</b>을 먼저) → <b>홈 화면에 추가</b> → <b>추가</b></p></div>
-<div class="feat"><h4>안드로이드</h4><p><b>Chrome</b>으로 열기 → 오른쪽 위 <b>⋮</b> → <b>홈 화면에 추가</b> 또는 <b>앱 설치</b> → <b>설치/추가</b>. 삼성 인터넷은 <b>≡ → 현재 페이지 추가 → 홈 화면</b></p></div>
-</div>
-</section>
-
-<section id="use"><h2>사용법 한눈에</h2>
-<p class="mu">앱을 열면 <b>큰 박스 3개</b>가 먼저 나와요 — 🧴 판매관리 · 🎮 게임모드 · 👤 MY. 박스나 화면 아래 메뉴를 누르면 들어가요. 박스 안 작은 글씨(오늘 판매·토스 승인·복권 등)는 지금 확인할 것들이에요.</p>
-<svg viewBox="0 0 360 70" class="tabsvg" role="img" aria-label="하단 메뉴"><rect x="1" y="1" width="358" height="68" rx="14" class="bar"/><text x="45" y="32" class="emo" text-anchor="middle">🏠</text><text x="45" y="56" class="mini" text-anchor="middle">처음</text><text x="135" y="32" class="emo" text-anchor="middle">🧴</text><text x="135" y="56" class="mini" text-anchor="middle">판매관리</text><text x="225" y="32" class="emo" text-anchor="middle">🎮</text><text x="225" y="56" class="mini" text-anchor="middle">게임</text><text x="315" y="32" class="emo" text-anchor="middle">👤</text><text x="315" y="56" class="mini" text-anchor="middle">MY</text></svg>
-<div class="grid2">
-<div class="feat"><h4>🧴 판매관리</h4><p><b>＋ 크림 판매 입력</b> 큰 버튼, 토스(받은 토스 승인), 비품·소모품 요청, 공지·샵 규칙, 베드 현황이 모여 있어요.</p></div>
-<div class="feat"><h4>🎮 게임모드 · 🏘 블랙고스트마을</h4><p>유령 키우기·꾸미기·🔮 오늘의 운세·게임·복권이 모여 있어요. 맨 위 <b>🏘 마을 들어가기</b>를 누르면 노을빛 유령 마을로 들어가요. 위아래로 밀어 구경하고, <b>건물을 누르면 들어가요</b>: 🧴 타투크림하우스 = 판매입력, 🤝 토스하우스, 💳 쉐어하우스, 📦 창고 = 비품, 🎁 소원 분수 = 복권·이벤트, 🌱 유령 온실 = 유령 키우기, 🎨 꾸미기 상점, 🎮 게임 동굴, 🏰 고스트 캐슬 = 공지·샵 규칙. 건물 위 말풍선(🔔 승인, 🎟 복권 등)은 할 일 알림. 땅을 누르면 내 유령이 날아가요. 배경 음악은 마을이나 게임모드에서 화면을 누를 때 시작해요 — 마을은 낮 곡·밤 곡(저녁 7시~아침 6시), 게임모드·게임 동굴·유령 키우기·꾸미기는 대기실 곡이 따로 나오고, 처음·판매관리·MY 화면에선 조용해져요. 마을의 🔊/🔇나 게임모드의 🔊 배경 음악 버튼으로 켜고 끄기, 🌙로 낮·밤. 게임을 하면 게임마다 다른 곡(퓨처 팝·신스웨이브·버블 팝·로파이)과 효과음이 나와요(게임 창의 🔊/🔇로 따로 끄기). 마을 위 <b>🏠 처음</b>을 누르면 박스 화면으로 돌아가요.</p></div>
-<div class="feat"><h4>👤 MY</h4><p>내현황(내 판매·판매수당·정산), 쉐어비, 복권·당첨 내역, 기본교육·컨벤션 일정, 샵 규칙, 사용 안내, 🎨 화면 테마, 로그아웃이 모여 있어요. 레벨 카드도 여기 있어요.</p></div>
-<div class="feat"><h4>🔮 오늘의 운세</h4><p>위 <b>🔮</b> 버튼을 누르고 생일(양력·음력·윤달)과 태어난 시간(모르면 비워 두기)을 한 번만 넣으면, 매일 나만의 운세를 볼 수 있어요. 사주 일진 풀이로 총운·작업운·금전운·인간관계와 행운 숫자·색·방향·시간·아이템을 알려줘요. <b>생일은 내 폰에만 저장</b>되고 서버에는 저장되지 않아요(폰을 바꾸면 한 번 다시 입력). 재미로 보세요 😉</p></div>
-<div class="feat"><h4>📋 내현황</h4><p>이번 달 <b>예상 판매수당</b>(정산/미정산), 받은 토스·보낸 토스, 내 모든 기록이 시간순으로. 기록을 누르면 상세를 볼 수 있어요.</p></div>
-<div class="feat"><h4>🧾 판매입력</h4><p>크림을 팔 때마다 <b>바로</b> 입력! 정상판매 · 리뷰이벤트 · 서비스 · 샘플. 금액은 자동으로 들어가요. <b>입력된 건만 판매수당이 정산돼요.</b></p></div>
-<div class="feat"><h4>🤝 토스</h4><p>작업을 넘길 때 <b>보내는 사람이</b> 입력해요. 수수료는 작업비의 <b>10~20%</b>. 받는 사람이 <b>승인</b>하면 반영돼요.</p></div>
-<div class="feat"><h4>💳 쉐어비</h4><p><b>비밀번호를 한 번 더</b> 넣어야 열려요(본인만). 매월 15일 결제. 입금했는데 미납으로 보이면 <b>납부확인 요청</b>.</p></div>
-<div class="feat"><h4>🎁 이벤트 · 복권 (게임모드 또는 MY)</h4><p><b>매일 00시</b>에 새 복권이 나와요(하루 1장, 이벤트에 따라 레벨이 높으면 더). <b>그날 밤 12시까지</b> 긁어야 하고, 안 긁으면 소멸돼요. 당첨되면 <b>내 당첨 내역</b>에 한 줄씩 남아요 — 쉐어비 할인은 <b>다음 결제일(15일) 쉐어비</b>에서 자동으로 빠지고(그 달을 이미 냈으면 그다음 달), 기프티콘은 대장이 보내 줘요.</p></div>
-<div class="feat"><h4>👻 유령 키우기</h4><p>나만의 유령을 키워요! <b>판매 입력 = 밥</b>, 토스 = 기분, <b>오늘의 문구 미션</b>·복권 긁기 = 경험치. 알 → 아기 → 어른 → 전설 → 별빛 → 달빛 → 유령 기사 → 유령 군주 → 신화 유령 → <b>✨ 각성 단계(불사조 황제 · 태양의 유령 · 푸른 불꽃 유령 · 은하 유령 · 창세 유령)</b>로 자라요(별빛부터는 몸이 빛나는 단계 효과가 생기고, 그 단계의 고급 보상을 게임 포인트로 살 수 있어요). 오래 쉬면 시무룩해져요. 배부름은 하루에 25%씩 줄어요 — 게임 포인트로 <b>🍙 주먹밥(+25%)·🍱 도시락(+50%)·🍰 케이크(+100%)</b>을 사 줄 수도 있어요. <b>배부름이 30% 밑이면 게임 포인트가 70%만, 0%면 절반만</b> 들어와요. 단계가 오르면 <b>단계 보상</b>(아기: 모자·별 딸랑이 / 어른: 타투머신·마법사 망토 / 전설: 보석 왕관·펄럭이는 전설 날개·요술봉·삼지창·✨전설 풀세트)이 열려요. 단계가 오르는 순간엔 <b>빛이 터지며 '짠!'</b> 축하 화면과 특별한 효과음이 나와요. 단계 보상과 상점 꾸미기는 <b>여러 개를 같이</b> 입을 수 있어요(모자끼리·손에 드는 것끼리처럼 같은 자리는 하나만, 다시 누르면 벗기). <b>🎨 유령 색</b>(기본 10가지 + 색 팔레트 30가지 + 🌈 직접 만들기)과 <b>😊 표정 4가지</b>(기본·웃음·윙크·졸림)는 무료로 바꿀 수 있고(하트눈·반짝눈·메롱·부끄부끄·별눈·악마 미소는 게임 포인트로), <b>🎮 유령 게임</b> 13가지(💥 유령 팡 — 맞추면 시계가 멈춰요 · 🔮 유령 합치기 · 👻 점프 — 2단 점프 · 🍬 사탕 받기 — ⭐무적·🍫·❤️·🧄, 10개 연속이면 점수 2배, 150점 사탕·500점 막대사탕·1200점 초콜릿 비, 2000점·3000점부터 1000점마다 섞어서 비, 1000점마다 복권 1장 · 👻 유령 숨바꼭질 — 옮겨 다니다 숨은 유령 찾기(❤️ 3번 틀리면 끝, 색이 다른 가짜 유령 주의, 가끔 나오는 🍬 사탕·🔍 돋보기(1초 엿보기)·🎟️ 복권은 눌러서 줍기) · 🎯 잉크 찍기 · 🦇 유령 날기 — 마을 밤하늘 · 👻 유령 탑 쌓기 — 하늘에서 우주까지 · 콤보 보너스 · 🃏 유령 짝 맞추기 — 단계제 · 🧩 유령 블록 퍼즐 — 블록을 끌어다 놓고 가로·세로 줄을 채워 지우기, 연속으로 지우면 콤보 · 🍉 유령 떨어뜨리기 — 같은 유령끼리 합쳐 👑 왕관 유령까지 · 🧪 물약 병 정리 — 한 병에 한 색씩, 시간 제한 없이 · 병이 날아가 기울어지며 따라요 · 👻 유령 타일 — 숫자 타일로 줄을 만들어 먼저 다 내면 승리. 같은 숫자·다른 색 3~4장 또는 같은 색 연속 숫자 3장 이상, 👻는 아무 숫자, 처음엔 내 타일로 30점 이상. 타일은 눌러서 고르거나 <b>손가락으로 끌어</b> 줄 위(붙이기)·바닥 빈 곳(새 줄)·받침대(돌려받기)에 놓아요, 줄 가운데를 빼면 둘로 나뉘어요. 🤖 유령봇과(1~3명·쉬움/보통/어려움) 또는 <b>👥 작업자와</b> — 방을 만들거나 열린 방에 들어가고, 빈 자리는 방장이 유령봇으로 채워요. 한 차례 90초, 중간에 🚪 나가면 유령봇이 대신 해요)로 포인트를 모아 <b>꾸미기 상점</b>(꽃 한 송이 10 ~ 은하 망토 700, 19가지)에서 살 수 있어요. <b>✨ 각성</b>: 유령 키우기 > 각성에서 그 단계가 되면 각성 전 세트를 포인트로 사서 입고, 게임에서 포인트를 받은 판마다 가끔 나오는 각성 아이템(🪶·☀️·❄️·🌑·🌈)을 모아 포인트와 함께 쓰면 각성해요 — 각성 후 모습은 마을·게임·광장에서도 보여요. <b>🏠 유령의 집</b>: 유령 키우기 > 유령의 집. <b>✋ 꾸미기</b>에서 가구(의자·소파·침대·가전·부엌·화장실·타투샵·촬영 소품·캠핑 등 모양이 다른 280여 가지 — 색은 내 마음대로 바꿔요)를 누르면 먼저 미리보기로 놓여요 → 끌어 옮기고, 앞·오른쪽·뒤·왼쪽 4방향으로 돌리고(가구끼리 겹치거나 벽을 뚫지 않고, 벽 가까이 가면 딱 붙어요), 부분마다 색을 바꾸거나 🖌 직접 칠한 뒤 [🛒 전체 구매]. 두 손가락으로 확대·축소. 작은 소품은 테이블·선반 위에, 유령은 원하는 곳(침대·소파 위도)에 둘 수 있어요. 조명은 밝기·색 조절. 바닥을 누르면 방 크기·위치·벽지·바닥(바탕·무늬 색) 변경, [＋ 방 추가]로 침실·거실·부엌·화장실·작업실·다락방·마당을 이어 붙여요. 같은 물건을 또 사면 값이 20%씩 올라요. <b>📦 내 창고</b>에서 가진 개수·놓은 수를 보고 반값에 되팔 수 있어요. 🚪 친구 집 구경도 돼요(구경만). 광장·마을·랭킹에서 <b>다른 사람 유령을 누르면</b> 크게 보고 입은 꾸미기·게임 최고 기록을 볼 수 있어요. 게임은 화면 전체로 열리고, 맨 아래 버튼 줄(▶ 시작 · ⏸ 일시정지 · 🏆 랭킹 · 🔊 · 닫기)로 조작해요. <b>🏆 랭킹</b> 버튼을 누르면 게임마다 실시간 랭킹(역대 최고 / 이번 주 — 월요일마다 새로)이 있어요. 게임 주인공은 <b>내가 키우는 유령</b>(색·표정·꾸미기 그대로)이에요. 게임마다 <b>하루 10판</b>까지 할 수 있고, 포인트는 점수만큼(한 판 제한 없음) 받아요. 어느 게임이든 보통 실력이면 한 판에 10포인트쯤이에요. 뒤로 갈수록 어려워지지만 어느 선부터는 더 빨라지지 않아서, 운이 아니라 집중력으로 기록을 깰 수 있어요. 포인트를 받은 판에서 <b>아주 가끔 🎟️ 게임 복권</b>이 나오는데, 은박을 긁으면 최대 100포인트가 당첨돼요(꽝도 있어요). 게임 포인트는 레벨·이벤트 복권·쉐어비와는 상관없어요. <b>✨ 레어템</b>: 가구 목록 맨 앞 '✨ 레어' 칸 — 그랜드 피아노·황금 왕좌·로열 캐노피 침대·벨벳 소파·벚꽃 나무·대리석 분수 같은 특별한 가구예요. 금 장식·보석이 반짝이고, 방에 놓으면 둘레에 별이 반짝여요. <b>🐾 반려동물</b>: 강아지·고양이·햄스터·토끼·새·거미·뱀·거북이·물고기(어항)를 포인트로 데려와 털색·이름을 정해요(같은 종류는 데려올 때마다 값이 20%씩 올라요). 집 안을 돌아다니고, 🍖 사료(포인트로 구매)를 주고, 💩 똥을 눌러 치우고, 🦮 산책을 시켜 주세요. 안 돌보면 시무룩해져요(사라지진 않아요). 이어진 방을 넘나들며 돌아다니고, 강아지·고양이·토끼는 소파·침대 위로 폴짝 올라가요. 밤엔 잠을 자고, 가끔 멍멍·야옹 소리를 내요(집 화면 🔊 버튼으로 끄기). 눌러 주면 강아지는 짖고 고양이는 골골거려요. 꾸미기에서 끌어 사는 방을 바꿀 수 있어요. · 새 그림 가구 200여 가지(✨레어·🖋타투샵·🏕캠핑·🐾 동물 집), 화분은 소·중·대·특대와 숲·숲 울타리도 있어요. 집 보기에서 ⟲ ⟳ 로 <b>방 전체를 돌려 볼</b> 수 있어요. 📺 TV·빔 프로젝터(벽 쪽으로 돌리면 화면이 떠요)엔 영상이, <b>내 사진 액자</b>엔 사진첩 사진을 넣을 수 있어요(8장까지). 🧑 사람도 데려올 수 있고, 타투 베드를 두면 손님이 찾아와요.</p></div>
-<div class="feat"><h4>📚 MY → 기본교육 · 🗓 컨벤션 일정</h4><p>바늘·잉크·머신·용품·위생 기본기 정리, 국내외 <b>타투 컨벤션 달력</b>(매달 자동 업데이트)을 볼 수 있어요.</p></div>
-<div class="feat"><h4>📜 맨 위 두루마리 버튼</h4><p><b>샵 이용규칙</b>과 <b>문신사법 안내</b>(2027년 10월 29일 시행)를 볼 수 있어요. 규칙이 새로 바뀌면 앱을 열 때 규칙 창이 뜨니, 읽고 <b>✅ 확인했어요</b>를 눌러 주세요.</p></div>
-<div class="feat"><h4>📦 판매관리 → 비품·소모품</h4><p>재고·상태를 보고, 필요한 것은 <b>요청</b>하면 대장이 확인해요.</p></div>
-</div>
-
-<h3>리뷰이벤트 입력 요령</h3>
-<div class="card"><ol>
-<li><b>리뷰 채널을 먼저</b> 고르세요 (네이버 / 구글). 1인 1구매라 수량은 없어요.</li>
-<li><b>네이버</b>: 영수증 인증 때문에 <b>카드</b>만. 크림을 따로 결제했다면 <b>크림 별도결제</b> 체크 → 100원 + 현금/이체.</li>
-<li><b>구글</b>: 현금 · 이체 · 카드 중 선택. <b>이체는 입금자명</b>을 꼭 적어요.</li>
-<li>리뷰 <b>아이디 · 이름 · 캡처 사진</b> 중 하나는 꼭 남겨주세요.</li>
-</ol></div>
-<h3>서비스(무료 제공)</h3>
-<div class="card">받는 사람 이름과 내용을 적으면 <b>대장 승인 후</b> 반영돼요. 0원이고 판매수당은 없어요.</div>
+<details><summary>💳 쉐어비</summary><div>매월 15일 결제. 비밀번호를 한 번 더 넣어야 열려요(본인만). 냈는데 미납이면 그 달 [납부확인 요청].</div></details>
+<details><summary>🎁 이벤트 복권</summary><div>매일 00시 새 복권, 그날 밤 12시까지 긁기(안 긁으면 사라져요). 당첨된 쉐어비 할인은 다음 결제일에 자동으로 빠져요.</div></details>
+<details><summary>📜 · 🔮 · 📶 맨 위 버튼</summary><div>📜 샵 이용규칙·문신사법(새 규칙이 올라오면 ✅ 확인) · 🔮 오늘의 운세(생일은 내 폰에만 저장) · 📶 손님 와이파이 QR · 🏠 홈페이지 가기</div></details>
+<details><summary>🧾 리뷰이벤트·서비스 입력 요령</summary><div>리뷰: 채널(네이버/구글) 먼저, 네이버는 카드만(크림 별도결제면 100원+현금/이체), 이체는 입금자명 필수, 리뷰 아이디·이름·캡처 중 하나. 서비스: 0원·수당 없음, 대장 승인 후 반영.</div></details>
 </section>
 
 <section id="consent"><h2>📝 타투 동의서 쓰는 법</h2>
@@ -147,72 +98,40 @@ footer{margin-top:40px;text-align:center;color:var(--mu);font-size:13px}
 <h3>📲 고객전달 (QR·카톡·문자)</h3>
 <div class="grid2"><div class="feat"><h4>🔳 QR</h4><p>화면의 QR을 손님 폰 카메라로 찍게 해요. 크게 보기도 있어요.</p></div><div class="feat"><h4>💛 카톡</h4><p>공유 창이 뜨면 <b>카카오톡</b>을 골라 손님에게 링크를 보내요.</p></div><div class="feat"><h4>💬 문자</h4><p>손님 번호를 넣으면 링크가 담긴 문자 창이 열려요.</p></div></div>
 <div class="tip">링크는 <b>30분 동안 한 번만</b> 쓸 수 있어요. 제출한 링크를 다시 열면 「이미 제출」로 나와요. 손님 폰이 없으면 <b>[이 기기에서 바로 작성]</b> 또는 <b>샵 아이패드 카메라로 QR</b>(설치·로그인 필요 없음).</div>
-<h3>🗣 작성 전에 손님께 먼저 설명할 것</h3>
-<div class="card"><ol class="cpre"><li><b>🧤 일회용품</b> — 바늘(카트리지)·잉크컵·장갑·랩은 모두 새것·일회용이고, 손님 앞에서 포장을 뜯어요.</li><li><b>🎨 잉크(염료)</b> — 어떤 잉크를 쓰는지, 드물게 알레르기·색 반응이 있을 수 있다는 것. 제품명·제조번호는 기록지에 남겨요.</li><li><b>⏱ 시술 과정</b> — 예상 시간, 통증 정도, 피·진물이 조금 나는 건 정상이라는 것.</li><li><b>⚠️ 부작용</b> — 붓기·붉어짐·가려움은 흔하고, 드물게 감염·알레르기·흉터(켈로이드)가 생길 수 있어요. 열·고름·심한 통증이면 바로 연락·병원.</li><li><b>🧴 관리 방법</b> — 랩·패치 떼는 시간, 씻는 법, 크림 바르기, 2주 정도 사우나·수영·햇빛·긁기 피하기. 작업자마다 방법이 다를 수 있어 내 방법으로 안내해요.</li><li><b>🔁 리터치·색 빠짐</b> — 피부·관리에 따라 색이 빠질 수 있고, 리터치 기간·조건을 미리 말해요.</li><li><b>🧽 지우기 어려움</b> — 문신은 레이저로도 완전히 지우기 어렵고 여러 번 시술이 필요해요.</li><li><b>🩺 건강 상태</b> — 임신·당뇨·혈액 질환·피부 질환·복용 약·음주는 동의서에 꼭 솔직하게 적어 달라고 해요.</li><li><b>🏠 쉐어 스튜디오</b> — 블랙고스트는 작업자마다 따로 작업하는 공간이라, 시술 책임은 담당 작업자에게 있다는 것.</li><li><b>🔒 개인정보</b> — 동의서는 담당 작업자와 대장만 보고, 5년(손님이 연장에 동의하면 10년) 보관한 뒤 지워요.</li></ol></div>
+<details><summary>🗣 작성 전에 손님께 먼저 설명할 것 (10가지)</summary><div><ol class="cpre"><li><b>🧤 일회용품</b> — 바늘(카트리지)·잉크컵·장갑·랩은 모두 새것·일회용이고, 손님 앞에서 포장을 뜯어요.</li><li><b>🎨 잉크(염료)</b> — 어떤 잉크를 쓰는지, 드물게 알레르기·색 반응이 있을 수 있다는 것. 제품명·제조번호는 기록지에 남겨요.</li><li><b>⏱ 시술 과정</b> — 예상 시간, 통증 정도, 피·진물이 조금 나는 건 정상이라는 것.</li><li><b>⚠️ 부작용</b> — 붓기·붉어짐·가려움은 흔하고, 드물게 감염·알레르기·흉터(켈로이드)가 생길 수 있어요. 열·고름·심한 통증이면 바로 연락·병원.</li><li><b>🧴 관리 방법</b> — 랩·패치 떼는 시간, 씻는 법, 크림 바르기, 2주 정도 사우나·수영·햇빛·긁기 피하기. 작업자마다 방법이 다를 수 있어 내 방법으로 안내해요.</li><li><b>🔁 리터치·색 빠짐</b> — 피부·관리에 따라 색이 빠질 수 있고, 리터치 기간·조건을 미리 말해요.</li><li><b>🧽 지우기 어려움</b> — 문신은 레이저로도 완전히 지우기 어렵고 여러 번 시술이 필요해요.</li><li><b>🩺 건강 상태</b> — 임신·당뇨·혈액 질환·피부 질환·복용 약·음주는 동의서에 꼭 솔직하게 적어 달라고 해요.</li><li><b>🏠 쉐어 스튜디오</b> — 블랙고스트는 작업자마다 따로 작업하는 공간이라, 시술 책임은 담당 작업자에게 있다는 것.</li><li><b>🔒 개인정보</b> — 동의서는 담당 작업자와 대장만 보고, 5년(손님이 연장에 동의하면 10년) 보관한 뒤 지워요.</li></ol></div></details>
 <div class="tip">제출된 동의서는 손님의 건강 정보가 들어 있어서 <b>담당 작업자와 대장만</b> 볼 수 있어요. 손님도 제출 후에는 내용을 볼 수 없어요.</div>
 </section>
 
-<section id="faq"><h2>자주 묻는 질문</h2>
-<details><summary>"불러오는 중…"에서 멈춰 있어요</summary><div><b>갤럭시</b>: 카톡·인스타 안이면 ⋮ → '다른 브라우저로 열기' → 크롬. 크롬에서도 멈추면 ⋮ → 설정 → 개인정보 보호 → 인터넷 사용 기록 삭제 후 다시 열기. <b>아이폰</b>: ① 카카오톡·인스타그램 안에서 열었다면 <b>⋯ → 'Safari로 열기'</b>로 다시 열어 주세요. ② Safari에서도 멈추면 설정 → Safari → <b>콘텐츠 차단기</b>(광고 차단) 끄기, <b>방문 기록 및 웹사이트 데이터 지우기</b> 후 다시 열기. 비공개 모드는 안 돼요. ③ 아이폰은 <b>iOS 14 이상</b>이어야 해요. 9초 넘게 멈추면 앱이 이 안내와 [다시 시도] 버튼을 자동으로 보여 줘요. 그래도 안 되면 그 화면을 캡처해서 대장에게 보내 주세요.</div></details>
-<details><summary>"이메일 주소 형식이 맞지 않아요" 라고 나와요</summary><div>이메일 칸이 비어 있거나, 앞뒤에 <b>띄어쓰기</b>가 있거나, <b>@</b>가 빠졌을 때 나와요. <b>name@gmail.com</b> 처럼 정확히 입력해 주세요. 키보드가 한글 상태로 입력되지 않았는지도 확인하세요.</div></details>
-<details><summary>복권을 어제 못 긁었어요</summary><div>매일 복권은 <b>발행된 날 밤 12시까지</b>만 긁을 수 있어요. 지나면 소멸되고 다시 받을 수 없어요. 매일 앱을 열어 긁어 주세요!</div></details>
-<details><summary>당첨된 할인은 언제 빠지나요?</summary><div>당첨되면 <b>다음 결제일 쉐어비</b>에서 자동으로 빠져요(예: 10월 27일 당첨 → 11월 15일에 내는 쉐어비). 그 달 쉐어비를 이미 냈거나 휴무면 그다음에 쉐어비를 내는 달로 넘어가요.</div></details>
-<details><summary>쉐어비 금액이 ●●●원으로 가려져 있어요</summary><div>옆 사람이 보지 못하게 가려 둔 거예요. 금액이나 <b>[👁 누르고 있는 동안 금액 보기]</b>를 <b>꾹 누르고 있는 동안만</b> 보여요. 쉐어비 화면에는 이름·시간·'유출금지'가 흐리게 표시돼요. <b>캡처해서 다른 사람에게 보내지 마세요.</b></div></details>
-<details><summary>오류가 났어요. 캡처해서 보내야 하나요?</summary><div>오류 창의 <b>[대장에게 오류 보내기]</b>를 누르면 오류 내용이 대장에게 바로 전달돼요. 캡처하지 않아도 돼요. (비밀번호·쉐어비 같은 개인 정보는 보내지 않아요)</div></details>
-<details><summary>앱 색깔·배경을 바꾸고 싶어요</summary><div><b>MY → 🎨 화면 테마</b>(눌러서 펼치기)에서 핑크·핫핑크·블랙앤골드·스카이 등 10가지 색과 배경(무늬·내 사진)을 고를 수 있어요. 내 폰에만 적용돼요.</div></details>
-<details><summary>앱 버전은 어디서 봐요?</summary><div><b>MY 맨 아래</b>에 적혀 있어요 (예: v1.30).</div></details>
-<details><summary>홈 맨 위 문구는 뭐예요?</summary><div>'오늘의 문구'예요. 인스타·블로그·리뷰 등 홍보에 도움이 되는 한마디가 <b>날마다 바뀌어요</b>. 오른쪽 위 <b>📜</b> 버튼에는 문신사법 안내가 있어요.</div></details>
-<details><summary>인증 메일이 안 와요</summary><div>스팸함 · 프로모션함을 먼저 확인하세요. 그래도 없으면 이메일 주소에 오타가 없는지 보고, 앱에서 로그인한 뒤 화면 안내대로 다시 시도해 주세요. 회사·학교 메일보다 <b>Gmail · 네이버 메일</b>이 잘 와요.</div></details>
-<details><summary>비밀번호를 잊어버렸어요</summary><div>앱 첫 화면에서 <b>이메일을 쓰고 [비밀번호 재설정]</b>을 누르면 메일로 새 비밀번호를 정하는 링크가 와요. 대장도 비밀번호를 볼 수 없으니 직접 바꾸셔야 해요.</div></details>
-<details><summary>"승인 대기 중"에서 안 넘어가요</summary><div>대장이 승인해야 사용할 수 있어요. 승인됐다고 들었는데도 그대로면 <b>새로고침</b>하거나 앱을 껐다 켜세요.</div></details>
-<details><summary>홈 화면 추가 메뉴가 안 보여요</summary><div>카톡 안에서 열린 화면이면 메뉴가 없어요. <b>다른 브라우저로 열기</b>로 Safari(아이폰) · Chrome(안드로이드)에서 열어 주세요. 아이폰은 Safari에서만 홈 화면 추가가 돼요.</div></details>
-<details><summary>잘못 입력했어요. 지울 수 있나요?</summary><div>내 판매는 상세 화면에서 <b>[수정]</b>할 수 있어요(수정 기록이 남아요). 날짜를 바꾸거나 취소하려면 대장에게 말씀해 주세요. <b>정산이 끝난 달</b>의 판매는 대장만 고칠 수 있어요.</div></details>
-<details><summary>지난 날짜로 입력하고 싶어요</summary><div>판매는 <b>그날그날</b> 입력하는 게 원칙이라 오늘 날짜로만 들어가요. 빠뜨린 건이 있으면 대장에게 말씀해 주세요. 대장이 날짜를 정해 대신 입력해 줄 수 있어요.</div></details>
-<details><summary>토스 저장이 안 돼요</summary><div>손님 이름 · 받는 사람 · 작업비를 다 넣었는지, 수수료가 작업비의 <b>10~20%</b> 안인지, 결제를 나눴다면 <b>합계가 작업비와 같은지</b> 확인해 주세요.</div></details>
-<details><summary>쉐어비 화면이 안 열려요</summary><div>쉐어비는 개인 정보라 <b>로그인 비밀번호를 한 번 더</b> 넣어야 열려요. 다른 메뉴로 나가면 다시 잠겨요.</div></details>
-<details><summary>쉐어비를 냈는데 미납으로 보여요</summary><div>그 달 옆의 <b>[납부확인 요청]</b>을 누르고 "몇 월 며칠, 입금자명" 등을 적어 보내세요. 대장이 확인하면 완료로 바뀌어요.</div></details>
-<details><summary>폰을 바꿨어요 / 다른 폰에서도 쓰고 싶어요</summary><div>같은 이메일 · 비밀번호로 로그인하면 기록이 그대로 보여요. 모든 기록은 폰이 아니라 서버에 저장돼요.</div></details>
-<details><summary>화면이 예전 그대로예요 (업데이트가 안 돼요)</summary><div>앱 맨 위에 <b>버전(v숫자)</b>이 보여요. 대장이 새 버전을 알렸는데 숫자가 그대로면 화면을 아래로 당겨 새로고침하거나 앱을 껐다 켜세요.</div></details>
-<details><summary>뒤로가기를 누르면 앱이 꺼져요</summary><div>팝업이 열려 있으면 팝업이 먼저 닫히고, 다른 메뉴에서는 홈으로 와요. 홈에서 <b>한 번 더</b> 누르면 앱이 닫혀요.</div></details>
-<details><summary>화면이 너무 어둡거나 밝아요</summary><div><b>MY → 🎨 화면 테마</b>(눌러서 펼치기)에서 자동 · 밝게 · 어둡게를 고를 수 있어요.</div></details>
-<details><summary>인터넷이 안 될 때도 입력되나요?</summary><div>잠깐 끊긴 정도는 다시 연결될 때 자동으로 올라가요. 하지만 <b>오래 끊긴 상태에서 입력한 판매는 거절될 수 있어요.</b> 가능하면 인터넷이 될 때 입력하고, 저장 후 목록에 보이는지 확인하세요.</div></details>
-</section>
-
-<section id="safe"><h2>보안 · 개인정보, 걱정 마세요</h2>
-<div class="card shield"><svg viewBox="0 0 48 48"><path d="M24 4 L40 10 V22 C40 33 33 40 24 44 C15 40 8 33 8 22 V10 Z" fill="none" stroke="#e8d9b0" stroke-width="2.5"/><path d="M17 24 l5 5 l9-10" fill="none" stroke="#7fd1b4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><div><b>내 쉐어비와 판매수당은 나와 대장만 봐요.</b><br><span class="mu">화면에서 숨기는 게 아니라, 서버가 처음부터 다른 사람에게 데이터를 보내지 않아요. 앱 주소나 화면 코드가 알려져도 대장 승인 없이는 아무것도 볼 수 없어요.</span></div></div>
-
-<h3>누가 무엇을 볼 수 있나요?</h3>
-<div class="card" style="overflow-x:auto"><table>
-<tr><th></th><th>나</th><th>다른 타투이스트</th><th>대장</th></tr>
-<tr><td>내 판매 · 판매수당</td><td class="yes">○</td><td class="no">✕</td><td class="yes">○</td></tr>
-<tr><td>내 쉐어비 · 납부 내역</td><td class="yes">○ (비밀번호 확인)</td><td class="no">✕</td><td class="yes">○</td></tr>
-<tr><td>토스</td><td class="yes">○</td><td>주고받은 상대만</td><td class="yes">○</td></tr>
-<tr><td>이름 · 닉네임</td><td class="yes">○</td><td>○ (토스 받을 사람 고를 때)</td><td class="yes">○</td></tr>
-<tr><td>레벨 점수</td><td class="yes">○</td><td>순위만 (누구인지 비공개)</td><td class="yes">○</td></tr>
-<tr><td>비밀번호</td><td colspan="3"><b>아무도 못 봐요.</b> 구글 로그인 시스템이 암호화해서 보관해요. 대장도 볼 수 없어요.</td></tr>
-</table></div>
-
-<h3>이런 것도 지켜져요</h3>
-<div class="grid2">
-<div class="feat"><h4>📵 폰 권한 요구 없음</h4><p>연락처 · 위치 · 사진첩 전체 접근을 요구하지 않아요. 리뷰 캡처는 <b>내가 고른 사진 한 장</b>만 올라가요.</p></div>
-<div class="feat"><h4>🧾 기록 조작 방지</h4><p>수정하면 <b>누가 · 언제 · 무엇을</b> 바꿨는지 남아요. 금액과 수수료는 서버가 다시 계산해서 검사해요.</p></div>
-<div class="feat"><h4>🔐 가입 승인제</h4><p>가게 가입코드 + 이메일 인증 + 대장 승인. 세 단계를 거쳐야 쓸 수 있어요.</p></div>
-<div class="feat"><h4>☁️ 안전한 저장</h4><p>기록은 구글 클라우드(Firebase)에 저장돼요. 폰을 잃어버려도 기록은 사라지지 않아요. 광고 · 방문 추적 기능은 넣지 않았어요.</p></div>
+<section id="game"><h2>🎮 게임</h2>
+<div class="card">
+<p><b>게임으로 포인트를 모아 내 유령을 키우고 꾸며요.</b></p>
+<ul>
+<li>게임마다 <b>하루 10판</b>, 점수만큼 포인트</li>
+<li>포인트로 유령 밥·꾸미기·유령의 집 물건을 사요</li>
+<li>판매·토스를 기록하면 유령이 쑥쑥 자라요</li>
+</ul>
+<p class="mu" style="margin:6px 0 0">게임 포인트는 재미용이에요 — 쉐어비·레벨·복권과는 상관없어요.</p>
 </div>
-
-<h3>내가 지켜야 할 3가지</h3>
-<div class="card"><ol>
-<li><b>다른 곳과 다른 비밀번호</b>를 쓰세요. 비밀번호와 가입코드는 아무에게도 알려주지 마세요.</li>
-<li>가게 공용 폰이나 남의 폰에서 썼다면 꼭 <b>로그아웃</b>(앱 맨 위)하세요.</li>
-<li>앱 주소는 <b>blackghosttattoo.github.io/sales-app</b> 하나뿐이에요. 비슷한 주소나 메시지로 비밀번호를 묻는다면 입력하지 말고 대장에게 알려주세요.</li>
-</ol></div>
-<p class="mu">🔒 <b>손님 이름은 안 적어도 돼요.</b> 크림을 팔면 판매 입력은 꼭 하되, 정상판매일 땐 '구매자 이름' 칸은 비워 둬도 괜찮아요. 손님 전화번호는 적지 마세요.</p>
 </section>
 
-<section><h2>더 궁금한 점은?</h2>
-<div class="card">앱 사용 중 막히는 곳이 있으면 <b>화면을 캡처해서 대장에게</b> 보내주세요. 어느 메뉴에서 무엇을 누를 때였는지 같이 알려주시면 빨리 해결할 수 있어요.</div>
-<p style="text-align:center;margin-top:20px"><a class="cta" href="https://blackghosttattoo.github.io/sales-app/">앱 열기</a></p>
+<section id="faq"><h2>❓ 자주 묻는 질문</h2>
+<details><summary>"불러오는 중…"에서 멈춰요</summary><div>카톡·인스타 안이면 <b>Safari/Chrome으로 다시 열기</b>. 그래도 멈추면 광고 차단기 끄기 → 방문 기록 지우기 후 다시 열기. 안 되면 화면 캡처해서 대장에게.</div></details>
+<details><summary>인증 메일이 안 와요</summary><div>스팸함·프로모션함 확인. Gmail·네이버 메일이 잘 와요.</div></details>
+<details><summary>비밀번호를 잊었어요</summary><div>로그인 화면에서 이메일 쓰고 [비밀번호 재설정] → 메일 링크로 새로 정하기. 대장도 비밀번호는 못 봐요.</div></details>
+<details><summary>"승인 대기 중"에서 안 넘어가요</summary><div>대장 승인이 필요해요. 승인 뒤에도 그대로면 앱을 껐다 켜세요.</div></details>
+<details><summary>잘못 입력했어요</summary><div>판매 상세에서 [수정](기록이 남아요). 날짜 변경·취소는 대장에게. 정산 끝난 달은 대장만 고칠 수 있어요.</div></details>
+<details><summary>토스 저장이 안 돼요</summary><div>받는 사람·작업비를 넣었는지, 수수료가 10~20%인지, 나눠 결제했다면 합계가 작업비와 같은지 확인해 주세요.</div></details>
+<details><summary>화면이 예전 그대로예요</summary><div>맨 위 '새 버전' 알림을 누르거나, 앱을 완전히 닫았다 열기. MY 맨 아래 🔄 새로고침도 있어요.</div></details>
+<details><summary>폰을 바꿨어요</summary><div>같은 이메일·비밀번호로 로그인하면 기록이 그대로예요(서버에 저장).</div></details>
 </section>
 
-<footer>BLACKGHOST TATTOO STUDIO · 타투이스트 전용 안내</footer>
+<section id="safe"><h2>🔒 보안</h2>
+<div class="card"><ul>
+<li>내 판매수당·쉐어비는 <b>나와 대장만</b> 봐요(서버가 처음부터 막아요)</li>
+<li>가입코드 + 이메일 인증 + 대장 승인, 수정하면 기록이 남아요</li>
+<li>비밀번호·가입코드는 아무에게도 알려주지 말고, 남의 폰에서 썼다면 꼭 로그아웃</li>
+</ul></div>
+</section>
+
+<footer>BLACKGHOST TATTOO STUDIO · 궁금한 점은 대장에게 물어봐 주세요</footer>
 </main></body></html>
