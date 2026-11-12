@@ -1,0 +1,16 @@
+{
+  "id": "bg-kiosk",
+  "name": "블랙고스트 동의서",
+  "short_name": "동의서",
+  "start_url": "consent.html?k=1",
+  "scope": "consent.html",
+  "display": "fullscreen",
+  "orientation": "any",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}
